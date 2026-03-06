@@ -20,7 +20,7 @@ function App() {
       <div className="card-container">
 
         <TiltFlipCard
-          img="/vite.svg"
+          frontImg="./vite.svg"
           front={
             <>
               <h3>Project Chaos</h3>
@@ -41,7 +41,7 @@ function App() {
         />
 
         <TiltFlipCard
-          img="/vite.svg"
+          frontImg="/vite.svg"
           front={
             <>
               <h3>Project Two</h3>
@@ -60,6 +60,7 @@ function App() {
         <TiltFlipCard
           img="/vite.svg"
           front={<h3>Project Three</h3>}
+          backImg="./vite.svg"
           back={<p>Coming soon</p>}
           maxTilt={20}
         />
