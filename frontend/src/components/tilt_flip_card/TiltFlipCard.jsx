@@ -1,20 +1,24 @@
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react";
 import "./TiltFlipCard.css";
 
-const HOLD_DELAY = 180;
-const MOVE_THRESHOLD = 8;
+const MOVE_THRESHOLD = 10;
 
-const INITIAL_POINTER_STATE = {
+const POINTER_DEFAULT = {
   isDown: false,
-  isHolding: false,
   moved: false,
   startX: 0,
   startY: 0,
-  holdTimer: null,
   activePointerId: null
 };
 
-const INITIAL_VISUAL_STATE = {
+const VISUAL_DEFAULT = {
   "--hover": "0",
   "--rx": "0deg",
   "--ry": "0deg",
@@ -39,7 +43,7 @@ export default function TiltFlipCard({
   const sceneRef = useRef(null);
   const tiltRef = useRef(null);
   const rafRef = useRef(0);
-  const pointerState = useRef({ ...INITIAL_POINTER_STATE });
+  const pointerRef = useRef({ ...POINTER_DEFAULT });
 
   const [expanded, setExpanded] = useState(false);
   const [flipped, setFlipped] = useState(false);
@@ -53,7 +57,7 @@ export default function TiltFlipCard({
     [width, height, popOut]
   );
 
-  const setVars = useCallback((vars) => {
+  const applyVars = useCallback((vars) => {
     const el = tiltRef.current;
     if (!el) return;
 
@@ -62,44 +66,19 @@ export default function TiltFlipCard({
     }
   }, []);
 
-  const clearHoldTimer = useCallback(() => {
-    const state = pointerState.current;
-    if (state.holdTimer) {
-      clearTimeout(state.holdTimer);
-      state.holdTimer = null;
-    }
+  const resetPointerState = useCallback(() => {
+    pointerRef.current = { ...POINTER_DEFAULT };
   }, []);
 
   const resetVisualState = useCallback(() => {
     cancelAnimationFrame(rafRef.current);
-    setVars(INITIAL_VISUAL_STATE);
-  }, [setVars]);
+    applyVars(VISUAL_DEFAULT);
+  }, [applyVars]);
 
-  const resetPointerState = useCallback(() => {
-    clearHoldTimer();
-    pointerState.current = {
-      ...INITIAL_POINTER_STATE
-    };
-  }, [clearHoldTimer]);
-
-  const cleanupPointer = useCallback(
-    (e) => {
-      const el = tiltRef.current;
-
-      if (el && e?.pointerId != null && el.hasPointerCapture?.(e.pointerId)) {
-        try {
-          el.releasePointerCapture(e.pointerId);
-        } catch {}
-      }
-
-      resetPointerState();
-
-      if (!expanded) {
-        resetVisualState();
-      }
-    },
-    [expanded, resetPointerState, resetVisualState]
-  );
+  const fullReset = useCallback(() => {
+    resetPointerState();
+    resetVisualState();
+  }, [resetPointerState, resetVisualState]);
 
   const updateTilt = useCallback(
     (clientX, clientY) => {
@@ -112,6 +91,8 @@ export default function TiltFlipCard({
 
       rafRef.current = requestAnimationFrame(() => {
         const rect = el.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+
         const x = clientX - rect.left;
         const y = clientY - rect.top;
 
@@ -121,7 +102,7 @@ export default function TiltFlipCard({
         const tiltX = -ny * maxTilt;
         const tiltY = nx * maxTilt;
 
-        setVars({
+        applyVars({
           "--hover": "1",
           "--rx": `${tiltX}deg`,
           "--ry": `${tiltY}deg`,
@@ -131,7 +112,7 @@ export default function TiltFlipCard({
         });
       });
     },
-    [expanded, maxTilt, setVars]
+    [expanded, maxTilt, applyVars]
   );
 
   const computeExpandedTransform = useCallback(() => {
@@ -148,41 +129,46 @@ export default function TiltFlipCard({
 
     const scale = Math.min(maxW / rect.width, maxH / rect.height, 2.2);
 
-    const cardCenterX = rect.left + rect.width / 2;
-    const cardCenterY = rect.top + rect.height / 2;
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
 
-    const dx = viewportW / 2 - cardCenterX;
-    const dy = viewportH / 2 - cardCenterY;
-
-    setVars({
-      "--expand-x": `${dx}px`,
-      "--expand-y": `${dy}px`,
+    applyVars({
+      "--expand-x": `${viewportW / 2 - centerX}px`,
+      "--expand-y": `${viewportH / 2 - centerY}px`,
       "--expand-scale": `${scale}`
     });
-  }, [setVars]);
+  }, [applyVars]);
 
   const openInspect = useCallback(() => {
     computeExpandedTransform();
 
-    requestAnimationFrame(() => {
-      setExpanded(true);
-      setFlipped(true);
-    });
-
-    setVars({
+    applyVars({
       "--hover": "0",
       "--rx": "0deg",
       "--ry": "0deg",
       "--glare-o": "0"
     });
-  }, [computeExpandedTransform, setVars]);
+
+    setExpanded(true);
+    setFlipped(true);
+  }, [computeExpandedTransform, applyVars]);
 
   const closeInspect = useCallback(() => {
     setExpanded(false);
     setFlipped(false);
-    resetVisualState();
+
+    requestAnimationFrame(() => {
+      fullReset();
+    });
+  }, [fullReset]);
+
+  const endPointerInteraction = useCallback(() => {
     resetPointerState();
-  }, [resetPointerState, resetVisualState]);
+
+    if (!expanded) {
+      resetVisualState();
+    }
+  }, [expanded, resetPointerState, resetVisualState]);
 
   useLayoutEffect(() => {
     if (!expanded) return;
@@ -193,7 +179,10 @@ export default function TiltFlipCard({
 
     handleResize();
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, [expanded, computeExpandedTransform]);
 
   useEffect(() => {
@@ -210,119 +199,100 @@ export default function TiltFlipCard({
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "";
       cancelAnimationFrame(rafRef.current);
-      clearHoldTimer();
     };
-  }, [expanded, closeInspect, clearHoldTimer]);
+  }, [expanded, closeInspect]);
 
-  const onPointerEnter = (e) => {
-    if (expanded || e.pointerType !== "mouse") return;
-
-    setVars({
-      "--hover": "1",
-      "--glare-o": "1"
-    });
-
-    updateTilt(e.clientX, e.clientY);
-  };
-
-  const onPointerDown = (e) => {
-    if (expanded) return;
-
-    const el = tiltRef.current;
-    if (!el) return;
-
-    pointerState.current = {
-      ...pointerState.current,
-      isDown: true,
-      isHolding: false,
-      moved: false,
-      startX: e.clientX,
-      startY: e.clientY,
-      activePointerId: e.pointerId
-    };
-
-    if (e.pointerType === "touch" || e.pointerType === "pen") {
-      el.setPointerCapture?.(e.pointerId);
-
-      clearHoldTimer();
-      pointerState.current.holdTimer = setTimeout(() => {
-        if (!pointerState.current.isDown) return;
-
-        pointerState.current.isHolding = true;
-        setVars({
-          "--hover": "1",
-          "--glare-o": "1"
-        });
-      }, HOLD_DELAY);
-    }
-  };
-
-  const onPointerMove = (e) => {
-    if (expanded) return;
-
-    const state = pointerState.current;
-
-    if (e.pointerType === "mouse") {
+  const onPointerEnter = useCallback(
+    (e) => {
+      if (expanded || e.pointerType !== "mouse") return;
       updateTilt(e.clientX, e.clientY);
-      return;
-    }
+    },
+    [expanded, updateTilt]
+  );
 
-    if (!state.isDown || state.activePointerId !== e.pointerId) return;
+  const onPointerDown = useCallback(
+    (e) => {
+      if (expanded) return;
 
-    const dx = e.clientX - state.startX;
-    const dy = e.clientY - state.startY;
-    const distance = Math.hypot(dx, dy);
+      pointerRef.current = {
+        isDown: true,
+        moved: false,
+        startX: e.clientX,
+        startY: e.clientY,
+        activePointerId: e.pointerId
+      };
 
-    if (distance > MOVE_THRESHOLD) {
-      state.moved = true;
-      state.isHolding = true;
-      clearHoldTimer();
+      if (e.pointerType === "touch" || e.pointerType === "pen") {
+        updateTilt(e.clientX, e.clientY);
+      }
+    },
+    [expanded, updateTilt]
+  );
 
-      setVars({
-        "--hover": "1",
-        "--glare-o": "1"
-      });
-    }
+  const onPointerMove = useCallback(
+    (e) => {
+      if (expanded) return;
 
-    if (state.isHolding) {
+      const state = pointerRef.current;
+
+      if (e.pointerType === "mouse") {
+        updateTilt(e.clientX, e.clientY);
+        return;
+      }
+
+      if (!state.isDown || state.activePointerId !== e.pointerId) return;
+
+      const dx = e.clientX - state.startX;
+      const dy = e.clientY - state.startY;
+
+      if (Math.hypot(dx, dy) > MOVE_THRESHOLD) {
+        state.moved = true;
+      }
+
       updateTilt(e.clientX, e.clientY);
-    }
-  };
+    },
+    [expanded, updateTilt]
+  );
 
-  const onPointerUp = (e) => {
-    const state = pointerState.current;
+  const onPointerUp = useCallback(
+    (e) => {
+      if (expanded) return;
 
-    if (expanded) return;
+      const state = pointerRef.current;
 
-    if (e.pointerType === "mouse") {
-      openInspect();
-      cleanupPointer(e);
-      return;
-    }
+      if (e.pointerType === "mouse") {
+        openInspect();
+        endPointerInteraction();
+        return;
+      }
 
-    const wasTap =
-      state.isDown &&
-      state.activePointerId === e.pointerId &&
-      !state.isHolding &&
-      !state.moved;
+      const wasTap =
+        state.isDown &&
+        state.activePointerId === e.pointerId &&
+        !state.moved;
 
-    if (wasTap) {
-      openInspect();
-    }
+      if (wasTap) {
+        openInspect();
+      } else {
+        endPointerInteraction();
+      }
+    },
+    [expanded, openInspect, endPointerInteraction]
+  );
 
-    cleanupPointer(e);
-  };
+  const onPointerLeave = useCallback(
+    (e) => {
+      if (expanded) return;
+      if (e.pointerType === "mouse") {
+        resetVisualState();
+      }
+    },
+    [expanded, resetVisualState]
+  );
 
-  const onPointerLeave = (e) => {
-    if (expanded) return;
-    if (e.pointerType === "mouse") {
-      resetVisualState();
-    }
-  };
-
-  const onPointerCancel = (e) => {
-    cleanupPointer(e);
-  };
+  const onPointerCancel = useCallback(() => {
+    endPointerInteraction();
+  }, [endPointerInteraction]);
 
   return (
     <>
@@ -338,7 +308,6 @@ export default function TiltFlipCard({
         onPointerUp={onPointerUp}
         onPointerLeave={onPointerLeave}
         onPointerCancel={onPointerCancel}
-        onLostPointerCapture={onPointerCancel}
       >
         <div
           ref={tiltRef}

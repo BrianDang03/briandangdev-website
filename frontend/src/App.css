@@ -123,6 +123,8 @@ button:focus-visible {
   justify-content: center;
   gap: 40px;
   flex-wrap: wrap;
+  position: relative;
+  overflow: visible;
 
   padding: 60px 40px;
 }

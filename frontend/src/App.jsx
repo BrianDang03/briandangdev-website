@@ -62,7 +62,7 @@ function App() {
         />
 
         <TiltFlipCard
-          img="/vite.svg"
+          frontImg="/modem.jpg"
           front={<h3>Project Three</h3>}
           backImg="./vite.svg"
           back={<p>Coming soon</p>}
