@@ -1,6 +1,6 @@
 :root {
   --tfc-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
-  --tfc-speed: 420ms;
+  --tfc-speed: 700ms;
   --tfc-radius: 18px;
   --tfc-backdrop-bg: rgba(0, 0, 0, 0.45);
   --tfc-close-bg: rgba(0, 0, 0, 0.45);
@@ -21,6 +21,17 @@
   will-change: transform;
 }
 
+.tfc-face,
+.card-overlay,
+.back-overlay,
+.tfc-content,
+.tfc-scroll-content,
+.tfc-close-btn {
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 .tfc-scene {
   position: relative;
   width: var(--card-w);
@@ -31,16 +42,22 @@
   user-select: none;
   touch-action: pan-y;
   -webkit-tap-highlight-color: transparent;
+  -webkit-user-drag: none;
+}
+
+.tfc-scene * {
+  -webkit-user-drag: none;
 }
 
 .tfc-scene.is-expanded {
-  z-index: 10001;
+  z-index: 30;
+  pointer-events: none;
 }
 
 .tfc-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 10000;
+  z-index: 20;
   background: var(--tfc-backdrop-bg);
   backdrop-filter: blur(6px);
 }
@@ -50,6 +67,8 @@
   z-index: 1;
   width: 100%;
   height: 100%;
+  overflow: hidden;
+  border-radius: var(--tfc-radius);
   transition:
     transform var(--tfc-speed) var(--tfc-ease),
     box-shadow 280ms var(--tfc-ease),
@@ -62,12 +81,13 @@
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 10001;
+  z-index: 30;
   width: var(--card-w);
   height: var(--card-h);
   transform-origin: top left;
   transform:
     translate(var(--expand-x, 0px), var(--expand-y, 0px)) scale(var(--expand-scale, 1));
+  pointer-events: auto;
 }
 
 .tfc-flip {
@@ -75,6 +95,7 @@
   width: 100%;
   height: 100%;
   transition: transform var(--tfc-speed) var(--tfc-ease);
+  transform-style: preserve-3d;
 }
 
 .tfc-flip.is-flipped {
@@ -90,19 +111,23 @@
   overflow: hidden;
   padding: 20px;
   border-radius: var(--tfc-radius);
-  background: linear-gradient(135deg,
-      rgba(255, 255, 255, 0.15),
-      rgba(255, 255, 255, 0.05));
+
+  /* solid card shell */
+  background-color: rgba(18, 18, 18, 0.96);
+  background-image: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.12),
+      rgba(255, 255, 255, 0.03));
+
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
 
 .tfc-front {
-  transform: translateZ(calc(var(--hover, 0) * var(--pop-out)));
+  transform: translateZ(1px);
 }
 
 .tfc-back {
-  transform: rotateY(180deg) translateZ(calc(var(--hover, 0) * var(--pop-out)));
+  transform: rotateY(180deg) translateZ(1px);
 }
 
 .tfc-content {
@@ -141,6 +166,9 @@
   height: 100%;
   object-fit: cover;
   border-radius: var(--tfc-radius);
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .card-overlay,
@@ -176,6 +204,9 @@
       var(--tfc-overlay-back));
   text-align: left;
   -webkit-overflow-scrolling: touch;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
 .tfc-close-btn {

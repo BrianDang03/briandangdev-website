@@ -384,6 +384,7 @@ export default function TiltFlipCard({
         <div
           ref={tiltRef}
           className={`tfc-tilt ${isExpanded ? "is-expanded" : ""}`}
+          onDragStart={(e) => e.preventDefault()}
         >
           <div className={`tfc-flip ${isFlipped ? "is-flipped" : ""}`}>
             <div className="tfc-face tfc-front">
@@ -394,6 +395,7 @@ export default function TiltFlipCard({
                   className="card-bg-image"
                   loading="lazy"
                   decoding="async"
+                  draggable="false"
                 />
               )}
 
@@ -417,12 +419,16 @@ export default function TiltFlipCard({
                   className="card-bg-image"
                   loading="lazy"
                   decoding="async"
+                  draggable="false"
                 />
               )}
 
               {!isExpanded && <div className="tfc-glare" />}
 
-              <div className={`card-overlay ${isExpanded ? "back-overlay" : ""}`}>
+              <div
+                className={`card-overlay ${isExpanded ? "back-overlay" : ""}`}
+                onDragStart={(e) => e.preventDefault()}
+              >
                 {isExpanded && (
                   <button
                     className="tfc-close-btn"
@@ -435,8 +441,8 @@ export default function TiltFlipCard({
                 )}
 
                 <div
-                  className={`tfc-content ${isExpanded ? "tfc-scroll-content" : ""
-                    }`}
+                  className={`tfc-content ${isExpanded ? "tfc-scroll-content" : ""}`}
+                  onDragStart={(e) => e.preventDefault()}
                 >
                   {back}
                 </div>
