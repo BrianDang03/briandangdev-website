@@ -13,9 +13,6 @@
 }
 
 /* Shared 3D optimization */
-.tfc-scene,
-.tfc-tilt,
-.tfc-flip,
 .tfc-face {
   transform-style: preserve-3d;
   will-change: transform;

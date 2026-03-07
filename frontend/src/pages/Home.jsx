@@ -29,7 +29,7 @@ export default function Home({ name, job }) {
                   gap: "8px"
                 }}
               >
-                Flip to Learn More
+                Tap to Learn More
                 <FlipIcon />
               </h3>
             </>
@@ -57,7 +57,7 @@ export default function Home({ name, job }) {
                   gap: "8px"
                 }}
               >
-                Flip to Learn More
+                Tap to Learn More
                 <FlipIcon />
               </h3>
             </>
@@ -86,7 +86,7 @@ export default function Home({ name, job }) {
                   gap: "8px"
                 }}
               >
-                Flip to Learn More
+                Tap to Learn More
                 <FlipIcon />
               </h3>
             </>
