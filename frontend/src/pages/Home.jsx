@@ -16,12 +16,12 @@ export default function Home({ name, job }) {
       <JobTitle job={job} />
       <div className="card-container">
         <TiltFlipCard
-          frontImg="./vite.svg"
+          frontImg="./headshot.jpg"
           front={
             <>
-              <h3>About Me</h3>
+              <h2>About Me</h2>
 
-              <h5
+              <h3
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -31,7 +31,7 @@ export default function Home({ name, job }) {
               >
                 Flip to Learn More
                 <FlipIcon />
-              </h5>
+              </h3>
             </>
           }
           back={
@@ -48,8 +48,8 @@ export default function Home({ name, job }) {
           frontImg="/modem.jpg"
           front={
             <>
-              <h3>Portfolio</h3>
-              <h5
+              <h2>Portfolio</h2>
+              <h3
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -59,7 +59,7 @@ export default function Home({ name, job }) {
               >
                 Flip to Learn More
                 <FlipIcon />
-              </h5>
+              </h3>
             </>
           }
           backImg="/modem.jpg"
@@ -73,12 +73,12 @@ export default function Home({ name, job }) {
         />
 
         <TiltFlipCard
-          frontImg="./modem.jpg"
+          frontImg="./contact.png"
           front={
             <>
-              <h3>About Me</h3>
+              <h2>Contact Me</h2>
 
-              <h5
+              <h3
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -88,7 +88,7 @@ export default function Home({ name, job }) {
               >
                 Flip to Learn More
                 <FlipIcon />
-              </h5>
+              </h3>
             </>
           }
           backImg="./vite.svg"
