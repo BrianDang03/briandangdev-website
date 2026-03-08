@@ -64,7 +64,7 @@ export default function Navbar() {
                         </NavLink>
                     </div>
 
-                    <a href="mailto:hello@briandang.dev" className="nav-cta" onClick={closeMenu}>
+                    <a href="mailto:briandang730@gmail.com" className="nav-cta" onClick={closeMenu}>
                         Contact
                     </a>
                 </div>

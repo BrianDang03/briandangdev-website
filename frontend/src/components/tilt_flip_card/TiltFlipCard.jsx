@@ -182,13 +182,15 @@ export default function TiltFlipCard({
   }, [applyCssVars, computeExpandedTransform]);
 
   const closeInspectView = useCallback(() => {
+    // Reset visual state immediately to prevent tilt effects on underlying cards
+    resetVisualState();
+
     setIsExpanded(false);
     setIsFlipped(false);
 
-    requestAnimationFrame(() => {
-      resetAllState();
-    });
-  }, [resetAllState]);
+    // Reset pointer state immediately as well
+    resetPointerState();
+  }, [resetVisualState, resetPointerState]);
 
   const endInteraction = useCallback(() => {
     resetPointerState();
@@ -354,7 +356,21 @@ export default function TiltFlipCard({
 
   const handleCloseButtonClick = useCallback(
     (event) => {
+      event.preventDefault();
       event.stopPropagation();
+
+      // Release any active pointer capture to prevent events from affecting underlying cards
+      if (event.target) {
+        try {
+          const pointerId = pointerStateRef.current.activePointerId;
+          if (pointerId !== null) {
+            event.target.releasePointerCapture?.(pointerId);
+          }
+        } catch (e) {
+          // Ignore errors if pointer capture wasn't active
+        }
+      }
+
       closeInspectView();
     },
     [closeInspectView]

@@ -195,6 +195,68 @@ body::before {
     color: var(--text-main);
 }
 
+.social-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.social-icon-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-main);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.25s ease;
+    cursor: pointer;
+}
+
+.social-icon-link:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+}
+
+.social-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+}
+
+.card-action-wrapper {
+    text-align: center;
+}
+
+.card-action-btn {
+    display: inline-block;
+    margin-top: 1.25rem;
+    padding: 0.65rem 1.5rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08));
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+    transition: all 0.25s ease;
+    cursor: pointer;
+}
+
+.card-action-btn:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.12));
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
 .nav-cta {
     text-decoration: none;
     color: #10141a;

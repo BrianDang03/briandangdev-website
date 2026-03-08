@@ -26,11 +26,11 @@ export default function Footer() {
                 <div>
                     <p className="footer-title">Connect</p>
                     <div className="footer-links">
-                        <a href="mailto:hello@briandang.dev">hello@briandang.dev</a>
-                        <a href="https://github.com" target="_blank" rel="noreferrer">
+                        <a href="mailto:briandang730@gmail.com">Email</a>
+                        <a href="https://github.com/BrianDang03" target="_blank" rel="noreferrer">
                             GitHub
                         </a>
-                        <a href="https://www.linkedin.com" target="_blank" rel="noreferrer">
+                        <a href="https://www.linkedin.com/in/brian-dang-b0a3a5256/" target="_blank" rel="noreferrer">
                             LinkedIn
                         </a>
                     </div>
