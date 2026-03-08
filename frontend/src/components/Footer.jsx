@@ -9,8 +9,8 @@ export default function Footer() {
                 <div>
                     <p className="footer-title">Brian Dang</p>
                     <p className="footer-copy">
-                        A monochrome digital space for software builds, interaction design,
-                        and experimental interface work.
+                        Creator. Systems designer. Gameplay engineer.
+                        Built for challenge. Driven by growth.
                     </p>
                 </div>
 

@@ -5,12 +5,10 @@ export default function Home({ name, job }) {
   return (
     <section className="home-shell">
       <div className="hero-block">
-        <p className="hero-kicker">Atmospheric Interface Engineer</p>
         <h1>{name}</h1>
         <h2>{job}</h2>
         <p className="hero-lead">
-          I build clean, high-performance products that feel cinematic,
-          intentional, and alive across desktop and mobile surfaces.
+          Ideas engineered into unforgettable experiences.
         </p>
       </div>
 
@@ -31,9 +29,9 @@ export default function Home({ name, job }) {
             <div className="card-copy-back">
               <h3>Core Profile</h3>
               <ul>
-                <li>Software engineer focused on polished front-end systems.</li>
-                <li>Builds interactions with motion, depth, and clarity.</li>
-                <li>Comfortable from UI architecture to deployment.</li>
+                <li>Creator mindset with a focus on memorable player and user experiences.</li>
+                <li>Designs and implements systems from concept through production.</li>
+                <li>Gameplay engineer who seeks challenge and continuous growth.</li>
               </ul>
             </div>
           }
@@ -55,9 +53,9 @@ export default function Home({ name, job }) {
             <div className="card-copy-back">
               <h3>Recent Systems</h3>
               <ul>
-                <li>Interactive front-end builds with custom 3D card motion.</li>
-                <li>Mobile-first website architecture and route-ready layouts.</li>
-                <li>Component-driven UI libraries for reusable shipping speed.</li>
+                <li>Gameplay-focused features that balance feel, feedback, and performance.</li>
+                <li>System architecture built for iteration, scalability, and long-term support.</li>
+                <li>End-to-end implementation across front-end experience and technical delivery.</li>
               </ul>
             </div>
           }

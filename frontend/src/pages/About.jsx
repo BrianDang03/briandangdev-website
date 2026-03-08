@@ -4,8 +4,10 @@ export default function About() {
       <p className="hero-kicker">Background</p>
       <h1>About</h1>
       <p>
-        I combine software engineering discipline with visual storytelling to
-        create digital products that stay fast, expressive, and easy to scale.
+        I am a creator first, and a systems designer and implementer at heart.
+        My work blends technical precision with creative vision, with a strong
+        focus on gameplay engineering, challenge-driven problem solving, and
+        continuous growth through every build.
       </p>
     </section>
   );

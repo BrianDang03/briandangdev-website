@@ -230,8 +230,13 @@
 }
 
 .tfc-close-btn span {
-  display: block;
-  transform: translateY(-1px);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: none;
+  line-height: 1;
 }
 
 .tfc-close-btn:hover {

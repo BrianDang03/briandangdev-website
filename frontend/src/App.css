@@ -59,6 +59,8 @@ body::before {
 
 .site-root {
     position: relative;
+    display: flex;
+    flex-direction: column;
     min-height: 100vh;
     isolation: isolate;
     filter: brightness(var(--theme-brightness));
@@ -117,6 +119,7 @@ body::before {
 }
 
 .main-content {
+    flex: 1 0 auto;
     width: min(1200px, calc(100% - 2.4rem));
     margin: 0 auto;
     padding: 0 0 2rem;
@@ -452,7 +455,7 @@ ul {
 }
 
 .site-footer {
-    margin-top: clamp(2rem, 5vw, 4rem);
+    margin-top: auto;
     border-top: 1px solid rgba(255, 255, 255, 0.18);
     background: linear-gradient(180deg, rgba(16, 22, 31, 0.48), rgba(16, 22, 31, 0.78));
     padding: 2.1rem 0 1.5rem;
