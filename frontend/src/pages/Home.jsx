@@ -51,7 +51,6 @@ export default function Home({ name, job }) {
               </p>
             </div>
           }
-          backImg={`${import.meta.env.BASE_URL}modem.jpg`}
           back={
             <div className="card-copy-back">
               <h3>Recent Systems</h3>
@@ -77,7 +76,6 @@ export default function Home({ name, job }) {
               </p>
             </div>
           }
-          backImg={`${import.meta.env.BASE_URL}contact.png`}
           back={
             <div className="card-copy-back">
               <h3>Channels</h3>
