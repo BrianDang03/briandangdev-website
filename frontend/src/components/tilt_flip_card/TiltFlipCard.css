@@ -127,6 +127,9 @@
   position: relative;
   z-index: 2;
   text-align: center;
+  width: 100%;
+  max-width: 100%;
+  padding: 0 18px;
   transform: translateZ(calc(var(--hover, 0) * 12px));
 }
 
@@ -134,6 +137,9 @@
   z-index: 4;
   text-align: left;
   pointer-events: auto;
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
   transform: none;
 }
 
