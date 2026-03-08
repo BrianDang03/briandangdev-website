@@ -15,6 +15,33 @@ export default function Home({ name, job }) {
 
       <div className="card-container">
         <TiltFlipCard
+          frontImg={`${import.meta.env.BASE_URL}modem.jpg`}
+          front={
+            <div className="card-copy-front">
+              <h3>Portfolio</h3>
+              <p className="card-hint">
+                Tap to Learn More
+                <FlipIcon />
+              </p>
+            </div>
+          }
+          back={
+            <div className="card-copy-back">
+              <h3>Recent Systems</h3>
+              <ul>
+                <li>Gameplay-focused features that balance feel, feedback, and performance.</li>
+                <li>System architecture built for iteration, scalability, and long-term support.</li>
+                <li>End-to-end implementation across front-end experience.</li>
+              </ul>
+              <div className="card-action-wrapper">
+                <Link to="/portfolio" className="card-action-btn">See More</Link>
+              </div>
+            </div>
+          }
+          maxTilt={20}
+        />
+
+        <TiltFlipCard
           frontImg={`${import.meta.env.BASE_URL}headshot.jpg`}
           front={
             <div className="card-copy-front">
@@ -36,33 +63,6 @@ export default function Home({ name, job }) {
               </ul>
               <div className="card-action-wrapper">
                 <Link to="/about" className="card-action-btn">See More</Link>
-              </div>
-            </div>
-          }
-          maxTilt={20}
-        />
-
-        <TiltFlipCard
-          frontImg={`${import.meta.env.BASE_URL}modem.jpg`}
-          front={
-            <div className="card-copy-front">
-              <h3>Portfolio</h3>
-              <p className="card-hint">
-                Tap to Learn More
-                <FlipIcon />
-              </p>
-            </div>
-          }
-          back={
-            <div className="card-copy-back">
-              <h3>Recent Systems</h3>
-              <ul>
-                <li>Gameplay-focused features that balance feel, feedback, and performance.</li>
-                <li>System architecture built for iteration, scalability, and long-term support.</li>
-                <li>End-to-end implementation across front-end experience.</li>
-              </ul>
-              <div className="card-action-wrapper">
-                <Link to="/portfolio" className="card-action-btn">See More</Link>
               </div>
             </div>
           }
