@@ -158,6 +158,8 @@
 
 html {
     height: 100%;
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
 }
 
 body {
@@ -285,18 +287,27 @@ img {
 @keyframes app-root-reveal {
     from {
         opacity: 0;
-        transform: translateY(8px);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0);
     }
 }
 
 .theme-bg {
     position: fixed;
     inset: 0;
+    z-index: -2;
+    overflow: visible;
+    pointer-events: none;
+    filter: brightness(var(--theme-brightness));
+}
+
+.theme-bg-footer {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
     z-index: -2;
     overflow: visible;
     pointer-events: none;
@@ -613,7 +624,16 @@ img {
     opacity: 0;
 }
 
+.theme-bg-footer.is-deferred {
+    opacity: 0;
+}
+
 .theme-bg.is-ready {
+    opacity: 1;
+    transition: opacity 220ms ease-out;
+}
+
+.theme-bg-footer.is-ready {
     opacity: 1;
     transition: opacity 220ms ease-out;
 }
@@ -622,7 +642,19 @@ img {
 .theme-bg.is-locked .hexagon,
 .theme-bg.is-locked .floating-plus {
     animation: none !important;
-    transform: none !important;
+}
+
+.theme-bg-footer.is-locked .orb,
+.theme-bg-footer.is-locked .hexagon,
+.theme-bg-footer.is-locked .floating-plus {
+    animation: none !important;
+}
+
+.theme-bg-footer .orb,
+.theme-bg-footer .beam,
+.theme-bg-footer .hexagon,
+.theme-bg-footer .floating-plus {
+    position: absolute;
 }
 
 .wave-line {
@@ -936,6 +968,109 @@ img {
     left: auto;
     bottom: auto;
     margin: 0;
+}
+
+/* Nav-anchored shape layout: keep this cluster in the upper viewport band. */
+.theme-bg .orb-left {
+    top: 10%;
+    left: -64px;
+}
+
+.theme-bg .orb-nav-1 {
+    top: -142px;
+    left: 62%;
+}
+
+.theme-bg .orb-nav-2 {
+    top: -92px;
+    left: 30%;
+}
+
+.theme-bg .orb-3 {
+    top: 24%;
+    right: 5%;
+}
+
+.theme-bg .orb-8 {
+    top: 20%;
+    left: 9%;
+}
+
+.theme-bg .hex-1 {
+    top: 13%;
+    left: 7%;
+}
+
+.theme-bg .hex-2 {
+    top: 22%;
+    right: 7%;
+}
+
+.theme-bg .hex-5 {
+    top: 32%;
+    left: 4%;
+}
+
+.theme-bg .hex-6 {
+    top: 9%;
+    right: 19%;
+}
+
+.theme-bg .plus-1 {
+    top: 12%;
+    right: 14%;
+}
+
+.theme-bg .plus-4 {
+    top: 24%;
+    right: 11%;
+}
+
+.theme-bg .plus-6 {
+    top: 16%;
+    left: 13%;
+}
+
+/* Footer-anchored shape layout: keep this cluster in the lower viewport band. */
+.theme-bg-footer .beam-two {
+    bottom: 12%;
+    left: -10%;
+    transform: rotate(16deg);
+}
+
+.theme-bg-footer .orb-10 {
+    bottom: 7%;
+    left: -34px;
+}
+
+.theme-bg-footer .hex-3 {
+    bottom: 24%;
+    right: 9%;
+    top: auto;
+}
+
+.theme-bg-footer .hex-4 {
+    bottom: 12%;
+    left: 11%;
+    top: auto;
+}
+
+.theme-bg-footer .hex-7 {
+    bottom: 30%;
+    right: 20%;
+    top: auto;
+}
+
+.theme-bg-footer .hex-8 {
+    bottom: 18%;
+    right: 34%;
+    top: auto;
+}
+
+.theme-bg-footer .plus-7 {
+    bottom: 16%;
+    right: 12%;
+    top: auto;
 }
 
 .main-content {

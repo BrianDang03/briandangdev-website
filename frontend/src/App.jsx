@@ -249,21 +249,28 @@ function App() {
                 <span className="orb orb-left" />
                 <span className="orb orb-nav-cut orb-nav-1" />
                 <span className="orb orb-nav-cut orb-nav-2" />
-                <span className="beam beam-two" />
                 <span className="hexagon hex-1" />
                 <span className="hexagon hex-2" />
-                <span className="hexagon hex-3" />
-                <span className="hexagon hex-4" />
                 <span className="hexagon hex-5" />
                 <span className="hexagon hex-6" />
-                <span className="hexagon hex-7" />
-                <span className="hexagon hex-8" />
                 <span className="orb orb-3" />
                 <span className="orb orb-8" />
-                <span className="orb orb-10" />
                 <span className="floating-plus plus-1" />
                 <span className="floating-plus plus-4" />
                 <span className="floating-plus plus-6" />
+              </>
+            )}
+          </div>
+
+          <div className={`theme-bg-footer ${showDecorations ? "is-ready" : "is-deferred"} ${areShapesLocked ? "is-locked" : ""}`} aria-hidden="true">
+            {showDecorations && (
+              <>
+                <span className="beam beam-two" />
+                <span className="hexagon hex-3" />
+                <span className="hexagon hex-4" />
+                <span className="hexagon hex-7" />
+                <span className="hexagon hex-8" />
+                <span className="orb orb-10" />
                 <span className="floating-plus plus-7" />
               </>
             )}
