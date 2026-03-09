@@ -11,6 +11,22 @@
     content="software engineer, gameplay engineer, full-stack developer, web development, system architecture">
   <meta name="author" content="Brian Dang">
   <meta name="theme-color" content="#0f141c">
+  <script>
+    // Restore the original SPA route after GitHub Pages 404 fallback redirect.
+    (function (location) {
+      if (location.search[1] === "/") {
+        var decoded = location.search
+          .slice(1)
+          .split("&")
+          .map(function (segment) {
+            return segment.replace(/~and~/g, "&");
+          })
+          .join("?");
+
+        window.history.replaceState(null, null, decoded + location.hash);
+      }
+    })(window.location);
+  </script>
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">

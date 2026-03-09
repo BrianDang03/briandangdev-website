@@ -301,6 +301,12 @@ img {
     overflow: visible;
     pointer-events: none;
     filter: brightness(var(--theme-brightness));
+    --nav-orb-left-x: -64px;
+    --nav-orb-left-y: 10%;
+    --nav-orb-left-size: 290px;
+    --nav-orb-small-size: 96px;
+    --nav-orb-small-overlap-x: 76px;
+    --nav-orb-small-overlap-y: 72px;
 }
 
 .theme-bg-footer {
@@ -972,8 +978,8 @@ img {
 
 /* Nav-anchored shape layout: keep this cluster in the upper viewport band. */
 .theme-bg .orb-left {
-    top: 10%;
-    left: -64px;
+    top: var(--nav-orb-left-y);
+    left: var(--nav-orb-left-x);
 }
 
 .theme-bg .orb-nav-1 {
@@ -992,8 +998,9 @@ img {
 }
 
 .theme-bg .orb-8 {
-    top: 20%;
-    left: 9%;
+    width: var(--nav-orb-small-size);
+    top: calc(var(--nav-orb-left-y) + var(--nav-orb-left-size) - var(--nav-orb-small-overlap-y));
+    left: calc(var(--nav-orb-left-x) + var(--nav-orb-left-size) - var(--nav-orb-small-overlap-x));
 }
 
 .theme-bg .hex-1 {
@@ -1022,24 +1029,24 @@ img {
 }
 
 .theme-bg .plus-4 {
-    top: 24%;
-    right: 11%;
+    top: 44%;
+    right: 8%;
 }
 
 .theme-bg .plus-6 {
-    top: 16%;
-    left: 13%;
+    top: 22%;
+    left: 28%;
 }
 
 /* Footer-anchored shape layout: keep this cluster in the lower viewport band. */
 .theme-bg-footer .beam-two {
-    bottom: 12%;
+    bottom: 6%;
     left: -10%;
     transform: rotate(16deg);
 }
 
 .theme-bg-footer .orb-10 {
-    bottom: 7%;
+    bottom: -3%;
     left: -34px;
 }
 
