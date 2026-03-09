@@ -167,6 +167,12 @@ body,
     padding: 0;
 }
 
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+}
+
 html {
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
@@ -205,10 +211,17 @@ body::before {
 
 .site-root {
     position: relative;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
     min-height: 100vh;
+    min-height: 100dvh;
+    flex: 1 0 auto;
     isolation: isolate;
+}
+
+.site-root-preboot {
+    opacity: 0;
+    pointer-events: none;
 }
 
 .app-loader {
@@ -587,12 +600,7 @@ body::before {
 
 .theme-bg.is-locked .orb,
 .theme-bg.is-locked .hexagon,
-.theme-bg.is-locked .floating-plus,
-.theme-bg.is-locked .flowing-wave,
-.theme-bg.is-locked .wave-line,
-.theme-bg.is-locked .wave-line-2,
-.theme-bg.is-locked .wave-line-3,
-.theme-bg.is-locked .wave-line-4 {
+.theme-bg.is-locked .floating-plus {
     animation: none !important;
     transform: none !important;
 }
@@ -930,7 +938,7 @@ body::before {
 }
 
 .main-content {
-    flex: 1 0 auto;
+    min-width: 0;
     width: min(1200px, calc(100% - 2.4rem));
     margin: 0 auto;
     padding: 0 0 2rem;

@@ -94,7 +94,9 @@ export default function TiltFlipCard({
   width = 320,
   height = 420,
   maxTilt = 12,
-  popOut = 50
+  popOut = 50,
+  entranceFrom = "top",
+  entranceOrder = 0
 }) {
   const sceneRef = useRef(null);
   const tiltRef = useRef(null);
@@ -131,6 +133,95 @@ export default function TiltFlipCard({
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [isFrontImageLoaded, setIsFrontImageLoaded] = useState(!frontImg);
+  const [isBackImageLoaded, setIsBackImageLoaded] = useState(!backImg);
+  const [isFrontImageVisible, setIsFrontImageVisible] = useState(!frontImg);
+  const [isBackImageVisible, setIsBackImageVisible] = useState(!backImg);
+
+  useEffect(() => {
+    setIsFrontImageLoaded(!frontImg);
+    setIsFrontImageVisible(!frontImg);
+  }, [frontImg]);
+
+  useEffect(() => {
+    setIsBackImageLoaded(!backImg);
+    setIsBackImageVisible(!backImg);
+  }, [backImg]);
+
+  useEffect(() => {
+    if (!frontImg) {
+      return;
+    }
+
+    let isCancelled = false;
+    let revealTimeout;
+    const img = new Image();
+
+    const markLoaded = () => {
+      if (isCancelled) return;
+      setIsFrontImageLoaded(true);
+
+      // Ensure at least one paint in loading state so cached images still fade in.
+      window.requestAnimationFrame(() => {
+        if (isCancelled) return;
+        revealTimeout = window.setTimeout(() => {
+          if (!isCancelled) {
+            setIsFrontImageVisible(true);
+          }
+        }, 140);
+      });
+    };
+
+    img.onload = markLoaded;
+    img.onerror = markLoaded;
+    img.src = frontImg;
+
+    if (typeof img.decode === "function") {
+      img.decode().then(markLoaded).catch(markLoaded);
+    }
+
+    return () => {
+      isCancelled = true;
+      window.clearTimeout(revealTimeout);
+    };
+  }, [frontImg]);
+
+  useEffect(() => {
+    if (!backImg) {
+      return;
+    }
+
+    let isCancelled = false;
+    let revealTimeout;
+    const img = new Image();
+
+    const markLoaded = () => {
+      if (isCancelled) return;
+      setIsBackImageLoaded(true);
+
+      window.requestAnimationFrame(() => {
+        if (isCancelled) return;
+        revealTimeout = window.setTimeout(() => {
+          if (!isCancelled) {
+            setIsBackImageVisible(true);
+          }
+        }, 140);
+      });
+    };
+
+    img.onload = markLoaded;
+    img.onerror = markLoaded;
+    img.src = backImg;
+
+    if (typeof img.decode === "function") {
+      img.decode().then(markLoaded).catch(markLoaded);
+    }
+
+    return () => {
+      isCancelled = true;
+      window.clearTimeout(revealTimeout);
+    };
+  }, [backImg]);
 
   const supportsMouseHover = useCallback(() => {
     if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
@@ -143,10 +234,18 @@ export default function TiltFlipCard({
     () => ({
       "--card-w": `${width}px`,
       "--card-h": `${height}px`,
-      "--pop-out": `${popOut}px`
+      "--pop-out": `${popOut}px`,
+      "--tfc-enter-delay": `${Math.max(0, entranceOrder) * 120}ms`
     }),
-    [width, height, popOut]
+    [width, height, popOut, entranceOrder]
   );
+
+  const entranceClass =
+    entranceFrom === "left"
+      ? "tfc-enter-left"
+      : entranceFrom === "right"
+        ? "tfc-enter-right"
+        : "tfc-enter-top";
 
   const applyCssVars = useCallback((vars) => {
     const element = tiltRef.current;
@@ -625,7 +724,7 @@ export default function TiltFlipCard({
 
       <div
         ref={sceneRef}
-        className={`tfc-scene ${isExpanded ? "is-expanded" : ""}`}
+        className={`tfc-scene ${entranceClass} ${isExpanded ? "is-expanded" : ""}`}
         style={cssVars}
         onPointerEnter={handlePointerEnter}
         onPointerDown={handlePointerDown}
@@ -640,14 +739,23 @@ export default function TiltFlipCard({
           onDragStart={(e) => e.preventDefault()}
         >
           <div className={`tfc-flip ${isFlipped ? "is-flipped" : ""}`}>
-            <div className="tfc-face tfc-front">
+            <div className={`tfc-face tfc-front ${frontImg && !isFrontImageVisible ? "has-loading-image" : ""}`}>
               {frontImg && (
                 <img
                   src={frontImg}
                   alt=""
-                  className="card-bg-image"
-                  loading="lazy"
+                  className={`card-bg-image ${isFrontImageVisible ? "is-loaded" : "is-loading"}`}
+                  loading="eager"
+                  fetchPriority="high"
                   decoding="async"
+                  onLoad={() => {
+                    setIsFrontImageLoaded(true);
+                    window.setTimeout(() => setIsFrontImageVisible(true), 120);
+                  }}
+                  onError={() => {
+                    setIsFrontImageLoaded(true);
+                    setIsFrontImageVisible(true);
+                  }}
                   draggable="false"
                 />
               )}
@@ -661,17 +769,22 @@ export default function TiltFlipCard({
               )}
             </div>
 
-            <div
-              className={`tfc-face tfc-back ${isExpanded ? "tfc-back-expanded" : ""
-                }`}
-            >
+            <div className={`tfc-face tfc-back ${isExpanded ? "tfc-back-expanded" : ""} ${backImg && !isBackImageVisible ? "has-loading-image" : ""}`}>
               {backImg && (
                 <img
                   src={backImg}
                   alt=""
-                  className="card-bg-image"
+                  className={`card-bg-image ${isBackImageVisible ? "is-loaded" : "is-loading"}`}
                   loading="lazy"
                   decoding="async"
+                  onLoad={() => {
+                    setIsBackImageLoaded(true);
+                    window.setTimeout(() => setIsBackImageVisible(true), 120);
+                  }}
+                  onError={() => {
+                    setIsBackImageLoaded(true);
+                    setIsBackImageVisible(true);
+                  }}
                   draggable="false"
                 />
               )}
