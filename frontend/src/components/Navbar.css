@@ -1,0 +1,221 @@
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 15;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    background: linear-gradient(180deg, rgba(13, 18, 26, 0.34), rgba(13, 18, 26, 0.08));
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+}
+
+.site-nav {
+    width: min(1200px, calc(100% - 2.4rem));
+    margin: 0 auto;
+    min-height: 76px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-panel {
+    display: contents;
+}
+
+.brand-mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--text-main);
+    text-decoration: none;
+}
+
+.brand-ring {
+    width: 1.6rem;
+    aspect-ratio: 1;
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 50%;
+}
+
+.brand-text {
+    font-family: "Cinzel", "Times New Roman", serif;
+    letter-spacing: 0.1em;
+    font-size: 0.88rem;
+    text-transform: uppercase;
+}
+
+.nav-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.nav-link {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.94rem;
+    letter-spacing: 0.04em;
+    padding: 0.5rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    transition: 200ms ease;
+}
+
+.nav-link:hover,
+.nav-link.is-active {
+    border-color: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--text-main);
+}
+
+.nav-cta {
+    text-decoration: none;
+    color: #10141a;
+    background: linear-gradient(140deg, rgba(255, 255, 255, 0.9), rgba(204, 210, 218, 0.88));
+    border-radius: 999px;
+    padding: 0.56rem 1.05rem;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+}
+
+.nav-menu-btn,
+.nav-backdrop {
+    display: none;
+}
+
+.nav-menu-btn {
+    position: relative;
+    z-index: 41;
+    width: 42px;
+    height: 42px;
+    border: 1px solid rgba(255, 255, 255, 0.26);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+    padding: 0;
+}
+
+.nav-menu-btn span {
+    position: absolute;
+    left: 10px;
+    width: 20px;
+    height: 2px;
+    border-radius: 999px;
+    background: #e7ebf3;
+    transition: 220ms ease;
+}
+
+.nav-menu-btn span:nth-child(1) {
+    top: 13px;
+}
+
+.nav-menu-btn span:nth-child(2) {
+    top: 20px;
+}
+
+.nav-menu-btn span:nth-child(3) {
+    top: 27px;
+}
+
+.nav-menu-btn.is-open span:nth-child(1) {
+    top: 20px;
+    transform: rotate(45deg);
+}
+
+.nav-menu-btn.is-open span:nth-child(2) {
+    opacity: 0;
+}
+
+.nav-menu-btn.is-open span:nth-child(3) {
+    top: 20px;
+    transform: rotate(-45deg);
+}
+
+.nav-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 39;
+    border: 0;
+    background: rgba(6, 10, 16, 0.58);
+    opacity: 0;
+    pointer-events: none;
+    transition: 220ms ease;
+}
+
+.nav-backdrop.is-open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+@media (max-width: 900px) {
+    .nav-links {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 640px) {
+    .site-nav {
+        width: min(1200px, calc(100% - 1.4rem));
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        min-height: 68px;
+    }
+
+    .brand-text {
+        font-size: 0.8rem;
+    }
+
+    .nav-menu-btn {
+        display: inline-block;
+    }
+
+    .nav-panel {
+        position: fixed;
+        top: 0;
+        right: 0;
+        z-index: 40;
+        width: min(84vw, 320px);
+        min-height: 100vh;
+        height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        gap: 0.9rem;
+        padding: 5.5rem 1rem 1.2rem;
+        background: linear-gradient(180deg, rgba(17, 23, 32, 0.95), rgba(17, 23, 32, 0.88));
+        border-left: 1px solid rgba(255, 255, 255, 0.22);
+        box-shadow: -22px 0 40px rgba(0, 0, 0, 0.42);
+        transform: translateX(104%);
+        transition: transform 240ms ease;
+    }
+
+    .nav-panel.is-open {
+        transform: translateX(0);
+    }
+
+    .nav-panel .nav-links {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.6rem;
+    }
+
+    .nav-panel .nav-link {
+        padding: 0.72rem 0.86rem;
+        font-size: 0.9rem;
+        border-radius: 12px;
+    }
+
+    .nav-panel .nav-cta {
+        margin-top: 0.45rem;
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav-backdrop {
+        display: block;
+    }
+}

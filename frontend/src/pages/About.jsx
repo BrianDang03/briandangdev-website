@@ -2,6 +2,7 @@ import SEO from '../components/SEO';
 import PageTransition from '../components/PageTransition';
 import SkillsGrid from '../components/SkillsGrid';
 import ContactForm from '../components/ContactForm';
+import './About.css';
 
 export default function About() {
   return (

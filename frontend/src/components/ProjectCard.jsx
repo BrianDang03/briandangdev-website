@@ -1,5 +1,6 @@
-import { motion } from 'framer-motion';
+import { motion as Motion } from 'framer-motion';
 import { ExternalLink, Github } from 'lucide-react';
+import "./ProjectCard.css";
 
 const cardVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -15,7 +16,7 @@ const cardVariants = {
 
 export default function ProjectCard({ project }) {
     return (
-        <motion.article
+        <Motion.article
             className="project-card"
             variants={cardVariants}
             initial="hidden"
@@ -67,6 +68,6 @@ export default function ProjectCard({ project }) {
                     )}
                 </div>
             </div>
-        </motion.article>
+        </Motion.article>
     );
 }

@@ -1,0 +1,48 @@
+.about-page {
+    max-width: 900px;
+}
+
+.about-content {
+    margin-top: 2rem;
+}
+
+.about-intro {
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    line-height: 1.75;
+    margin-bottom: 2.5rem;
+}
+
+.about-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--line-soft);
+}
+
+.about-section:first-of-type {
+    border-top: none;
+    padding-top: 0;
+}
+
+.about-section h2 {
+    margin: 0 0 1.25rem;
+    font-family: "Cinzel", "Times New Roman", serif;
+    font-size: 1.75rem;
+    letter-spacing: 0.06em;
+    color: var(--text-main);
+}
+
+.about-section p {
+    margin-bottom: 1rem;
+}
+
+.about-list {
+    padding-left: 1.5rem;
+    margin: 1.25rem 0;
+}
+
+.about-list li {
+    margin-bottom: 0.75rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+}

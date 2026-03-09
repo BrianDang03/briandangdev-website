@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion';
+import { motion as Motion } from 'framer-motion';
+import "./SkillsGrid.css";
 
 const skills = {
     "Languages": ["JavaScript", "TypeScript", "Python", "C#", "Java", "C++"],
@@ -34,7 +35,7 @@ export default function SkillsGrid() {
             {Object.entries(skills).map(([category, items]) => (
                 <div key={category} className="skill-category">
                     <h3>{category}</h3>
-                    <motion.div
+                    <Motion.div
                         className="skill-tags"
                         variants={containerVariants}
                         initial="hidden"
@@ -42,7 +43,7 @@ export default function SkillsGrid() {
                         viewport={{ once: true, margin: "-100px" }}
                     >
                         {items.map((skill) => (
-                            <motion.span
+                            <Motion.span
                                 key={skill}
                                 className="skill-tag"
                                 variants={itemVariants}
@@ -50,9 +51,9 @@ export default function SkillsGrid() {
                                 transition={{ type: "spring", stiffness: 400 }}
                             >
                                 {skill}
-                            </motion.span>
+                            </Motion.span>
                         ))}
-                    </motion.div>
+                    </Motion.div>
                 </div>
             ))}
         </div>

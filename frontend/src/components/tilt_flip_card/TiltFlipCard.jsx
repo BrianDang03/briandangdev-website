@@ -1,4 +1,4 @@
-import React, {
+import {
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -99,6 +99,7 @@ export default function TiltFlipCard({
   const sceneRef = useRef(null);
   const tiltRef = useRef(null);
   const rafRef = useRef(0);
+  const animateLerpRef = useRef(null);
   const pointerStateRef = useRef({ ...POINTER_INITIAL_STATE });
 
   // Lerp state: current and target values
@@ -181,11 +182,6 @@ export default function TiltFlipCard({
     applyCssVars(VISUAL_INITIAL_STATE);
   }, [applyCssVars]);
 
-  const resetAllState = useCallback(() => {
-    resetPointerState();
-    resetVisualState();
-  }, [resetPointerState, resetVisualState]);
-
   // Lerp animation loop
   const lerp = (start, end, factor) => {
     return start + (end - start) * factor;
@@ -230,18 +226,27 @@ export default function TiltFlipCard({
       Math.abs(current.hover - target.hover) < threshold;
 
     if (!isClose) {
-      rafRef.current = requestAnimationFrame(animateLerp);
+      const nextAnimate = animateLerpRef.current;
+      if (nextAnimate) {
+        rafRef.current = requestAnimationFrame(nextAnimate);
+      }
     } else {
       isAnimatingRef.current = false;
     }
   }, [applyCssVars]);
 
+  useEffect(() => {
+    animateLerpRef.current = animateLerp;
+  }, [animateLerp]);
+
   const startLerpAnimation = useCallback(() => {
     if (!isAnimatingRef.current) {
+      const animate = animateLerpRef.current;
+      if (!animate) return;
       isAnimatingRef.current = true;
-      rafRef.current = requestAnimationFrame(animateLerp);
+      rafRef.current = requestAnimationFrame(animate);
     }
-  }, [animateLerp]);
+  }, []);
 
   const updateTilt = useCallback(
     (clientX, clientY) => {
@@ -597,7 +602,7 @@ export default function TiltFlipCard({
           if (pointerId !== null) {
             event.target.releasePointerCapture?.(pointerId);
           }
-        } catch (e) {
+        } catch {
           // Ignore errors if pointer capture wasn't active
         }
       }

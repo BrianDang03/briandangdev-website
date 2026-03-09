@@ -1,3 +1,5 @@
+import "./FlipIcon.css";
+
 export default function FlipIcon() {
     return (
         <span className="flip-icon-shell" aria-hidden="true">
