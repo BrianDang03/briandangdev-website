@@ -1,4 +1,5 @@
 import { motion as Motion } from 'framer-motion';
+import { shouldUseSimpleMotion } from '../../utils/motionProfile';
 import "./SkillsGrid.css";
 
 const skills = {
@@ -30,30 +31,44 @@ const itemVariants = {
 };
 
 export default function SkillsGrid() {
+    const simpleMotion = shouldUseSimpleMotion();
+
     return (
         <div className="skills-section">
             {Object.entries(skills).map(([category, items]) => (
                 <div key={category} className="skill-category">
                     <h3>{category}</h3>
-                    <Motion.div
-                        className="skill-tags"
-                        variants={containerVariants}
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true, margin: "-100px" }}
-                    >
-                        {items.map((skill) => (
-                            <Motion.span
-                                key={skill}
-                                className="skill-tag"
-                                variants={itemVariants}
-                                whileHover={{ scale: 1.05, y: -2 }}
-                                transition={{ type: "spring", stiffness: 400 }}
-                            >
-                                {skill}
-                            </Motion.span>
-                        ))}
-                    </Motion.div>
+                    {simpleMotion ? (
+                        <div className="skill-tags">
+                            {items.map((skill) => (
+                                <span
+                                    key={skill}
+                                    className="skill-tag"
+                                >
+                                    {skill}
+                                </span>
+                            ))}
+                        </div>
+                    ) : (
+                        <Motion.div
+                            className="skill-tags"
+                            variants={containerVariants}
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true, margin: "-100px" }}
+                        >
+                            {items.map((skill) => (
+                                <Motion.span
+                                    key={skill}
+                                    className="skill-tag"
+                                    variants={itemVariants}
+                                    transition={{ type: "spring", stiffness: 400 }}
+                                >
+                                    {skill}
+                                </Motion.span>
+                            ))}
+                        </Motion.div>
+                    )}
                 </div>
             ))}
         </div>

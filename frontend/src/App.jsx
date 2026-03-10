@@ -8,6 +8,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import SkipToContent from "./components/SkipToContent/SkipToContent";
 import PageTransition from "./components/PageTransition";
 import SEO from "./components/SEO";
+import { shouldUseSimpleMotion } from "./utils/motionProfile";
 
 const Home = lazy(() => import("./pages/Home/Home"));
 const Portfolio = lazy(() => import("./pages/Portfolio/Portfolio"));
@@ -62,6 +63,7 @@ function RouteLoadingFallback({ label }) {
 }
 
 function AnimatedWaves() {
+  const simpleMotion = shouldUseSimpleMotion();
   const r0 = useRef(null);
   const r1 = useRef(null);
   const r2 = useRef(null);
@@ -81,20 +83,19 @@ function AnimatedWaves() {
     const initPhi = Math.random() * Math.PI * 2;
 
     // Helix constants
-    const SPIRAL_CENTER = 400; // vertical midpoint in SVG viewBox units
-    const SPIRAL_TURNS  = 1;   // full sine cycles left→right (1 = one loop)
-    const TWO_PI_TURNS  = Math.PI * 2 * SPIRAL_TURNS; // pre-computed once
+    const SPIRAL_CENTER = 500;    // 50% of viewBox height → always vertically centred in viewport
+    const TWO_PI_TURNS  = Math.PI * 2; // one full sine cycle left→right
 
     // Each wave has independent start-Y and end-Y oscillators at different periods
     // and phases. As they drift apart or together the chord tilts and the
     // concavity of the wave shape changes naturally on its own.
     const WAVES = [
       // Pair A: phases 0 and π — always on opposite sides of the coil
-      { r: r0, b: b0, cr: cr0, baseY: SPIRAL_CENTER, wAmp: 200, wSpeed: 7e-5, wOff: initPhi,            breathAmp: 18, breathFreq: 3.2e-5, breathPhase: 0.0, driftAmp: 32, driftFreq: 1.8e-5, driftPhase: 0.0 },
-      { r: r1, b: b1, cr: cr1, baseY: SPIRAL_CENTER, wAmp: 200, wSpeed: 7e-5, wOff: initPhi + Math.PI, breathAmp: 16, breathFreq: 2.8e-5, breathPhase: 1.4, driftAmp: 30, driftFreq: 1.8e-5, driftPhase: 0.0 },
+      { r: r0, b: b0, cr: cr0, baseY: SPIRAL_CENTER, wAmp: 120, wSpeed: 7e-5, wOff: initPhi,            breathAmp: 11, breathFreq: 3.2e-5, breathPhase: 0.0, driftAmp: 18, driftFreq: 1.8e-5, driftPhase: 0.0 },
+      { r: r1, b: b1, cr: cr1, baseY: SPIRAL_CENTER, wAmp: 120, wSpeed: 7e-5, wOff: initPhi + Math.PI, breathAmp:  9, breathFreq: 2.8e-5, breathPhase: 1.4, driftAmp: 16, driftFreq: 1.8e-5, driftPhase: 0.0 },
       // Pair B: phases π/2 and 3π/2 — slightly different speed so pairs slowly drift apart and together
-      { r: r2, b: b2, cr: cr2, baseY: SPIRAL_CENTER, wAmp: 190, wSpeed: 8.25e-5, wOff: initPhi + Math.PI * 0.5,  breathAmp: 20, breathFreq: 3.5e-5, breathPhase: 2.8, driftAmp: 35, driftFreq: 2.1e-5, driftPhase: 1.2 },
-      { r: r3, b: b3, cr: cr3, baseY: SPIRAL_CENTER, wAmp: 190, wSpeed: 8.25e-5, wOff: initPhi + Math.PI * 1.5, breathAmp: 17, breathFreq: 2.6e-5, breathPhase: 4.2, driftAmp: 33, driftFreq: 2.1e-5, driftPhase: 1.2 },
+      { r: r2, b: b2, cr: cr2, baseY: SPIRAL_CENTER, wAmp: 112, wSpeed: 8.25e-5, wOff: initPhi + Math.PI * 0.5,  breathAmp: 12, breathFreq: 3.5e-5, breathPhase: 2.8, driftAmp: 20, driftFreq: 2.1e-5, driftPhase: 1.2 },
+      { r: r3, b: b3, cr: cr3, baseY: SPIRAL_CENTER, wAmp: 112, wSpeed: 8.25e-5, wOff: initPhi + Math.PI * 1.5, breathAmp: 10, breathFreq: 2.6e-5, breathPhase: 4.2, driftAmp: 18, driftFreq: 2.1e-5, driftPhase: 1.2 },
     ];
 
     function buildPath(w, t) {
@@ -107,11 +108,11 @@ function AnimatedWaves() {
       const sY     = helix(0);
       const eY     = helix(3000);
       return (
-        `M 0,${Math.round(sY)} ` +
-        `Q 380,${Math.round(helix(380))} 780,${Math.round(helix(780))} ` +
-        `T 1560,${Math.round(helix(1560))} ` +
-        `T 2320,${Math.round(helix(2320))} ` +
-        `T 3000,${Math.round(eY)}`
+        `M 0,${sY.toFixed(1)} ` +
+        `Q 380,${helix(380).toFixed(1)} 780,${helix(780).toFixed(1)} ` +
+        `T 1560,${helix(1560).toFixed(1)} ` +
+        `T 2320,${helix(2320).toFixed(1)} ` +
+        `T 3000,${eY.toFixed(1)}`
       );
     }
 
@@ -123,8 +124,13 @@ function AnimatedWaves() {
     //                           80–100 %: rest (invisible) = same 20 % as hold
     // ViewBox width used for clipRect calculations
     const VB_W = 3000;
+    const activeWaveCount = simpleMotion ? 2 : 4;
     // Offsets (ms) between waves within a round — shuffled each round
     const OFFSET_POOL = [0, 150, 310, 500];
+    const hardwareConcurrency = navigator.hardwareConcurrency || 8;
+    const isLowPowerDevice = simpleMotion || hardwareConcurrency <= 4;
+    const MAX_SIM_STEP_MS = isLowPowerDevice ? 30 : 24;
+    const MIN_CLIP_DELTA_PX = isLowPowerDevice ? 2 : 1;
 
     function shuffle(arr) {
       const a = [...arr];
@@ -136,30 +142,52 @@ function AnimatedWaves() {
     }
 
     // cycleStarts[i] = absolute rAF timestamp when wave i's current pulse began
-    let cycleStarts = [null, null, null, null];
+    let cycleStarts = Array.from({ length: activeWaveCount }, () => null);
     let roundBase   = null;
+    let lastTs = null;
+    let simTime = performance.now();
+    const prevClip = Array.from({ length: activeWaveCount }, () => ({ x: -1, w: -1 }));
+    const prevPathD = Array.from({ length: activeWaveCount }, () => "");
 
     function beginRound(baseTs) {
       roundBase = baseTs;
       const offsets = shuffle(OFFSET_POOL);
-      cycleStarts = offsets.map(o => baseTs + o);
+      for (let i = 0; i < cycleStarts.length; i++) {
+        cycleStarts[i] = baseTs + offsets[i];
+      }
     }
 
     function animate(ts) {
+      if (lastTs === null) {
+        lastTs = ts;
+      }
+
+      const delta = ts - lastTs;
+      lastTs = ts;
+      simTime += Math.min(delta, MAX_SIM_STEP_MS);
+
       // Initialise on the very first frame
-      if (roundBase === null) beginRound(ts);
+      if (roundBase === null) beginRound(simTime);
 
-      // When the last wave's cycle has ended, chain the next round seamlessly
-      const lastStart = Math.max(...cycleStarts);
-      if (ts >= lastStart + CYCLE_MS) beginRound(lastStart + CYCLE_MS);
+      // When the last wave's cycle has ended, chain the next round seamlessly.
+      // Use a simple loop so this is correct for both 2-wave and 4-wave counts.
+      let lastStart = cycleStarts[0];
+      for (let i = 1; i < activeWaveCount; i++) {
+        if (cycleStarts[i] > lastStart) lastStart = cycleStarts[i];
+      }
+      if (simTime >= lastStart + CYCLE_MS) beginRound(lastStart + CYCLE_MS);
 
-      WAVES.forEach((w, i) => {
-        const d = buildPath(w, ts);
-        if (w.b.current) w.b.current.setAttribute('d', d);
-        if (w.r.current) w.r.current.setAttribute('d', d);
-        if (!w.cr.current) return;
+      for (let i = 0; i < activeWaveCount; i++) {
+        const w = WAVES[i];
+        const d = buildPath(w, simTime);
+        if (d !== prevPathD[i]) {
+          if (w.b.current) w.b.current.setAttribute('d', d);
+          if (w.r.current) w.r.current.setAttribute('d', d);
+          prevPathD[i] = d;
+        }
+        if (!w.cr.current) continue;
 
-        const elapsed = ts - cycleStarts[i];
+        const elapsed = simTime - cycleStarts[i];
         // clipX = left edge of lit window; clipW = width of lit window
         let clipX = 0, clipW = 0;
 
@@ -182,9 +210,14 @@ function AnimatedWaves() {
           // else rest: clipX=0, clipW=0 (fully hidden)
         }
 
-        w.cr.current.setAttribute('x', clipX);
-        w.cr.current.setAttribute('width', clipW);
-      });
+        const clipCache = prevClip[i];
+        if (Math.abs(clipX - clipCache.x) >= MIN_CLIP_DELTA_PX || Math.abs(clipW - clipCache.w) >= MIN_CLIP_DELTA_PX) {
+          w.cr.current.setAttribute('x', clipX);
+          w.cr.current.setAttribute('width', clipW);
+          clipCache.x = clipX;
+          clipCache.w = clipW;
+        }
+      }
 
       rafRef.current = requestAnimationFrame(animate);
     }
@@ -193,11 +226,12 @@ function AnimatedWaves() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) {
       const t = performance.now();
-      WAVES.forEach(w => {
+      for (let i = 0; i < activeWaveCount; i++) {
+        const w = WAVES[i];
         const d = buildPath(w, t);
         if (w.b.current) w.b.current.setAttribute('d', d);
         if (w.r.current) w.r.current.setAttribute('d', d);
-      });
+      }
       return;
     }
 
@@ -208,6 +242,7 @@ function AnimatedWaves() {
       if (document.hidden) {
         cancelAnimationFrame(rafRef.current);
       } else {
+        lastTs = null;
         rafRef.current = requestAnimationFrame(animate);
       }
     };
@@ -217,10 +252,10 @@ function AnimatedWaves() {
       cancelAnimationFrame(rafRef.current);
       document.removeEventListener('visibilitychange', handleVisibility);
     };
-  }, []);
+  }, [simpleMotion]);
 
   return (
-    <svg className="flowing-wave" viewBox="0 0 3000 1000" preserveAspectRatio="xMidYMid meet">
+    <svg className="flowing-wave" viewBox="0 0 3000 1000" preserveAspectRatio="xMidYMid slice">
       <defs>
         <linearGradient id="wave-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="rgba(255, 255, 255, 0)" />
@@ -240,6 +275,10 @@ function AnimatedWaves() {
           <feGaussianBlur stdDeviation="9" result="blur2"/>
           <feMerge><feMergeNode in="blur2"/><feMergeNode in="blur1"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
+        <filter id="wave-glow-scan-lite" x="-5%" y="-28%" width="110%" height="156%" colorInterpolationFilters="sRGB">
+          <feGaussianBlur stdDeviation="5" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
         {/* Clip rects control the visible window for each scan overlay */}
         <clipPath id="scan-clip-0"><rect ref={cr0} x="0" y="-200" width="0" height="1400" /></clipPath>
         <clipPath id="scan-clip-1"><rect ref={cr1} x="0" y="-200" width="0" height="1400" /></clipPath>
@@ -249,18 +288,19 @@ function AnimatedWaves() {
       {/* Base lines – always visible; share the same JS-driven path geometry */}
       <path ref={b0} d="" stroke="url(#wave-gradient)" strokeWidth="1.6" fill="none" className="wave-base" filter="url(#wave-glow-base)" />
       <path ref={b1} d="" stroke="url(#wave-gradient)" strokeWidth="1.5" fill="none" className="wave-base wave-base-2" filter="url(#wave-glow-base)" />
-      <path ref={b2} d="" stroke="url(#wave-gradient)" strokeWidth="1.5" fill="none" className="wave-base wave-base-3" filter="url(#wave-glow-base)" />
-      <path ref={b3} d="" stroke="url(#wave-gradient)" strokeWidth="1.6" fill="none" className="wave-base wave-base-4" filter="url(#wave-glow-base)" />
+      {!simpleMotion && <path ref={b2} d="" stroke="url(#wave-gradient)" strokeWidth="1.5" fill="none" className="wave-base wave-base-3" filter="url(#wave-glow-base)" />}
+      {!simpleMotion && <path ref={b3} d="" stroke="url(#wave-gradient)" strokeWidth="1.6" fill="none" className="wave-base wave-base-4" filter="url(#wave-glow-base)" />}
       {/* Scan highlights – clipPath reveals only the dots inside the window */}
-      <path ref={r0} d="" stroke="url(#wave-gradient)" strokeWidth="2.9" fill="none" className="wave-line" filter="url(#wave-glow-scan)" clipPath="url(#scan-clip-0)" />
-      <path ref={r1} d="" stroke="url(#wave-gradient)" strokeWidth="2.8" fill="none" className="wave-line wave-line-2" filter="url(#wave-glow-scan)" clipPath="url(#scan-clip-1)" />
-      <path ref={r2} d="" stroke="url(#wave-gradient)" strokeWidth="2.8" fill="none" className="wave-line wave-line-3" filter="url(#wave-glow-scan)" clipPath="url(#scan-clip-2)" />
-      <path ref={r3} d="" stroke="url(#wave-gradient)" strokeWidth="2.9" fill="none" className="wave-line wave-line-4" filter="url(#wave-glow-scan)" clipPath="url(#scan-clip-3)" />
+      <path ref={r0} d="" stroke="url(#wave-gradient)" strokeWidth="2.9" fill="none" className="wave-line" filter={simpleMotion ? "url(#wave-glow-scan-lite)" : "url(#wave-glow-scan)"} clipPath="url(#scan-clip-0)" />
+      <path ref={r1} d="" stroke="url(#wave-gradient)" strokeWidth="2.8" fill="none" className="wave-line wave-line-2" filter={simpleMotion ? "url(#wave-glow-scan-lite)" : "url(#wave-glow-scan)"} clipPath="url(#scan-clip-1)" />
+      {!simpleMotion && <path ref={r2} d="" stroke="url(#wave-gradient)" strokeWidth="2.8" fill="none" className="wave-line wave-line-3" filter="url(#wave-glow-scan)" clipPath="url(#scan-clip-2)" />}
+      {!simpleMotion && <path ref={r3} d="" stroke="url(#wave-gradient)" strokeWidth="2.9" fill="none" className="wave-line wave-line-4" filter="url(#wave-glow-scan)" clipPath="url(#scan-clip-3)" />}
     </svg>
   );
 }
 
 function App() {
+  const simpleMotion = shouldUseSimpleMotion();
   const location = useLocation();
   const [showDecorations, setShowDecorations] = useState(false);
   const [isWavePaintReady, setIsWavePaintReady] = useState(false);
@@ -299,8 +339,6 @@ function App() {
 
   useEffect(() => {
     let isCancelled = false;
-    let idleHandle;
-    let fallbackPreloadTimeout;
     let minDelayTimeout;
     let bootTimeout;
     let rafBootA;
@@ -341,35 +379,56 @@ function App() {
 
     boot();
 
+    return () => {
+      isCancelled = true;
+      window.clearTimeout(minDelayTimeout);
+      window.clearTimeout(bootTimeout);
+      window.cancelAnimationFrame(rafBootA);
+      window.cancelAnimationFrame(rafBootB);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!canRevealApp) {
+      return;
+    }
+
+    let isCancelled = false;
+    let idleHandle;
+    let fallbackTimeout;
+
     const preloadNonCriticalInBackground = () => {
+      if (isCancelled) return;
+
       BOOT_IMAGES.forEach((name) => {
         const img = new Image();
         img.src = `${import.meta.env.BASE_URL}${name}`;
       });
 
-      ROUTE_PRELOADERS.forEach((loadRoute) => {
-        void loadRoute();
+      // Stagger route preloads so they don't all parse/execute in the same frame.
+      ROUTE_PRELOADERS.forEach((loadRoute, index) => {
+        window.setTimeout(() => {
+          if (!isCancelled) {
+            void loadRoute();
+          }
+        }, index * 220);
       });
     };
 
     if (typeof window.requestIdleCallback === "function") {
-      idleHandle = window.requestIdleCallback(preloadNonCriticalInBackground, { timeout: 1200 });
+      idleHandle = window.requestIdleCallback(preloadNonCriticalInBackground, { timeout: 2400 });
     } else {
-      fallbackPreloadTimeout = window.setTimeout(preloadNonCriticalInBackground, 350);
+      fallbackTimeout = window.setTimeout(preloadNonCriticalInBackground, 900);
     }
 
     return () => {
       isCancelled = true;
-      window.clearTimeout(minDelayTimeout);
-      window.clearTimeout(bootTimeout);
-      window.clearTimeout(fallbackPreloadTimeout);
-      window.cancelAnimationFrame(rafBootA);
-      window.cancelAnimationFrame(rafBootB);
+      window.clearTimeout(fallbackTimeout);
       if (idleHandle && typeof window.cancelIdleCallback === "function") {
         window.cancelIdleCallback(idleHandle);
       }
     };
-  }, []);
+  }, [canRevealApp]);
 
   useEffect(() => {
     if (!import.meta.env.DEV || !isBootReady || hasLoggedBootMeasureRef.current || typeof performance === "undefined") {
@@ -388,20 +447,8 @@ function App() {
   }, [isBootReady]);
 
   useEffect(() => {
-    let rafA;
-    let rafB;
-
-    // Prime decorations behind the loader so the first visible frame already has flowing shapes.
-    rafA = window.requestAnimationFrame(() => {
-      rafB = window.requestAnimationFrame(() => {
-        setShowDecorations(true);
-      });
-    });
-
-    return () => {
-      window.cancelAnimationFrame(rafA);
-      window.cancelAnimationFrame(rafB);
-    };
+     // Start decorative motion immediately so it is visible and moving at load.
+     setShowDecorations(true);
   }, []);
 
   useEffect(() => {
@@ -423,7 +470,7 @@ function App() {
           if (!isCancelled) {
             setIsWavePaintReady(true);
           }
-        }, 500);
+        }, 280);
       });
     });
 
@@ -440,6 +487,11 @@ function App() {
       return;
     }
 
+    if (simpleMotion) {
+      setAreShapesLocked(true);
+      return;
+    }
+
     const lockTimeout = window.setTimeout(() => {
       setAreShapesLocked(true);
     }, 3600);
@@ -447,7 +499,7 @@ function App() {
     return () => {
       window.clearTimeout(lockTimeout);
     };
-  }, [showDecorations]);
+  }, [showDecorations, simpleMotion]);
 
   useEffect(() => {
     if (!canRevealApp) {

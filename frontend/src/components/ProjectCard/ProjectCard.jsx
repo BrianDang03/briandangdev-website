@@ -1,5 +1,6 @@
 import { motion as Motion } from 'framer-motion';
 import { ExternalLink, Github } from 'lucide-react';
+import { shouldUseSimpleMotion } from '../../utils/motionProfile';
 import "./ProjectCard.css";
 
 const cardVariants = {
@@ -15,15 +16,17 @@ const cardVariants = {
 };
 
 export default function ProjectCard({ project }) {
+    const simpleMotion = shouldUseSimpleMotion();
+
     return (
         <Motion.article
             className="project-card"
-            variants={cardVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            whileHover={{ y: -8 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            variants={simpleMotion ? undefined : cardVariants}
+            initial={simpleMotion ? false : "hidden"}
+            whileInView={simpleMotion ? undefined : "visible"}
+            viewport={{ once: true, margin: simpleMotion ? "0px" : "-50px" }}
+            whileHover={simpleMotion ? undefined : { y: -8 }}
+            transition={simpleMotion ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 20 }}
         >
             {project.image && (
                 <div className="project-image">

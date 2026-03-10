@@ -25,7 +25,7 @@
     color: var(--text-main);
     font-family: "Manrope", sans-serif;
     font-size: 0.95rem;
-    transition: all 0.25s ease;
+    transition: border-color 0.25s ease, background 0.25s ease;
 }
 
 .form-group input:focus,

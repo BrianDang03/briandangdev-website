@@ -1,5 +1,6 @@
 import { motion as Motion } from 'framer-motion';
 import { useLayoutEffect } from 'react';
+import { shouldUseSimpleMotion } from '../utils/motionProfile';
 
 const pageVariants = {
     initial: {
@@ -25,6 +26,8 @@ const pageVariants = {
 };
 
 export default function PageTransition({ children }) {
+    const simpleMotion = shouldUseSimpleMotion();
+
     useLayoutEffect(() => {
         window.scrollTo({ top: 0, left: 0, behavior: "auto" });
         document.documentElement.scrollTop = 0;
@@ -33,10 +36,10 @@ export default function PageTransition({ children }) {
 
     return (
         <Motion.div
-            variants={pageVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
+            variants={simpleMotion ? undefined : pageVariants}
+            initial={simpleMotion ? false : "initial"}
+            animate={simpleMotion ? undefined : "animate"}
+            exit={simpleMotion ? undefined : "exit"}
         >
             {children}
         </Motion.div>

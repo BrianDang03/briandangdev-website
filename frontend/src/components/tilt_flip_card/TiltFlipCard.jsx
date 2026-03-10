@@ -12,7 +12,7 @@ const MOVE_THRESHOLD_PX = 10;
 const DEFAULT_EXPAND_SCALE_MAX = 2.2;
 const DEFAULT_EDGE_GAP_PX = 48;
 const DEFAULT_EDGE_GAP_RATIO = 0.06;
-const BASE_ENTRANCE_DELAY_MS = 200; // Base delay before any card animates in
+const BASE_ENTRANCE_DELAY_MS = 0; // Start card entrance motion immediately
 const LERP_FACTOR_TILT = 0.24; // Tilt rotation responsiveness: higher = faster tracking
 const LERP_FACTOR = 0.24; // Glare/shadow responsiveness
 const LERP_FACTOR_POPOUT = 0.06; // Popout responsiveness
@@ -53,6 +53,10 @@ function suppressGlobalPointer(ms = 320) {
 
 function isGlobalPointerSuppressed() {
   return performance.now() < globalPointerSuppressionUntil;
+}
+
+function lerp(start, end, factor) {
+  return start + (end - start) * factor;
 }
 
 function getDistance(x1, y1, x2, y2) {
@@ -111,6 +115,8 @@ export default function TiltFlipCard({
   const sceneRef = useRef(null);
   const tiltRef = useRef(null);
   const rafRef = useRef(0);
+  const pointerRafRef = useRef(0);
+  const pendingPointerRef = useRef(null);
   const animateLerpRef = useRef(null);
   const closeReturnTimerRef = useRef(0);
   const pointerStateRef = useRef({ ...POINTER_INITIAL_STATE });
@@ -259,26 +265,13 @@ export default function TiltFlipCard({
     isAnimatingRef.current = false;
 
     // Reset lerp state
-    lerpStateRef.current.target = {
-      rx: 0,
-      ry: 0,
-      glareX: 50,
-      glareY: 50,
-      glareO: 0,
-      shadowX: 0,
-      shadowY: 0,
-      shadowBlur: 20,
-      hover: 0
-    };
-    lerpStateRef.current.current = { ...lerpStateRef.current.target };
+    const { target: tgt, current: cur } = lerpStateRef.current;
+    tgt.rx = 0; tgt.ry = 0; tgt.glareX = 50; tgt.glareY = 50;
+    tgt.glareO = 0; tgt.shadowX = 0; tgt.shadowY = 0; tgt.shadowBlur = 20; tgt.hover = 0;
+    Object.assign(cur, tgt);
 
     applyCssVars(VISUAL_INITIAL_STATE);
   }, [applyCssVars]);
-
-  // Lerp animation loop
-  const lerp = (start, end, factor) => {
-    return start + (end - start) * factor;
-  };
 
   const animateLerp = useCallback(() => {
     if (!isAnimatingRef.current) return;
@@ -316,13 +309,20 @@ export default function TiltFlipCard({
     style.setProperty("--shadow-y", `${current.shadowY}px`);
     style.setProperty("--shadow-blur", `${current.shadowBlur}px`);
 
-    // Check if we're close enough to stop animating
-    const threshold = 0.001;
+    // Snap imperceptibly-close values to target so the RAF loop exits sooner.
+    // 0.02 deg of tilt / 0.02 opacity / 0.02 hover-unit are all below visual
+    // threshold, but fine enough that the spring return still looks fluid.
+    const SNAP = 0.02;
+    if (Math.abs(current.rx - target.rx) < SNAP) current.rx = target.rx;
+    if (Math.abs(current.ry - target.ry) < SNAP) current.ry = target.ry;
+    if (Math.abs(current.glareO - target.glareO) < SNAP) current.glareO = target.glareO;
+    if (Math.abs(current.hover - target.hover) < SNAP) current.hover = target.hover;
+
     const isClose =
-      Math.abs(current.rx - target.rx) < threshold &&
-      Math.abs(current.ry - target.ry) < threshold &&
-      Math.abs(current.glareO - target.glareO) < threshold &&
-      Math.abs(current.hover - target.hover) < threshold;
+      current.rx === target.rx &&
+      current.ry === target.ry &&
+      current.glareO === target.glareO &&
+      current.hover === target.hover;
 
     if (!isClose) {
       const nextAnimate = animateLerpRef.current;
@@ -425,17 +425,16 @@ export default function TiltFlipCard({
       const shadowBlur = 25 + Math.abs(normalizedX * 15) + Math.abs(normalizedY * 15);
 
       // Update target values for lerping
-      lerpStateRef.current.target = {
-        rx: rotateX,
-        ry: rotateY,
-        glareX: glareX,
-        glareY: glareY,
-        glareO: intensity,
-        shadowX: shadowX,
-        shadowY: shadowY,
-        shadowBlur: shadowBlur,
-        hover: 1
-      };
+      const tgt = lerpStateRef.current.target;
+      tgt.rx = rotateX;
+      tgt.ry = rotateY;
+      tgt.glareX = glareX;
+      tgt.glareY = glareY;
+      tgt.glareO = intensity;
+      tgt.shadowX = shadowX;
+      tgt.shadowY = shadowY;
+      tgt.shadowBlur = shadowBlur;
+      tgt.hover = 1;
 
       // Start the lerp animation
       startLerpAnimation();
@@ -514,23 +513,32 @@ export default function TiltFlipCard({
 
   const endInteraction = useCallback(() => {
     resetPointerState();
+    pendingPointerRef.current = null;
+    cancelAnimationFrame(pointerRafRef.current);
+    pointerRafRef.current = 0;
 
     if (!isExpanded) {
       // Lerp back to rest state instead of instant reset
-      lerpStateRef.current.target = {
-        rx: 0,
-        ry: 0,
-        glareX: 50,
-        glareY: 50,
-        glareO: 0,
-        shadowX: 0,
-        shadowY: 0,
-        shadowBlur: 20,
-        hover: 0
-      };
+      const tgt = lerpStateRef.current.target;
+      tgt.rx = 0; tgt.ry = 0; tgt.glareX = 50; tgt.glareY = 50;
+      tgt.glareO = 0; tgt.shadowX = 0; tgt.shadowY = 0; tgt.shadowBlur = 20; tgt.hover = 0;
       startLerpAnimation();
     }
   }, [isExpanded, resetPointerState, startLerpAnimation]);
+
+  const runScheduledTiltUpdate = useCallback(() => {
+    pointerRafRef.current = 0;
+    const pendingPointer = pendingPointerRef.current;
+    if (!pendingPointer) return;
+    pendingPointerRef.current = null;
+    updateTilt(pendingPointer.x, pendingPointer.y);
+  }, [updateTilt]);
+
+  const scheduleTiltUpdate = useCallback((clientX, clientY) => {
+    pendingPointerRef.current = { x: clientX, y: clientY };
+    if (pointerRafRef.current) return;
+    pointerRafRef.current = requestAnimationFrame(runScheduledTiltUpdate);
+  }, [runScheduledTiltUpdate]);
 
   useLayoutEffect(() => {
     if (!isExpanded) return;
@@ -567,6 +575,7 @@ export default function TiltFlipCard({
   useEffect(() => {
     return () => {
       window.clearTimeout(closeReturnTimerRef.current);
+      cancelAnimationFrame(pointerRafRef.current);
     };
   }, []);
 
@@ -574,9 +583,9 @@ export default function TiltFlipCard({
     (event) => {
       if (isExpanded || isGlobalPointerSuppressed() || event.pointerType !== "mouse") return;
       if (!supportsMouseHover()) return;
-      updateTilt(event.clientX, event.clientY);
+      scheduleTiltUpdate(event.clientX, event.clientY);
     },
-    [isExpanded, supportsMouseHover, updateTilt]
+    [isExpanded, supportsMouseHover, scheduleTiltUpdate]
   );
 
   const handlePointerDown = useCallback(
@@ -594,10 +603,10 @@ export default function TiltFlipCard({
       event.currentTarget.setPointerCapture?.(event.pointerId);
 
       if (event.pointerType === "touch" || event.pointerType === "pen") {
-        updateTilt(event.clientX, event.clientY);
+        scheduleTiltUpdate(event.clientX, event.clientY);
       }
     },
-    [isExpanded, updateTilt]
+    [isExpanded, scheduleTiltUpdate]
   );
 
   const handlePointerMove = useCallback(
@@ -608,7 +617,7 @@ export default function TiltFlipCard({
 
       if (event.pointerType === "mouse") {
         if (!supportsMouseHover()) return;
-        updateTilt(event.clientX, event.clientY);
+        scheduleTiltUpdate(event.clientX, event.clientY);
         return;
       }
 
@@ -627,9 +636,9 @@ export default function TiltFlipCard({
         pointerState.moved = true;
       }
 
-      updateTilt(event.clientX, event.clientY);
+      scheduleTiltUpdate(event.clientX, event.clientY);
     },
-    [isExpanded, supportsMouseHover, updateTilt]
+    [isExpanded, supportsMouseHover, scheduleTiltUpdate]
   );
 
   const handlePointerUp = useCallback(
@@ -682,17 +691,9 @@ export default function TiltFlipCard({
       if (event.pointerType === "mouse") {
         if (!supportsMouseHover()) return;
         // Lerp back to rest state
-        lerpStateRef.current.target = {
-          rx: 0,
-          ry: 0,
-          glareX: 50,
-          glareY: 50,
-          glareO: 0,
-          shadowX: 0,
-          shadowY: 0,
-          shadowBlur: 20,
-          hover: 0
-        };
+        const tgt = lerpStateRef.current.target;
+        tgt.rx = 0; tgt.ry = 0; tgt.glareX = 50; tgt.glareY = 50;
+        tgt.glareO = 0; tgt.shadowX = 0; tgt.shadowY = 0; tgt.shadowBlur = 20; tgt.hover = 0;
         startLerpAnimation();
       }
     },

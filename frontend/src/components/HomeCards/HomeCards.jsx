@@ -1,4 +1,4 @@
-import { Suspense, lazy } from "react";
+import TiltFlipCard from "../tilt_flip_card/TiltFlipCard";
 import { Link } from "react-router-dom";
 import FlipIcon from "../FlipIcon/FlipIcon";
 import '../ActionButton.css';
@@ -6,22 +6,16 @@ import './HomeCards.css';
 
 const ASSET_BASE = import.meta.env.BASE_URL;
 const CARD_HINT_TEXT = "Tap to Learn More";
-const TiltFlipCard = lazy(() => import("../tilt_flip_card/TiltFlipCard"));
 const CARD_IMAGE_SIZES = "(max-width: 640px) 88vw, (max-width: 1024px) 42vw, 320px";
 
 function makeSrcSet(name, ext) {
   return `${ASSET_BASE}${name}-480.${ext} 480w, ${ASSET_BASE}${name}-768.${ext} 768w, ${ASSET_BASE}${name}-1200.${ext} 1200w`;
 }
 
-function CardFallback() {
-  return <div className="tilt-card-fallback" aria-hidden="true" />;
-}
-
 export default function HomeCards() {
   return (
     <div className="card-container">
-      <Suspense fallback={<CardFallback />}>
-        <TiltFlipCard
+      <TiltFlipCard
           frontImg={`${ASSET_BASE}modem.jpg`}
           frontWebpSrcSet={makeSrcSet("modem", "webp")}
           frontJpegSrcSet={makeSrcSet("modem", "jpg")}
@@ -64,10 +58,8 @@ export default function HomeCards() {
           }
           maxTilt={20}
         />
-      </Suspense>
 
-      <Suspense fallback={<CardFallback />}>
-        <TiltFlipCard
+      <TiltFlipCard
           frontImg={`${ASSET_BASE}headshot.jpg`}
           frontWebpSrcSet={makeSrcSet("headshot", "webp")}
           frontJpegSrcSet={makeSrcSet("headshot", "jpg")}
@@ -98,10 +90,8 @@ export default function HomeCards() {
           }
           maxTilt={20}
         />
-      </Suspense>
 
-      <Suspense fallback={<CardFallback />}>
-        <TiltFlipCard
+      <TiltFlipCard
           frontImg={`${ASSET_BASE}contact.png`}
           frontWebpSrcSet={makeSrcSet("contact", "webp")}
           frontJpegSrcSet={makeSrcSet("contact", "jpg")}
@@ -142,7 +132,6 @@ export default function HomeCards() {
           }
           maxTilt={20}
         />
-      </Suspense>
     </div>
   );
 }
