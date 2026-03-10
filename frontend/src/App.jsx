@@ -70,6 +70,10 @@ function AnimatedWaves() {
   const b1 = useRef(null);
   const b2 = useRef(null);
   const b3 = useRef(null);
+  const cr0 = useRef(null);
+  const cr1 = useRef(null);
+  const cr2 = useRef(null);
+  const cr3 = useRef(null);
   const rafRef = useRef(0);
 
   useEffect(() => {
@@ -91,10 +95,10 @@ function AnimatedWaves() {
     // and phases. As they drift apart or together the chord tilts and the
     // concavity of the wave shape changes naturally on its own.
     const WAVES = [
-      { r: r0, b: b0, baseY: 320, sAmp: 95, sFreq: 9.0e-5, sPhase: sPhases[0], eAmp: 48, eFreq: 1.1e-4, ePhase: ePhases[0], wAmp:  22, wSpeed: 1.8e-5, wOff: 1.47 },
-      { r: r1, b: b1, baseY: 355, sAmp: 90, sFreq: 1.0e-4, sPhase: sPhases[1], eAmp: 52, eFreq: 7.5e-5, ePhase: ePhases[1], wAmp: -20, wSpeed: 1.5e-5, wOff: 1.67 },
-      { r: r2, b: b2, baseY: 390, sAmp: 92, sFreq: 8.0e-5, sPhase: sPhases[2], eAmp: 45, eFreq: 9.5e-5, ePhase: ePhases[2], wAmp:  24, wSpeed: 2.2e-5, wOff: 1.54 },
-      { r: r3, b: b3, baseY: 425, sAmp: 88, sFreq: 8.5e-5, sPhase: sPhases[3], eAmp: 50, eFreq: 1.0e-4, ePhase: ePhases[3], wAmp: -18, wSpeed: 1.9e-5, wOff: 1.72 },
+      { r: r0, b: b0, cr: cr0, baseY: 320, sAmp: 95, sFreq: 9.0e-5, sPhase: sPhases[0], eAmp: 48, eFreq: 1.1e-4, ePhase: ePhases[0], wAmp:  22, wSpeed: 1.8e-5, wOff: 1.47 },
+      { r: r1, b: b1, cr: cr1, baseY: 355, sAmp: 90, sFreq: 1.0e-4, sPhase: sPhases[1], eAmp: 52, eFreq: 7.5e-5, ePhase: ePhases[1], wAmp: -20, wSpeed: 1.5e-5, wOff: 1.67 },
+      { r: r2, b: b2, cr: cr2, baseY: 390, sAmp: 92, sFreq: 8.0e-5, sPhase: sPhases[2], eAmp: 45, eFreq: 9.5e-5, ePhase: ePhases[2], wAmp:  24, wSpeed: 2.2e-5, wOff: 1.54 },
+      { r: r3, b: b3, cr: cr3, baseY: 425, sAmp: 88, sFreq: 8.5e-5, sPhase: sPhases[3], eAmp: 50, eFreq: 1.0e-4, ePhase: ePhases[3], wAmp: -18, wSpeed: 1.9e-5, wOff: 1.72 },
     ];
 
     function buildPath(w, t) {
@@ -120,8 +124,8 @@ function AnimatedWaves() {
     const HOLD_FRAC  = 0.20;  // 30–50 %: fully lit — hold (same duration as rest)
     const DRAIN_FRAC = 0.30;  // 50–80 %: head fixed at end, tail catches up
     //                           80–100 %: rest (invisible) = same 20 % as hold
-    const DASH_MAX   = 3500;
-    const DASH_GAP   = 9000;
+    // ViewBox width used for clipRect calculations
+    const VB_W = 3000;
     // Offsets (ms) between waves within a round — shuffled each round
     const OFFSET_POOL = [0, 150, 310, 500];
 
@@ -155,43 +159,34 @@ function AnimatedWaves() {
       WAVES.forEach((w, i) => {
         const d = buildPath(w, ts);
         if (w.b.current) w.b.current.setAttribute('d', d);
-        if (!w.r.current) return;
-        w.r.current.setAttribute('d', d);
+        if (w.r.current) w.r.current.setAttribute('d', d);
+        if (!w.cr.current) return;
 
         const elapsed = ts - cycleStarts[i];
+        // clipX = left edge of lit window; clipW = width of lit window
+        let clipX = 0, clipW = 0;
 
-        // Before this wave's slot starts in the current round, stay invisible
-        if (elapsed < 0) {
-          w.r.current.style.strokeDasharray  = `0 ${DASH_GAP}`;
-          w.r.current.style.strokeDashoffset = '0';
-          return;
+        if (elapsed >= 0) {
+          const frac = Math.min(elapsed / CYCLE_MS, 1);
+          if (frac < FILL_FRAC) {
+            // Fill: window grows rightward from start
+            clipX = 0;
+            clipW = Math.round(VB_W * (frac / FILL_FRAC));
+          } else if (frac < FILL_FRAC + HOLD_FRAC) {
+            // Hold: fully lit
+            clipX = 0;
+            clipW = VB_W;
+          } else if (frac < FILL_FRAC + HOLD_FRAC + DRAIN_FRAC) {
+            // Drain: left edge (tail) advances rightward, right edge stays fixed
+            const p = (frac - FILL_FRAC - HOLD_FRAC) / DRAIN_FRAC;
+            clipX = Math.round(VB_W * p);
+            clipW = VB_W - clipX;
+          }
+          // else rest: clipX=0, clipW=0 (fully hidden)
         }
 
-        const frac = Math.min(elapsed / CYCLE_MS, 1); // 0 → 1, clamped — no auto-wrap
-        let dashLen, dashOffset;
-
-        if (frac < FILL_FRAC) {
-          // Fill: head advances right, tail pinned at start
-          const p  = frac / FILL_FRAC;
-          dashLen    = Math.round(DASH_MAX * p);
-          dashOffset = 0;
-        } else if (frac < FILL_FRAC + HOLD_FRAC) {
-          // Hold: fully lit, no movement
-          dashLen    = DASH_MAX;
-          dashOffset = 0;
-        } else if (frac < FILL_FRAC + HOLD_FRAC + DRAIN_FRAC) {
-          // Drain: head fixed at right end, tail races to catch up
-          const p  = (frac - FILL_FRAC - HOLD_FRAC) / DRAIN_FRAC;
-          dashLen    = Math.round(DASH_MAX * (1 - p));
-          dashOffset = -Math.round(DASH_MAX * p);
-        } else {
-          // Rest — invisible
-          dashLen    = 0;
-          dashOffset = -DASH_MAX;
-        }
-
-        w.r.current.style.strokeDasharray  = `${dashLen} ${DASH_GAP}`;
-        w.r.current.style.strokeDashoffset = dashOffset;
+        w.cr.current.setAttribute('x', clipX);
+        w.cr.current.setAttribute('width', clipW);
       });
 
       rafRef.current = requestAnimationFrame(animate);
@@ -211,17 +206,22 @@ function AnimatedWaves() {
           <stop offset="80%" stopColor="rgba(100, 180, 255, 0.38)" />
           <stop offset="100%" stopColor="rgba(255, 255, 255, 0)" />
         </linearGradient>
+        {/* Clip rects control the visible window for each scan overlay */}
+        <clipPath id="scan-clip-0"><rect ref={cr0} x="0" y="-200" width="0" height="1400" /></clipPath>
+        <clipPath id="scan-clip-1"><rect ref={cr1} x="0" y="-200" width="0" height="1400" /></clipPath>
+        <clipPath id="scan-clip-2"><rect ref={cr2} x="0" y="-200" width="0" height="1400" /></clipPath>
+        <clipPath id="scan-clip-3"><rect ref={cr3} x="0" y="-200" width="0" height="1400" /></clipPath>
       </defs>
       {/* Base lines – always visible; share the same JS-driven path geometry */}
       <path ref={b0} d="" stroke="url(#wave-gradient)" strokeWidth="1.6" fill="none" className="wave-base" />
       <path ref={b1} d="" stroke="url(#wave-gradient)" strokeWidth="1.5" fill="none" className="wave-base wave-base-2" />
       <path ref={b2} d="" stroke="url(#wave-gradient)" strokeWidth="1.5" fill="none" className="wave-base wave-base-3" />
       <path ref={b3} d="" stroke="url(#wave-gradient)" strokeWidth="1.6" fill="none" className="wave-base wave-base-4" />
-      {/* Scan highlights – traveling glow overlay */}
-      <path ref={r0} d="" stroke="url(#wave-gradient)" strokeWidth="2.9" fill="none" className="wave-line" />
-      <path ref={r1} d="" stroke="url(#wave-gradient)" strokeWidth="2.8" fill="none" className="wave-line wave-line-2" />
-      <path ref={r2} d="" stroke="url(#wave-gradient)" strokeWidth="2.8" fill="none" className="wave-line wave-line-3" />
-      <path ref={r3} d="" stroke="url(#wave-gradient)" strokeWidth="2.9" fill="none" className="wave-line wave-line-4" />
+      {/* Scan highlights – clipPath reveals only the dots inside the window */}
+      <path ref={r0} d="" stroke="url(#wave-gradient)" strokeWidth="2.9" fill="none" className="wave-line" clipPath="url(#scan-clip-0)" />
+      <path ref={r1} d="" stroke="url(#wave-gradient)" strokeWidth="2.8" fill="none" className="wave-line wave-line-2" clipPath="url(#scan-clip-1)" />
+      <path ref={r2} d="" stroke="url(#wave-gradient)" strokeWidth="2.8" fill="none" className="wave-line wave-line-3" clipPath="url(#scan-clip-2)" />
+      <path ref={r3} d="" stroke="url(#wave-gradient)" strokeWidth="2.9" fill="none" className="wave-line wave-line-4" clipPath="url(#scan-clip-3)" />
     </svg>
   );
 }

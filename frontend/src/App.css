@@ -689,12 +689,14 @@ img {
 }
 
 .wave-line-2 {
+    stroke-dasharray: 4 8;
     animation: wave-glow-flow 7s ease-in-out infinite, wave-startup-clamp 0.72s ease-out 1;
     animation-delay: 0.22s, 0s;
     opacity: 1;
 }
 
 .wave-line-3 {
+    stroke-dasharray: 2 4;
     animation: wave-glow-flow 5.8s ease-in-out infinite, wave-startup-clamp 0.72s ease-out 1;
     animation-delay: 0.12s, 0s;
     opacity: 1;
