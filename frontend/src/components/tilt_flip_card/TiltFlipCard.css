@@ -175,7 +175,7 @@
   height: var(--card-h);
   transform-origin: top left;
   transform:
-    translate(var(--expand-x, 0px), var(--expand-y, 0px)) scale(var(--expand-scale, 1));
+    translate(var(--expand-x, 0px), var(--expand-y, 0px)) scale(calc(var(--expand-scale, 1) * var(--extend-out, 1)));
   pointer-events: auto;
   box-shadow: none;
   transition:
@@ -186,6 +186,10 @@
     width 0ms,
     height 0ms,
     position 0ms;
+}
+
+.tfc-tilt.is-expanded.is-returning {
+  transition: transform 720ms cubic-bezier(0.2, 0.85, 0.2, 1);
 }
 
 .tfc-flip {
@@ -458,6 +462,11 @@
 .tfc-scene.is-expanded .tfc-front .card-overlay {
   opacity: 0;
   transition: opacity 900ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.tfc-scene.is-expanded .tfc-tilt.is-returning .tfc-front .card-overlay {
+  opacity: 1;
+  transition: opacity 350ms cubic-bezier(0.19, 1, 0.22, 1) 100ms;
 }
 
 .tfc-scene.is-expanded .tfc-content {

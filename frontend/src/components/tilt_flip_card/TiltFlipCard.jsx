@@ -16,6 +16,7 @@ const BASE_ENTRANCE_DELAY_MS = 200; // Base delay before any card animates in
 const LERP_FACTOR_TILT = 0.24; // Tilt rotation responsiveness: higher = faster tracking
 const LERP_FACTOR = 0.24; // Glare/shadow responsiveness
 const LERP_FACTOR_POPOUT = 0.06; // Popout responsiveness
+const CLOSE_RETURN_MS = 720;
 
 const POINTER_INITIAL_STATE = {
   isDown: false,
@@ -85,7 +86,7 @@ function getExpandedMetrics(rect) {
   return {
     x: `${targetLeft - rect.left}px`,
     y: `${targetTop - rect.top}px`,
-    scale: `${scale}`
+    scale
   };
 }
 
@@ -102,6 +103,8 @@ export default function TiltFlipCard({
   height = 420,
   maxTilt = 12,
   popOut = 50,
+  extendOut = 1,
+  retractFactor = 0.94,
   entranceFrom = "top",
   entranceOrder = 0
 }) {
@@ -109,6 +112,7 @@ export default function TiltFlipCard({
   const tiltRef = useRef(null);
   const rafRef = useRef(0);
   const animateLerpRef = useRef(null);
+  const closeReturnTimerRef = useRef(0);
   const pointerStateRef = useRef({ ...POINTER_INITIAL_STATE });
 
   // Lerp state: current and target values
@@ -140,6 +144,8 @@ export default function TiltFlipCard({
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [isReturning, setIsReturning] = useState(false);
+  const [isBackdropVisible, setIsBackdropVisible] = useState(false);
   const [frontVisibleSrc, setFrontVisibleSrc] = useState(frontImg || null);
   const [backVisibleSrc, setBackVisibleSrc] = useState(backImg || null);
 
@@ -218,10 +224,12 @@ export default function TiltFlipCard({
       "--card-w": `${width}px`,
       "--card-h": `${height}px`,
       "--pop-out": `${popOut}px`,
+      "--extend-out": `${extendOut}`,
+      "--retract-factor": `${retractFactor}`,
       "--tfc-enter-delay": `${BASE_ENTRANCE_DELAY_MS + Math.max(0, entranceOrder) * 120}ms`,
       "--tfc-bg-enter-delay": `${BASE_ENTRANCE_DELAY_MS + Math.max(0, entranceOrder) * 120}ms`
     }),
-    [width, height, popOut, entranceOrder]
+    [width, height, popOut, extendOut, retractFactor, entranceOrder]
   );
 
   const entranceClass =
@@ -445,11 +453,15 @@ export default function TiltFlipCard({
     applyCssVars({
       "--expand-x": metrics.x,
       "--expand-y": metrics.y,
-      "--expand-scale": metrics.scale
+      "--expand-scale": `${metrics.scale}`
     });
   }, [applyCssVars]);
 
   const openInspectView = useCallback(() => {
+    window.clearTimeout(closeReturnTimerRef.current);
+    setIsReturning(false);
+    setIsBackdropVisible(true);
+
     computeExpandedTransform();
 
     applyCssVars({
@@ -467,17 +479,38 @@ export default function TiltFlipCard({
   }, [applyCssVars, computeExpandedTransform]);
 
   const closeInspectView = useCallback(() => {
+    if (!isExpanded || isReturning) return;
+
     suppressGlobalPointer(320);
 
-    // Reset visual state immediately to prevent tilt effects on underlying cards
-    resetVisualState();
+    window.clearTimeout(closeReturnTimerRef.current);
 
-    setIsExpanded(false);
+    // Immediately start flipping back and translating to original position.
+    const safeExtendOut = Math.max(0.01, extendOut);
     setIsFlipped(false);
+    setIsReturning(true);
+    setIsBackdropVisible(false);
+    applyCssVars({
+      "--expand-x": "0px",
+      "--expand-y": "0px",
+      "--expand-scale": `${1 / safeExtendOut}`
+    });
 
-    // Reset pointer state immediately as well
-    resetPointerState();
-  }, [resetVisualState, resetPointerState]);
+    closeReturnTimerRef.current = window.setTimeout(() => {
+      resetVisualState();
+      setIsExpanded(false);
+      setIsReturning(false);
+      resetPointerState();
+    }, CLOSE_RETURN_MS);
+
+  }, [
+    isExpanded,
+    isReturning,
+    extendOut,
+    applyCssVars,
+    resetVisualState,
+    resetPointerState
+  ]);
 
   const endInteraction = useCallback(() => {
     resetPointerState();
@@ -530,6 +563,12 @@ export default function TiltFlipCard({
       cancelAnimationFrame(rafRef.current);
     };
   }, [isExpanded, closeInspectView]);
+
+  useEffect(() => {
+    return () => {
+      window.clearTimeout(closeReturnTimerRef.current);
+    };
+  }, []);
 
   const handlePointerEnter = useCallback(
     (event) => {
@@ -705,7 +744,7 @@ export default function TiltFlipCard({
 
   return (
     <>
-      {isExpanded && (
+      {isBackdropVisible && (
         <div
           className="tfc-backdrop"
           onPointerDown={handleBackdropPointerDown}
@@ -727,7 +766,7 @@ export default function TiltFlipCard({
       >
         <div
           ref={tiltRef}
-          className={`tfc-tilt ${isExpanded ? "is-expanded" : ""}`}
+          className={`tfc-tilt ${isExpanded ? "is-expanded" : ""} ${isReturning ? "is-returning" : ""}`}
           onDragStart={(e) => e.preventDefault()}
         >
           <div className={`tfc-flip ${isFlipped ? "is-flipped" : ""}`}>
@@ -763,7 +802,7 @@ export default function TiltFlipCard({
 
               {!isExpanded && <div className="tfc-glare" />}
 
-              {!isExpanded && (
+              {(!isExpanded || isReturning) && (
                 <div className="card-overlay">
                   <div className="tfc-content">{front}</div>
                 </div>
