@@ -320,95 +320,16 @@ img {
     filter: brightness(var(--theme-brightness));
 }
 
-@keyframes led-pulse {
-    0% {
-        stroke-width: 1px;
-        filter: drop-shadow(0 0 3px rgba(100, 180, 255, 0.36));
-        opacity: 0.42;
-    }
-
-    50% {
-        stroke-width: 2.5px;
-        filter: drop-shadow(0 0 7px rgba(100, 180, 255, 0.68)) drop-shadow(0 0 16px rgba(100, 180, 255, 0.44)) drop-shadow(0 0 26px rgba(150, 200, 255, 0.24));
-        opacity: 0.82;
-    }
-
-    100% {
-        stroke-width: 1px;
-        filter: drop-shadow(0 0 3px rgba(100, 180, 255, 0.36));
-        opacity: 0.42;
-    }
+@keyframes wave-startup-clamp {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
-@keyframes led-pulse-2 {
-    0% {
-        stroke-width: 1px;
-        filter: drop-shadow(0 0 3px rgba(100, 180, 255, 0.36));
-        opacity: 0.42;
-    }
-
-    60% {
-        stroke-width: 1px;
-        filter: drop-shadow(0 0 3px rgba(100, 180, 255, 0.36));
-        opacity: 0.42;
-    }
-
-    85% {
-        stroke-width: 2.5px;
-        filter: drop-shadow(0 0 7px rgba(100, 180, 255, 0.68)) drop-shadow(0 0 16px rgba(100, 180, 255, 0.44)) drop-shadow(0 0 26px rgba(150, 200, 255, 0.24));
-        opacity: 0.82;
-    }
-
-    100% {
-        stroke-width: 1px;
-        filter: drop-shadow(0 0 3px rgba(100, 180, 255, 0.36));
-        opacity: 0.42;
-    }
+@keyframes wave-base-startup {
+    from { opacity: 0; }
+    to   { opacity: 0.32; }
 }
 
-
-@keyframes wave-fade-in {
-    0% {
-        opacity: 0;
-    }
-
-    100% {
-        opacity: 1;
-    }
-}
-
-
-@keyframes wave-glow-flow {
-    0% {
-        stroke-width: 2.02px;
-        filter: drop-shadow(0 0 6px rgba(120, 205, 255, 0.44)) drop-shadow(0 0 14px rgba(120, 205, 255, 0.24));
-        opacity: 0.62;
-    }
-
-    25% {
-        stroke-width: 2.28px;
-        filter: drop-shadow(0 0 8px rgba(120, 205, 255, 0.62)) drop-shadow(0 0 18px rgba(120, 205, 255, 0.34));
-        opacity: 0.74;
-    }
-
-    50% {
-        stroke-width: 2.5px;
-        filter: drop-shadow(0 0 10px rgba(120, 205, 255, 0.78)) drop-shadow(0 0 22px rgba(120, 205, 255, 0.42));
-        opacity: 0.84;
-    }
-
-    75% {
-        stroke-width: 2.28px;
-        filter: drop-shadow(0 0 8px rgba(120, 205, 255, 0.62)) drop-shadow(0 0 18px rgba(120, 205, 255, 0.34));
-        opacity: 0.74;
-    }
-
-    100% {
-        stroke-width: 2.02px;
-        filter: drop-shadow(0 0 6px rgba(120, 205, 255, 0.44)) drop-shadow(0 0 14px rgba(120, 205, 255, 0.24));
-        opacity: 0.62;
-    }
-}
 
 @keyframes float-in-from-top {
     from {
@@ -652,34 +573,7 @@ img {
     position: absolute;
 }
 
-.wave-line {
-    animation: led-pulse 8s ease-in-out infinite, wave-fade-in 8s ease-out backwards;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    opacity: 0;
-}
-
-.wave-line-2 {
-    animation: led-pulse-2 8s ease-in-out infinite, wave-fade-in 8s ease-out backwards;
-    animation-delay: 0.4s, 0s;
-    opacity: 0;
-}
-
-.wave-line-3 {
-    animation: led-pulse 8s ease-in-out infinite, wave-fade-in 8s ease-out backwards;
-    animation-delay: 0.8s, 0s;
-    opacity: 0;
-}
-
-.wave-line-4 {
-    animation: led-pulse-2 8s ease-in-out infinite, wave-fade-in 8s ease-out backwards;
-    animation-delay: 1.2s, 0s;
-    opacity: 0;
-}
-
-
-
-/* Override: path geometry + dasharray are JS-driven; CSS handles glow only. */
+/* Path geometry + dasharray are JS-driven; CSS handles glow and stroke only. */
 /* Glow is applied via SVG <filter> attribute on the paths, not CSS filter,   */
 /* to avoid per-frame compositing-layer repaints that cause flicker.          */
 .wave-line {
@@ -717,7 +611,7 @@ img {
     stroke-linecap: round;
     stroke-linejoin: round;
     opacity: 0.32;
-    animation: wave-startup-clamp 0.72s ease-out 1;
+    animation: wave-base-startup 0.72s ease-out 1;
 }
 
 .wave-base-2 { animation-delay: 0.16s; stroke-dasharray: 4 8; }
@@ -1122,6 +1016,14 @@ img {
     box-shadow: var(--shadow-deep);
 }
 
+.hero-kicker {
+    margin: 0;
+    color: var(--text-muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+}
+
 .page-shell h1 {
     margin-bottom: 0.8rem;
     font-family: "Cinzel", "Times New Roman", serif;
@@ -1169,7 +1071,6 @@ img {
     .wave-line-4 {
         filter: none;
         stroke-width: 2px;
-        animation: pulse-ltr-scan 9.5s linear infinite;
     }
 
     .orb {

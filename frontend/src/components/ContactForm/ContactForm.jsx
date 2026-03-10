@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import "./ContactForm.css";
 import "../ActionButton.css";
 
@@ -10,12 +10,17 @@ export default function ContactForm() {
         message: ''
     });
     const [status, setStatus] = useState(''); // 'sending', 'success', 'error'
+    const clearTimerRef = useRef(null);
+
+    useEffect(() => {
+        return () => {
+            if (clearTimerRef.current) clearTimeout(clearTimerRef.current);
+        };
+    }, []);
 
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = async (e) => {
@@ -43,7 +48,8 @@ export default function ContactForm() {
             if (data.success) {
                 setStatus('success');
                 setFormData({ name: '', email: '', subject: '', message: '' });
-                setTimeout(() => setStatus(''), 5000);
+                if (clearTimerRef.current) clearTimeout(clearTimerRef.current);
+                clearTimerRef.current = setTimeout(() => setStatus(''), 5000);
             } else {
                 setStatus('error');
             }

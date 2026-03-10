@@ -83,6 +83,7 @@ function AnimatedWaves() {
     // Helix constants
     const SPIRAL_CENTER = 400; // vertical midpoint in SVG viewBox units
     const SPIRAL_TURNS  = 1;   // full sine cycles left→right (1 = one loop)
+    const TWO_PI_TURNS  = Math.PI * 2 * SPIRAL_TURNS; // pre-computed once
 
     // Each wave has independent start-Y and end-Y oscillators at different periods
     // and phases. As they drift apart or together the chord tilts and the
@@ -97,21 +98,20 @@ function AnimatedWaves() {
     ];
 
     function buildPath(w, t) {
-      const phi = w.wSpeed * t + w.wOff;
+      const phi    = w.wSpeed * t + w.wOff;
       // Amplitude breathes slowly — the line billows wide then collapses gently
       const amp    = w.wAmp + w.breathAmp * Math.sin(w.breathFreq * t + w.breathPhase);
       // Center drifts vertically so the whole coil sways up and down like silk
       const center = w.baseY + w.driftAmp  * Math.sin(w.driftFreq  * t + w.driftPhase);
-      const helix  = x => center + amp * Math.sin((x / 3000) * Math.PI * 2 * SPIRAL_TURNS + phi);
+      const helix  = x => center + amp * Math.sin((x / 3000) * TWO_PI_TURNS + phi);
       const sY     = helix(0);
       const eY     = helix(3000);
-      const y      = x => helix(x);
       return (
-        `M 0,${sY.toFixed(1)} ` +
-        `Q 380,${y(380).toFixed(1)} 780,${y(780).toFixed(1)} ` +
-        `T 1560,${y(1560).toFixed(1)} ` +
-        `T 2320,${y(2320).toFixed(1)} ` +
-        `T 3000,${eY.toFixed(1)}`
+        `M 0,${Math.round(sY)} ` +
+        `Q 380,${Math.round(helix(380))} 780,${Math.round(helix(780))} ` +
+        `T 1560,${Math.round(helix(1560))} ` +
+        `T 2320,${Math.round(helix(2320))} ` +
+        `T 3000,${Math.round(eY)}`
       );
     }
 
@@ -189,8 +189,34 @@ function AnimatedWaves() {
       rafRef.current = requestAnimationFrame(animate);
     }
 
+    // Skip the animation loop if the user prefers reduced motion — paint one static frame
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      const t = performance.now();
+      WAVES.forEach(w => {
+        const d = buildPath(w, t);
+        if (w.b.current) w.b.current.setAttribute('d', d);
+        if (w.r.current) w.r.current.setAttribute('d', d);
+      });
+      return;
+    }
+
     rafRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(rafRef.current);
+
+    // Pause the RAF loop when the tab is hidden to save CPU and battery
+    const handleVisibility = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(rafRef.current);
+      } else {
+        rafRef.current = requestAnimationFrame(animate);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
   }, []);
 
   return (
@@ -205,13 +231,13 @@ function AnimatedWaves() {
         </linearGradient>
         {/* SVG filters: applied as attributes so they paint inline with geometry */}
         {/* instead of creating a separate CSS compositing layer that flickers.   */}
-        <filter id="wave-glow-base" x="-10%" y="-300%" width="120%" height="700%" colorInterpolationFilters="sRGB">
-          <feGaussianBlur stdDeviation="3" result="blur"/>
+        <filter id="wave-glow-base" x="-5%" y="-15%" width="110%" height="130%" colorInterpolationFilters="sRGB">
+          <feGaussianBlur stdDeviation="2" result="blur"/>
           <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
-        <filter id="wave-glow-scan" x="-10%" y="-300%" width="120%" height="700%" colorInterpolationFilters="sRGB">
-          <feGaussianBlur stdDeviation="5" result="blur1"/>
-          <feGaussianBlur stdDeviation="12" result="blur2"/>
+        <filter id="wave-glow-scan" x="-5%" y="-40%" width="110%" height="180%" colorInterpolationFilters="sRGB">
+          <feGaussianBlur stdDeviation="4" result="blur1"/>
+          <feGaussianBlur stdDeviation="9" result="blur2"/>
           <feMerge><feMergeNode in="blur2"/><feMergeNode in="blur1"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
         {/* Clip rects control the visible window for each scan overlay */}
@@ -385,14 +411,19 @@ function App() {
 
     let rafA;
     let rafB;
+    let paintTimer;
     let isCancelled = false;
 
-    // Wait an extra paint cycle after mounting waves so reveal starts with lines already rendered.
+    // Wait for waves to be mounted and rendered — 2 RAF frames to ensure paths are painted,
+    // then an extra 500ms so the helix animation has time to populate all path geometry
+    // before the loader fades out.
     rafA = window.requestAnimationFrame(() => {
       rafB = window.requestAnimationFrame(() => {
-        if (!isCancelled) {
-          setIsWavePaintReady(true);
-        }
+        paintTimer = window.setTimeout(() => {
+          if (!isCancelled) {
+            setIsWavePaintReady(true);
+          }
+        }, 500);
       });
     });
 
@@ -400,6 +431,7 @@ function App() {
       isCancelled = true;
       window.cancelAnimationFrame(rafA);
       window.cancelAnimationFrame(rafB);
+      window.clearTimeout(paintTimer);
     };
   }, [showDecorations]);
 

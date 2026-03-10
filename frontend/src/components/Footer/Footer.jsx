@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import "./Footer.css";
 
-export default function Footer() {
-    const year = new Date().getFullYear();
+const CURRENT_YEAR = new Date().getFullYear();
 
+export default function Footer() {
     return (
         <footer className="site-footer">
             <div className="footer-grid">
@@ -38,7 +38,7 @@ export default function Footer() {
                 </div>
             </div>
 
-            <p className="footer-legal">Copyright {year} Brian Dang. All rights reserved.</p>
+            <p className="footer-legal">Copyright {CURRENT_YEAR} Brian Dang. All rights reserved.</p>
         </footer>
     );
 }
