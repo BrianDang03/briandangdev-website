@@ -37,6 +37,7 @@
   -webkit-tap-highlight-color: transparent;
   -webkit-user-drag: none;
   opacity: 0;
+  will-change: transform, opacity;
   animation-duration: 960ms;
   animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
   animation-fill-mode: both;
@@ -147,10 +148,14 @@
   height: 100%;
   overflow: hidden;
   border-radius: var(--tfc-radius);
+  /* WebKit (iOS Safari, Android Chrome) ignores overflow:hidden when
+     transform-style:preserve-3d is set on the same element. The mask trick
+     forces WebKit to composite the element on its own layer, where the
+     border-radius clip is correctly applied before compositing children. */
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
   will-change: transform;
   transition:
     box-shadow 400ms cubic-bezier(0.19, 1, 0.22, 1) 1100ms,
-    filter 400ms var(--tfc-ease),
     top 900ms cubic-bezier(0.19, 1, 0.22, 1),
     left 900ms cubic-bezier(0.19, 1, 0.22, 1),
     width 900ms cubic-bezier(0.19, 1, 0.22, 1),
@@ -282,7 +287,7 @@
 
 .tfc-glare {
   position: absolute;
-  inset: -50%;
+  inset: 0;
   z-index: 1;
   pointer-events: none;
   opacity: var(--glare-o, 0);
@@ -447,6 +452,13 @@
 .tfc-close-btn:hover {
   transform: translateY(-1px);
   background: linear-gradient(160deg, rgba(26, 35, 47, 0.94), rgba(26, 35, 47, 0.78));
+}
+
+@media (hover: none), (pointer: coarse) {
+  .tfc-close-btn:hover {
+    transform: none;
+    background: linear-gradient(160deg, rgba(20, 27, 37, 0.88), rgba(20, 27, 37, 0.7));
+  }
 }
 
 .tfc-close-btn:focus,

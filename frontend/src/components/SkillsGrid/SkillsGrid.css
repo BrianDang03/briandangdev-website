@@ -50,3 +50,13 @@
         font-size: 0.85rem;
     }
 }
+
+/* Skill tags use cursor:default and have no press action, so the hover glow
+   styling is irrelevant on touch and can be safely removed. */
+@media (hover: none), (pointer: coarse) {
+    .skill-tag:hover {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+        border-color: var(--line-soft);
+        box-shadow: none;
+    }
+}

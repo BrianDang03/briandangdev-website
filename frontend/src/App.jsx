@@ -62,6 +62,35 @@ function RouteLoadingFallback({ label }) {
   );
 }
 
+// ── Module-level helix constants ──────────────────────────────────────────
+// Hoisted out of the AnimatedWaves useEffect closure so V8 can JIT-compile
+// buildPath once and reuse it without re-allocating the function or the XP
+// array on every useEffect execution.
+const _TWO_PI              = Math.PI * 2;
+const _TWO_PI_OVER_3000    = _TWO_PI / 3000;
+const _XP = [
+  0,
+  380  * _TWO_PI_OVER_3000,
+  780  * _TWO_PI_OVER_3000,
+  1560 * _TWO_PI_OVER_3000,
+  2320 * _TWO_PI_OVER_3000,
+  _TWO_PI,  // = 0 (mod 2π) — same phase as x=0
+];
+
+function buildPath(w, t) {
+  const phi    = w.wSpeed * t + w.wOff;
+  const amp    = w.wAmp + w.breathAmp * Math.sin(w.breathFreq * t + w.breathPhase);
+  const center = w.baseY + w.driftAmp  * Math.sin(w.driftFreq  * t + w.driftPhase);
+  const s0 = (center + amp * Math.sin(_XP[0] + phi)).toFixed(1);
+  const s1 = (center + amp * Math.sin(_XP[1] + phi)).toFixed(1);
+  const s2 = (center + amp * Math.sin(_XP[2] + phi)).toFixed(1);
+  const s3 = (center + amp * Math.sin(_XP[3] + phi)).toFixed(1);
+  const s4 = (center + amp * Math.sin(_XP[4] + phi)).toFixed(1);
+  const s5 = (center + amp * Math.sin(_XP[5] + phi)).toFixed(1);
+  return `M 0,${s0} Q 380,${s1} 780,${s2} T 1560,${s3} T 2320,${s4} T 3000,${s5}`;
+}
+// ───────────────────────────────────────────────────────────────────────────
+
 function AnimatedWaves() {
   const simpleMotion = shouldUseSimpleMotion();
   const r0 = useRef(null);
@@ -84,7 +113,6 @@ function AnimatedWaves() {
 
     // Helix constants
     const SPIRAL_CENTER = 500;    // 50% of viewBox height → always vertically centred in viewport
-    const TWO_PI_TURNS  = Math.PI * 2; // one full sine cycle left→right
 
     // Each wave has independent start-Y and end-Y oscillators at different periods
     // and phases. As they drift apart or together the chord tilts and the
@@ -97,24 +125,6 @@ function AnimatedWaves() {
       { r: r2, b: b2, cr: cr2, baseY: SPIRAL_CENTER, wAmp: 112, wSpeed: 8.25e-5, wOff: initPhi + Math.PI * 0.5,  breathAmp: 12, breathFreq: 3.5e-5, breathPhase: 2.8, driftAmp: 20, driftFreq: 2.1e-5, driftPhase: 1.2 },
       { r: r3, b: b3, cr: cr3, baseY: SPIRAL_CENTER, wAmp: 112, wSpeed: 8.25e-5, wOff: initPhi + Math.PI * 1.5, breathAmp: 10, breathFreq: 2.6e-5, breathPhase: 4.2, driftAmp: 18, driftFreq: 2.1e-5, driftPhase: 1.2 },
     ];
-
-    function buildPath(w, t) {
-      const phi    = w.wSpeed * t + w.wOff;
-      // Amplitude breathes slowly — the line billows wide then collapses gently
-      const amp    = w.wAmp + w.breathAmp * Math.sin(w.breathFreq * t + w.breathPhase);
-      // Center drifts vertically so the whole coil sways up and down like silk
-      const center = w.baseY + w.driftAmp  * Math.sin(w.driftFreq  * t + w.driftPhase);
-      const helix  = x => center + amp * Math.sin((x / 3000) * TWO_PI_TURNS + phi);
-      const sY     = helix(0);
-      const eY     = helix(3000);
-      return (
-        `M 0,${sY.toFixed(1)} ` +
-        `Q 380,${helix(380).toFixed(1)} 780,${helix(780).toFixed(1)} ` +
-        `T 1560,${helix(1560).toFixed(1)} ` +
-        `T 2320,${helix(2320).toFixed(1)} ` +
-        `T 3000,${eY.toFixed(1)}`
-      );
-    }
 
     // ── Pulse timing (JS-driven so order can be shuffled each round) ──────────
     const CYCLE_MS   = 18000; // full cycle length
@@ -148,6 +158,10 @@ function AnimatedWaves() {
     let simTime = performance.now();
     const prevClip = Array.from({ length: activeWaveCount }, () => ({ x: -1, w: -1 }));
     const prevPathD = Array.from({ length: activeWaveCount }, () => "");
+    // Track scan-path visibility to skip SVG filter work when wave is in rest
+    // phase. SVG filter executes before clipPath, so a clipped-to-zero path
+    // still runs the full Gaussian blur unless the element is visibility:hidden.
+    const scanVisible = new Uint8Array(activeWaveCount).fill(1);
 
     function beginRound(baseTs) {
       roundBase = baseTs;
@@ -216,6 +230,16 @@ function AnimatedWaves() {
           w.cr.current.setAttribute('width', clipW);
           clipCache.x = clipX;
           clipCache.w = clipW;
+        }
+
+        // Hide/show the scan overlay to skip SVG filter cost during rest phase.
+        const isResting = clipW === 0;
+        if (isResting && scanVisible[i] === 1) {
+          if (w.r.current) w.r.current.setAttribute('visibility', 'hidden');
+          scanVisible[i] = 0;
+        } else if (!isResting && scanVisible[i] === 0) {
+          if (w.r.current) w.r.current.setAttribute('visibility', 'visible');
+          scanVisible[i] = 1;
         }
       }
 

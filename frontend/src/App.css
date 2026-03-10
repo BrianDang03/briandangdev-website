@@ -32,12 +32,14 @@
 }
 
 [data-theme="light"] body {
+    background: linear-gradient(180deg, #dbe9ff 0%, #eef5ff 52%, #e3eeff 100%);
+}
+
+[data-theme="light"] body::after {
     background:
         radial-gradient(circle at 18% 10%, rgba(64, 110, 230, 0.38), transparent 42%),
         radial-gradient(circle at 88% 72%, rgba(82, 150, 245, 0.32), transparent 44%),
-        radial-gradient(circle at 50% 36%, rgba(102, 170, 255, 0.2), transparent 46%),
-        linear-gradient(180deg, #dbe9ff 0%, #eef5ff 52%, #e3eeff 100%);
-    background-attachment: fixed;
+        radial-gradient(circle at 50% 36%, rgba(102, 170, 255, 0.2), transparent 46%);
 }
 
 [data-theme="light"] body::before {
@@ -51,7 +53,7 @@
 
 [data-theme="light"] .orb {
     border-color: rgba(18, 34, 54, 0.44);
-    filter: drop-shadow(0 0 18px rgba(18, 34, 54, 0.22));
+    box-shadow: 0 0 18px rgba(18, 34, 54, 0.22);
 }
 
 [data-theme="light"] .beam {
@@ -109,6 +111,17 @@
     color: #1a2330;
 }
 
+@media (hover: none), (pointer: coarse) {
+    [data-theme="light"] .nav-link:hover {
+        border-color: transparent;
+        background: transparent;
+    }
+
+    [data-theme="light"] .footer-links a:hover {
+        color: var(--text-dim);
+    }
+}
+
 [data-theme="light"] .brand-ring {
     border-color: rgba(26, 45, 67, 0.7);
     background: rgba(26, 45, 67, 0.08);
@@ -154,24 +167,57 @@
     box-sizing: border-box;
 }
 
+/* Remove blue/grey flash on any element touched during mobile scroll.
+   The browser's default -webkit-tap-highlight-color fires on every element
+   the finger contacts — not just interactive ones — so a global reset is the
+   only way to prevent mid-scroll highlights on divs, sections, imgs, etc. */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Keyboard-only focus ring — visible, accessible, but unobtrusive. Component-
+   level :focus/:focus-visible rules always override this global fallback. */
+:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.55);
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+[data-theme="light"] :focus-visible {
+    outline-color: rgba(26, 45, 67, 0.65);
+}
+
 html {
     height: 100%;
     overflow-y: scroll;
     scrollbar-gutter: stable;
+    scroll-behavior: smooth;
 }
 
 body {
     margin: 0;
     min-height: 100%;
     font-family: "Manrope", "Segoe UI", sans-serif;
-    background:
-        radial-gradient(circle at 18% 10%, rgba(255, 255, 255, 0.22), transparent 35%),
-        radial-gradient(circle at 88% 72%, rgba(255, 255, 255, 0.18), transparent 38%),
-        linear-gradient(180deg, #0d131b 0%, #161f2b 54%, #0e141d 100%);
-    background-attachment: fixed;
+    background: linear-gradient(180deg, #0d131b 0%, #161f2b 54%, #0e141d 100%);
     color: var(--text-main);
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+}
+
+/* Radial glow spots kept in a fixed pseudo-element so they stay viewport-
+   anchored on both desktop and mobile (no scroll-position artifact). */
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -3;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 18% 10%, rgba(255, 255, 255, 0.22), transparent 35%),
+        radial-gradient(circle at 88% 72%, rgba(255, 255, 255, 0.18), transparent 38%);
 }
 
 body::before {
@@ -659,7 +705,11 @@ img {
 .orb {
     border: 1px solid var(--line-soft);
     border-radius: 999px;
-    filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.18));
+    /* box-shadow instead of filter:drop-shadow — drop-shadow forces each orb
+       into its own GPU filter layer and runs a Gaussian blur every frame during
+       the 2.4s entrance animation. box-shadow is composited by the GPU directly
+       with no blur pass and produces an identical visual on border-radius:999px. */
+    box-shadow: 0 0 18px rgba(255, 255, 255, 0.18), 0 0 6px rgba(255, 255, 255, 0.08);
 }
 
 .orb-nav-cut {
@@ -1000,7 +1050,7 @@ img {
 
 .main-content {
     min-width: 0;
-    width: min(1200px, calc(100% - 2.4rem));
+    width: min(1360px, calc(100% - 2.4rem));
     margin: 0 auto;
     padding: 0 0 2rem;
 }
@@ -1020,7 +1070,7 @@ img {
 
 
 .page-shell {
-    max-width: 780px;
+    max-width: min(860px, 100%);
     margin: clamp(2rem, 5vw, 4rem) auto;
     padding: clamp(1.5rem, 4vw, 2.2rem);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -1029,6 +1079,13 @@ img {
         linear-gradient(155deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.05)),
         var(--surface);
     box-shadow: var(--shadow-deep);
+}
+
+@media (min-width: 1400px) {
+    .page-shell {
+        max-width: min(1000px, 100%);
+        padding: clamp(2rem, 3vw, 3rem);
+    }
 }
 
 .hero-kicker {
@@ -1054,11 +1111,29 @@ img {
 
 @media (max-width: 640px) {
     .main-content {
-        width: min(1200px, calc(100% - 1.4rem));
+        width: min(1360px, calc(100% - 1.4rem));
+    }
+}
+
+/* Large desktop: give the layout more breathing room */
+@media (min-width: 1400px) {
+    .main-content {
+        width: min(1480px, calc(100% - 4rem));
+    }
+}
+
+@media (min-width: 1800px) {
+    .main-content {
+        width: min(1600px, calc(100% - 6rem));
     }
 }
 
 @media (max-width: 900px) {
+    /* background-attachment:fixed triggers a full-page repaint on every
+       scroll frame on mobile. The body now uses a plain linear-gradient
+       (no attachment needed) and the glow spots live in body::after which
+       is always position:fixed, so they stay viewport-anchored automatically. */
+
     .theme-bg .orb,
     .theme-bg .hexagon,
     .theme-bg .floating-plus,
@@ -1071,21 +1146,12 @@ img {
 
 @media (hover: none) and (pointer: coarse) {
 
-    .theme-bg,
-    .theme-bg-footer {
-        filter: none;
-    }
-
     .wave-line,
     .wave-line-2,
     .wave-line-3,
     .wave-line-4 {
         filter: none;
         stroke-width: 2px;
-    }
-
-    .orb {
-        filter: none;
     }
 }
 

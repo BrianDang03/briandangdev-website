@@ -33,6 +33,12 @@
     outline: none;
     border-color: var(--line-strong);
     background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="light"] .form-group input:focus,
+[data-theme="light"] .form-group textarea:focus {
+    box-shadow: 0 0 0 3px rgba(26, 45, 67, 0.1);
 }
 
 .form-group textarea {

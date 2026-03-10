@@ -6,7 +6,7 @@ import './HomeCards.css';
 
 const ASSET_BASE = import.meta.env.BASE_URL;
 const CARD_HINT_TEXT = "Tap to Learn More";
-const CARD_IMAGE_SIZES = "(max-width: 640px) 88vw, (max-width: 1024px) 42vw, 320px";
+const CARD_IMAGE_SIZES = "(max-width: 640px) 88vw, (max-width: 1280px) 320px, (max-width: 1600px) 360px, 400px";
 
 function makeSrcSet(name, ext) {
   return `${ASSET_BASE}${name}-480.${ext} 480w, ${ASSET_BASE}${name}-768.${ext} 768w, ${ASSET_BASE}${name}-1200.${ext} 1200w`;

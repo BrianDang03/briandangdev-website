@@ -8,6 +8,30 @@
     overflow: visible;
 }
 
+@media (min-width: 1280px) {
+    .card-container {
+        gap: 40px;
+    }
+
+    /* Scale up the TiltFlipCard scene dimensions at large screens.
+       CSS overrides --card-w/--card-h that are set inline by the component. */
+    .card-container .tfc-scene {
+        --card-w: 360px;
+        --card-h: 470px;
+    }
+}
+
+@media (min-width: 1600px) {
+    .card-container {
+        gap: 52px;
+    }
+
+    .card-container .tfc-scene {
+        --card-w: 400px;
+        --card-h: 520px;
+    }
+}
+
 .tilt-card-fallback {
     width: 320px;
     height: 420px;
@@ -133,5 +157,40 @@
 
     .card-copy-back ul {
         padding-left: 0.9rem;
+    }
+}
+
+/* On screens narrower than 360px the fixed 320px card would overflow the
+   container (calc(100vw - 2.4rem) ≈ 282px on a 320px screen).
+   Scale the card down proportionally so it always fits with side breathing room. */
+@media (max-width: 360px) {
+    .card-container .tfc-scene {
+        --card-w: calc(100vw - 2.4rem);
+        --card-h: calc((100vw - 2.4rem) * 1.3125);
+    }
+}
+
+/* On touch devices backdrop-filter blur on the card pill labels runs 6
+   simultaneous GPU blur passes (2 per card × 3 cards). Removing it on
+   touch devices keeps the framerate high while the entrance animations play.
+   We compensate with a more opaque background so the pills remain readable. */
+@media (hover: none) and (pointer: coarse) {
+    .card-copy-front h3 {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: rgba(22, 30, 40, 0.74);
+    }
+
+    .card-hint {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: rgba(22, 30, 40, 0.70);
+    }
+
+    /* Disable all hover styles on touch — sticky hover leaves elements visually "stuck" */
+    .social-icon-link:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: none;
     }
 }

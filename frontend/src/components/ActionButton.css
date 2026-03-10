@@ -64,6 +64,22 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
+@media (hover: none), (pointer: coarse) {
+    .card-action-btn:hover {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08));
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: none;
+        box-shadow: none;
+    }
+
+    .card-icon-btn:hover {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08));
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: none;
+        box-shadow: none;
+    }
+}
+
 .card-icon-btn .social-icon {
     width: 1.25rem;
     height: 1.25rem;

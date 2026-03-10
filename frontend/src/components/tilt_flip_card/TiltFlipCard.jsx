@@ -15,7 +15,7 @@ const DEFAULT_EDGE_GAP_RATIO = 0.06;
 const BASE_ENTRANCE_DELAY_MS = 0; // Start card entrance motion immediately
 const LERP_FACTOR_TILT = 0.24; // Tilt rotation responsiveness: higher = faster tracking
 const LERP_FACTOR = 0.24; // Glare/shadow responsiveness
-const LERP_FACTOR_POPOUT = 0.06; // Popout responsiveness
+const LERP_FACTOR_POPOUT = 0.10; // Popout responsiveness — 0.10 exits RAF in ~620ms vs ~1050ms at 0.06
 const CLOSE_RETURN_MS = 720;
 
 const POINTER_INITIAL_STATE = {
@@ -310,19 +310,32 @@ export default function TiltFlipCard({
     style.setProperty("--shadow-blur", `${current.shadowBlur}px`);
 
     // Snap imperceptibly-close values to target so the RAF loop exits sooner.
-    // 0.02 deg of tilt / 0.02 opacity / 0.02 hover-unit are all below visual
-    // threshold, but fine enough that the spring return still looks fluid.
-    const SNAP = 0.02;
-    if (Math.abs(current.rx - target.rx) < SNAP) current.rx = target.rx;
-    if (Math.abs(current.ry - target.ry) < SNAP) current.ry = target.ry;
-    if (Math.abs(current.glareO - target.glareO) < SNAP) current.glareO = target.glareO;
-    if (Math.abs(current.hover - target.hover) < SNAP) current.hover = target.hover;
+    // Angles: 0.03° is well below visual threshold at 20° maxTilt.
+    // Percentages / opacity / hover: 0.02 unit.
+    // Shadow pixels: 0.3px — sub-pixel, invisible.
+    const SNAP_ANGLE = 0.03;
+    const SNAP_UNIT  = 0.02;
+    const SNAP_PX    = 0.3;
+    if (Math.abs(current.rx         - target.rx)         < SNAP_ANGLE) current.rx         = target.rx;
+    if (Math.abs(current.ry         - target.ry)         < SNAP_ANGLE) current.ry         = target.ry;
+    if (Math.abs(current.glareO     - target.glareO)     < SNAP_UNIT)  current.glareO     = target.glareO;
+    if (Math.abs(current.hover      - target.hover)      < SNAP_UNIT)  current.hover      = target.hover;
+    if (Math.abs(current.glareX     - target.glareX)     < SNAP_PX)    current.glareX     = target.glareX;
+    if (Math.abs(current.glareY     - target.glareY)     < SNAP_PX)    current.glareY     = target.glareY;
+    if (Math.abs(current.shadowX    - target.shadowX)    < SNAP_PX)    current.shadowX    = target.shadowX;
+    if (Math.abs(current.shadowY    - target.shadowY)    < SNAP_PX)    current.shadowY    = target.shadowY;
+    if (Math.abs(current.shadowBlur - target.shadowBlur) < SNAP_PX)    current.shadowBlur = target.shadowBlur;
 
     const isClose =
-      current.rx === target.rx &&
-      current.ry === target.ry &&
-      current.glareO === target.glareO &&
-      current.hover === target.hover;
+      current.rx         === target.rx         &&
+      current.ry         === target.ry         &&
+      current.glareO     === target.glareO     &&
+      current.hover      === target.hover      &&
+      current.glareX     === target.glareX     &&
+      current.glareY     === target.glareY     &&
+      current.shadowX    === target.shadowX    &&
+      current.shadowY    === target.shadowY    &&
+      current.shadowBlur === target.shadowBlur;
 
     if (!isClose) {
       const nextAnimate = animateLerpRef.current;

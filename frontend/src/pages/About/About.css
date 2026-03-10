@@ -1,5 +1,19 @@
 .about-page {
-    max-width: 900px;
+    max-width: 960px;
+}
+
+@media (min-width: 1400px) {
+    .about-page {
+        max-width: 1100px;
+    }
+
+    .about-intro {
+        font-size: 1.15rem;
+    }
+
+    .about-section h2 {
+        font-size: 2rem;
+    }
 }
 
 .about-content {

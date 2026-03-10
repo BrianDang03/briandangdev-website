@@ -11,7 +11,7 @@
 }
 
 .site-nav {
-    width: min(1200px, calc(100% - 2.4rem));
+    width: min(1360px, calc(100% - 2.4rem));
     margin: 0 auto;
     min-height: 76px;
     display: grid;
@@ -80,6 +80,26 @@
     font-weight: 700;
     font-size: 0.85rem;
     letter-spacing: 0.04em;
+    transition: filter 180ms ease, transform 180ms ease;
+}
+
+.nav-cta:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+@media (hover: none), (pointer: coarse) {
+    /* Sticky hover: iOS/Android fire :hover on scroll-touch and it stays stuck.
+       Reset ALL visual hover changes so no element highlights while scrolling. */
+    .nav-link:hover {
+        border-color: transparent;
+        background: transparent;
+    }
+
+    .nav-cta:hover {
+        filter: none;
+        transform: none;
+    }
 }
 
 .nav-menu-btn,
