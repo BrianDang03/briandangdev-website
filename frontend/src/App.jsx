@@ -546,10 +546,13 @@ function App() {
         <div className={`site-root ${canRevealApp ? "site-root-enter" : "site-root-preboot"}`}>
           <SkipToContent />
 
-          <div className={`theme-bg ${showDecorations ? "is-ready" : "is-deferred"} ${areShapesLocked ? "is-locked" : ""}`} aria-hidden="true">
+          <div className={`wave-bg ${showDecorations ? "is-ready" : "is-deferred"}`} aria-hidden="true">
+            {showDecorations && <AnimatedWaves />}
+          </div>
+
+          <div className={`theme-bg ${showDecorations ? "is-ready" : ""} ${areShapesLocked ? "is-locked" : ""}`} aria-hidden="true">
             {showDecorations && (
               <>
-                <AnimatedWaves />
                 <span className="orb orb-left" />
                 <span className="orb orb-nav-cut orb-nav-1" />
                 <span className="orb orb-nav-cut orb-nav-2" />

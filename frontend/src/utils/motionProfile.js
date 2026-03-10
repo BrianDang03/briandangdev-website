@@ -16,8 +16,11 @@ export function shouldUseSimpleMotion() {
 
   const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
   const prefersDataSaver = Boolean(connection && connection.saveData);
-  const lowCoreDevice = (navigator.hardwareConcurrency || 8) <= 4;
-  const lowMemoryDevice = (navigator.deviceMemory || 8) <= 4;
+  // ≤2 cores = genuinely low-end (budget Android). 4-core phones are common
+  // mid-range devices that handle 4 wave lines fine.
+  const lowCoreDevice = (navigator.hardwareConcurrency || 8) <= 2;
+  // ≤2 GB RAM = genuinely constrained. 4 GB is normal for mid-range phones.
+  const lowMemoryDevice = (navigator.deviceMemory || 8) <= 2;
 
   cachedSimpleMotion = prefersReducedMotion || prefersDataSaver || lowCoreDevice || lowMemoryDevice;
   return cachedSimpleMotion;

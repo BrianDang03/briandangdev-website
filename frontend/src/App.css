@@ -255,6 +255,7 @@ img {
     min-height: 100dvh;
     flex: 1 0 auto;
     isolation: isolate;
+    overflow: clip;
 }
 
 .site-root-preboot {
@@ -341,7 +342,8 @@ img {
     }
 }
 
-.theme-bg {
+/* Fixed container for the animated wave SVG only */
+.wave-bg {
     position: fixed;
     inset: 0;
     z-index: -2;
@@ -351,8 +353,26 @@ img {
        context that flattens all children into one layer, preventing the SVG from
        getting its own independent GPU layer and causing full-layer invalidation on
        every RAF frame. Brightness is applied directly to .flowing-wave instead. */
+}
+
+.wave-bg.is-deferred {
+    opacity: 0.001;
+}
+
+.wave-bg.is-ready {
+    opacity: 1;
+    transition: opacity 220ms ease-out;
+}
+
+/* Scrollable container for decorative shapes — anchored to page, not viewport */
+.theme-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    overflow: visible;
+    pointer-events: none;
     --nav-orb-left-x: -64px;
-    --nav-orb-left-y: 10%;
+    --nav-orb-left-y: 10vh;
     --nav-orb-left-size: 290px;
     --nav-orb-small-size: 96px;
     --nav-orb-small-overlap-x: 76px;
@@ -360,10 +380,8 @@ img {
 }
 
 .theme-bg-footer {
-    position: fixed;
+    position: absolute;
     inset: 0;
-    width: 100vw;
-    height: 100dvh;
     z-index: -2;
     overflow: visible;
     pointer-events: none;
@@ -591,18 +609,6 @@ img {
     filter: brightness(1.15);
 }
 
-.theme-bg.is-deferred {
-    /* 0.001 not 0: opacity:0 lets the browser skip GPU compositing entirely
-       (occlusion culling behind the opaque loader). opacity:0.001 is invisible
-       but forces the compositor to process the wave layer while the loader is
-       still showing, so GPU filter buffers are warm before the reveal frame. */
-    opacity: 0.001;
-}
-
-.theme-bg-footer.is-deferred {
-    opacity: 0.001;
-}
-
 .theme-bg.is-ready {
     opacity: 1;
     transition: opacity 220ms ease-out;
@@ -694,7 +700,7 @@ img {
 
 .orb,
 .beam {
-    position: fixed;
+    position: absolute;
     z-index: -2;
     margin: 0;
     padding: 0;
@@ -718,7 +724,7 @@ img {
     width: 210px;
     aspect-ratio: 1;
     top: -146px;
-    left: 64%;
+    left: 64vw;
     right: auto;
     bottom: auto;
     border-width: 1.5px;
@@ -728,7 +734,7 @@ img {
     width: 130px;
     aspect-ratio: 1;
     top: -96px;
-    left: 31%;
+    left: 31vw;
     right: auto;
     bottom: auto;
     border-width: 1px;
@@ -737,7 +743,7 @@ img {
 .orb-left {
     width: 290px;
     aspect-ratio: 1;
-    top: 6%;
+    top: 6vh;
     left: -70px;
     margin: 0;
     right: auto;
@@ -747,8 +753,8 @@ img {
 .orb-3 {
     width: 132px;
     aspect-ratio: 1;
-    top: 36%;
-    right: 4%;
+    top: 36vh;
+    right: 4vw;
     left: auto;
     bottom: auto;
     border-width: 2px;
@@ -757,8 +763,8 @@ img {
 .orb-8 {
     width: 96px;
     aspect-ratio: 1;
-    top: 26%;
-    left: 8%;
+    top: 26vh;
+    left: 8vw;
     right: auto;
     bottom: auto;
     border-width: 1.5px;
@@ -767,7 +773,7 @@ img {
 .orb-10 {
     width: 132px;
     aspect-ratio: 1;
-    bottom: 12%;
+    bottom: 12vh;
     left: -40px;
     right: auto;
     top: auto;
@@ -783,8 +789,8 @@ img {
 }
 
 .beam-two {
-    bottom: 18%;
-    left: -12%;
+    bottom: 18vh;
+    left: -12vw;
     transform: rotate(18deg);
     right: auto;
     top: auto;
@@ -793,7 +799,7 @@ img {
 
 /* Hexagons */
 .hexagon {
-    position: fixed;
+    position: absolute;
     z-index: -2;
     width: 40px;
     height: 40px;
@@ -804,8 +810,8 @@ img {
 }
 
 .hex-1 {
-    top: 15%;
-    left: 8%;
+    top: 15vh;
+    left: 8vw;
     width: 50px;
     height: 50px;
     right: auto;
@@ -814,16 +820,16 @@ img {
 }
 
 .hex-2 {
-    top: 35%;
-    right: 5%;
+    top: 35vh;
+    right: 5vw;
     left: auto;
     bottom: auto;
     margin: 0;
 }
 
 .hex-3 {
-    bottom: 25%;
-    right: 8%;
+    bottom: 25vh;
+    right: 8vw;
     width: 35px;
     height: 35px;
     top: auto;
@@ -832,16 +838,16 @@ img {
 }
 
 .hex-4 {
-    bottom: 15%;
-    left: 12%;
+    bottom: 15vh;
+    left: 12vw;
     right: auto;
     top: auto;
     margin: 0;
 }
 
 .hex-5 {
-    top: 50%;
-    left: 3%;
+    top: 50vh;
+    left: 3vw;
     width: 30px;
     height: 30px;
     right: auto;
@@ -851,7 +857,7 @@ img {
 
 /* Floating Plus Signs */
 .floating-plus {
-    position: fixed;
+    position: absolute;
     z-index: -2;
     width: 20px;
     height: 20px;
@@ -881,40 +887,40 @@ img {
 }
 
 .plus-1 {
-    top: 12%;
-    right: 12%;
+    top: 12vh;
+    right: 12vw;
     left: auto;
     bottom: auto;
     margin: 0;
 }
 
 .plus-4 {
-    top: 28%;
-    right: 10%;
+    top: 28vh;
+    right: 10vw;
     left: auto;
     bottom: auto;
     margin: 0;
 }
 
 .plus-6 {
-    top: 18%;
-    left: 12%;
+    top: 18vh;
+    left: 12vw;
     right: auto;
     bottom: auto;
     margin: 0;
 }
 
 .plus-7 {
-    top: 45%;
-    right: 12%;
+    top: 45vh;
+    right: 12vw;
     left: auto;
     bottom: auto;
     margin: 0;
 }
 
 .hex-6 {
-    top: 8%;
-    right: 18%;
+    top: 8vh;
+    right: 18vw;
     width: 35px;
     height: 35px;
     left: auto;
@@ -923,8 +929,8 @@ img {
 }
 
 .hex-7 {
-    bottom: 40%;
-    right: 20%;
+    bottom: 40vh;
+    right: 20vw;
     width: 28px;
     height: 28px;
     top: auto;
@@ -933,8 +939,8 @@ img {
 }
 
 .hex-8 {
-    top: 68%;
-    right: 35%;
+    top: 68vh;
+    right: 35vw;
     width: 32px;
     height: 32px;
     left: auto;
@@ -950,17 +956,17 @@ img {
 
 .theme-bg .orb-nav-1 {
     top: -142px;
-    left: 62%;
+    left: 62vw;
 }
 
 .theme-bg .orb-nav-2 {
     top: -92px;
-    left: 30%;
+    left: 30vw;
 }
 
 .theme-bg .orb-3 {
-    top: 24%;
-    right: 5%;
+    top: 24vh;
+    right: 5vw;
 }
 
 .theme-bg .orb-8 {
@@ -970,79 +976,79 @@ img {
 }
 
 .theme-bg .hex-1 {
-    top: 13%;
-    left: 7%;
+    top: 13vh;
+    left: 7vw;
 }
 
 .theme-bg .hex-2 {
-    top: 22%;
-    right: 7%;
+    top: 22vh;
+    right: 7vw;
 }
 
 .theme-bg .hex-5 {
-    top: 32%;
-    left: 4%;
+    top: 32vh;
+    left: 4vw;
 }
 
 .theme-bg .hex-6 {
-    top: 9%;
-    right: 19%;
+    top: 9vh;
+    right: 19vw;
 }
 
 .theme-bg .plus-1 {
-    top: 12%;
-    right: 14%;
+    top: 12vh;
+    right: 14vw;
 }
 
 .theme-bg .plus-4 {
-    top: 44%;
-    right: 8%;
+    top: 44vh;
+    right: 8vw;
 }
 
 .theme-bg .plus-6 {
-    top: 22%;
-    left: 28%;
+    top: 22vh;
+    left: 28vw;
 }
 
 /* Footer-anchored shape layout: keep this cluster in the lower viewport band. */
 .theme-bg-footer .beam-two {
-    bottom: 6%;
-    left: -10%;
+    bottom: 6vh;
+    left: -10vw;
     transform: rotate(16deg);
 }
 
 .theme-bg-footer .orb-10 {
-    bottom: -3%;
+    bottom: -3vh;
     left: -34px;
 }
 
 .theme-bg-footer .hex-3 {
-    bottom: 24%;
-    right: 9%;
+    bottom: 24vh;
+    right: 9vw;
     top: auto;
 }
 
 .theme-bg-footer .hex-4 {
-    bottom: 12%;
-    left: 11%;
+    bottom: 12vh;
+    left: 11vw;
     top: auto;
 }
 
 .theme-bg-footer .hex-7 {
-    bottom: 30%;
-    right: 20%;
+    bottom: 30vh;
+    right: 20vw;
     top: auto;
 }
 
 .theme-bg-footer .hex-8 {
-    bottom: 18%;
-    right: 34%;
+    bottom: 18vh;
+    right: 34vw;
     top: auto;
 }
 
 .theme-bg-footer .plus-7 {
-    bottom: 16%;
-    right: 12%;
+    bottom: 16vh;
+    right: 12vw;
     top: auto;
 }
 
