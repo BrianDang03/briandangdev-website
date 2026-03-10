@@ -77,38 +77,35 @@ function AnimatedWaves() {
   const rafRef = useRef(0);
 
   useEffect(() => {
-    // Stratified random phases: divide [0, 2π] into N equal bands, pick one
-    // random value per band, then shuffle — guarantees even spread every load.
-    function stratifiedPhases(n) {
-      const step = (Math.PI * 2) / n;
-      const phases = Array.from({ length: n }, (_, i) => i * step + Math.random() * step);
-      for (let i = phases.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [phases[i], phases[j]] = [phases[j], phases[i]];
-      }
-      return phases;
-    }
-    const sPhases = stratifiedPhases(4);
-    const ePhases = stratifiedPhases(4);
+    // Random starting rotation so helix is at a different position every load
+    const initPhi = Math.random() * Math.PI * 2;
+
+    // Helix constants
+    const SPIRAL_CENTER = 400; // vertical midpoint in SVG viewBox units
+    const SPIRAL_TURNS  = 1;   // full sine cycles left→right (1 = one loop)
 
     // Each wave has independent start-Y and end-Y oscillators at different periods
     // and phases. As they drift apart or together the chord tilts and the
     // concavity of the wave shape changes naturally on its own.
     const WAVES = [
-      { r: r0, b: b0, cr: cr0, baseY: 320, sAmp: 95, sFreq: 9.0e-5, sPhase: sPhases[0], eAmp: 48, eFreq: 1.1e-4, ePhase: ePhases[0], wAmp:  22, wSpeed: 1.8e-5, wOff: 1.47 },
-      { r: r1, b: b1, cr: cr1, baseY: 355, sAmp: 90, sFreq: 1.0e-4, sPhase: sPhases[1], eAmp: 52, eFreq: 7.5e-5, ePhase: ePhases[1], wAmp: -20, wSpeed: 1.5e-5, wOff: 1.67 },
-      { r: r2, b: b2, cr: cr2, baseY: 390, sAmp: 92, sFreq: 8.0e-5, sPhase: sPhases[2], eAmp: 45, eFreq: 9.5e-5, ePhase: ePhases[2], wAmp:  24, wSpeed: 2.2e-5, wOff: 1.54 },
-      { r: r3, b: b3, cr: cr3, baseY: 425, sAmp: 88, sFreq: 8.5e-5, sPhase: sPhases[3], eAmp: 50, eFreq: 1.0e-4, ePhase: ePhases[3], wAmp: -18, wSpeed: 1.9e-5, wOff: 1.72 },
+      // Pair A: phases 0 and π — always on opposite sides of the coil
+      { r: r0, b: b0, cr: cr0, baseY: SPIRAL_CENTER, wAmp: 200, wSpeed: 7e-5, wOff: initPhi,            breathAmp: 18, breathFreq: 3.2e-5, breathPhase: 0.0, driftAmp: 32, driftFreq: 1.8e-5, driftPhase: 0.0 },
+      { r: r1, b: b1, cr: cr1, baseY: SPIRAL_CENTER, wAmp: 200, wSpeed: 7e-5, wOff: initPhi + Math.PI, breathAmp: 16, breathFreq: 2.8e-5, breathPhase: 1.4, driftAmp: 30, driftFreq: 1.8e-5, driftPhase: 0.0 },
+      // Pair B: phases π/2 and 3π/2 — slightly different speed so pairs slowly drift apart and together
+      { r: r2, b: b2, cr: cr2, baseY: SPIRAL_CENTER, wAmp: 190, wSpeed: 8.25e-5, wOff: initPhi + Math.PI * 0.5,  breathAmp: 20, breathFreq: 3.5e-5, breathPhase: 2.8, driftAmp: 35, driftFreq: 2.1e-5, driftPhase: 1.2 },
+      { r: r3, b: b3, cr: cr3, baseY: SPIRAL_CENTER, wAmp: 190, wSpeed: 8.25e-5, wOff: initPhi + Math.PI * 1.5, breathAmp: 17, breathFreq: 2.6e-5, breathPhase: 4.2, driftAmp: 33, driftFreq: 2.1e-5, driftPhase: 1.2 },
     ];
 
     function buildPath(w, t) {
-      const sY = w.baseY + w.sAmp * Math.sin(w.sFreq * t + w.sPhase);
-      const eY = w.baseY + w.eAmp * Math.sin(w.eFreq * t + w.ePhase);
-      // The chord defines a tilted baseline from sY to eY.
-      const chord = x => sY + (eY - sY) * (x / 3000);
-      // Wave humps sit on top of the chord so concavity follows the chord tilt.
-      const hump  = x => w.wAmp * Math.sin((x / 3000) * Math.PI * 2 + w.wSpeed * t + w.wOff);
-      const y = x => chord(x) + hump(x);
+      const phi = w.wSpeed * t + w.wOff;
+      // Amplitude breathes slowly — the line billows wide then collapses gently
+      const amp    = w.wAmp + w.breathAmp * Math.sin(w.breathFreq * t + w.breathPhase);
+      // Center drifts vertically so the whole coil sways up and down like silk
+      const center = w.baseY + w.driftAmp  * Math.sin(w.driftFreq  * t + w.driftPhase);
+      const helix  = x => center + amp * Math.sin((x / 3000) * Math.PI * 2 * SPIRAL_TURNS + phi);
+      const sY     = helix(0);
+      const eY     = helix(3000);
+      const y      = x => helix(x);
       return (
         `M 0,${sY.toFixed(1)} ` +
         `Q 380,${y(380).toFixed(1)} 780,${y(780).toFixed(1)} ` +
@@ -206,6 +203,17 @@ function AnimatedWaves() {
           <stop offset="80%" stopColor="rgba(100, 180, 255, 0.38)" />
           <stop offset="100%" stopColor="rgba(255, 255, 255, 0)" />
         </linearGradient>
+        {/* SVG filters: applied as attributes so they paint inline with geometry */}
+        {/* instead of creating a separate CSS compositing layer that flickers.   */}
+        <filter id="wave-glow-base" x="-10%" y="-300%" width="120%" height="700%" colorInterpolationFilters="sRGB">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="wave-glow-scan" x="-10%" y="-300%" width="120%" height="700%" colorInterpolationFilters="sRGB">
+          <feGaussianBlur stdDeviation="5" result="blur1"/>
+          <feGaussianBlur stdDeviation="12" result="blur2"/>
+          <feMerge><feMergeNode in="blur2"/><feMergeNode in="blur1"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
         {/* Clip rects control the visible window for each scan overlay */}
         <clipPath id="scan-clip-0"><rect ref={cr0} x="0" y="-200" width="0" height="1400" /></clipPath>
         <clipPath id="scan-clip-1"><rect ref={cr1} x="0" y="-200" width="0" height="1400" /></clipPath>
@@ -213,15 +221,15 @@ function AnimatedWaves() {
         <clipPath id="scan-clip-3"><rect ref={cr3} x="0" y="-200" width="0" height="1400" /></clipPath>
       </defs>
       {/* Base lines – always visible; share the same JS-driven path geometry */}
-      <path ref={b0} d="" stroke="url(#wave-gradient)" strokeWidth="1.6" fill="none" className="wave-base" />
-      <path ref={b1} d="" stroke="url(#wave-gradient)" strokeWidth="1.5" fill="none" className="wave-base wave-base-2" />
-      <path ref={b2} d="" stroke="url(#wave-gradient)" strokeWidth="1.5" fill="none" className="wave-base wave-base-3" />
-      <path ref={b3} d="" stroke="url(#wave-gradient)" strokeWidth="1.6" fill="none" className="wave-base wave-base-4" />
+      <path ref={b0} d="" stroke="url(#wave-gradient)" strokeWidth="1.6" fill="none" className="wave-base" filter="url(#wave-glow-base)" />
+      <path ref={b1} d="" stroke="url(#wave-gradient)" strokeWidth="1.5" fill="none" className="wave-base wave-base-2" filter="url(#wave-glow-base)" />
+      <path ref={b2} d="" stroke="url(#wave-gradient)" strokeWidth="1.5" fill="none" className="wave-base wave-base-3" filter="url(#wave-glow-base)" />
+      <path ref={b3} d="" stroke="url(#wave-gradient)" strokeWidth="1.6" fill="none" className="wave-base wave-base-4" filter="url(#wave-glow-base)" />
       {/* Scan highlights – clipPath reveals only the dots inside the window */}
-      <path ref={r0} d="" stroke="url(#wave-gradient)" strokeWidth="2.9" fill="none" className="wave-line" clipPath="url(#scan-clip-0)" />
-      <path ref={r1} d="" stroke="url(#wave-gradient)" strokeWidth="2.8" fill="none" className="wave-line wave-line-2" clipPath="url(#scan-clip-1)" />
-      <path ref={r2} d="" stroke="url(#wave-gradient)" strokeWidth="2.8" fill="none" className="wave-line wave-line-3" clipPath="url(#scan-clip-2)" />
-      <path ref={r3} d="" stroke="url(#wave-gradient)" strokeWidth="2.9" fill="none" className="wave-line wave-line-4" clipPath="url(#scan-clip-3)" />
+      <path ref={r0} d="" stroke="url(#wave-gradient)" strokeWidth="2.9" fill="none" className="wave-line" filter="url(#wave-glow-scan)" clipPath="url(#scan-clip-0)" />
+      <path ref={r1} d="" stroke="url(#wave-gradient)" strokeWidth="2.8" fill="none" className="wave-line wave-line-2" filter="url(#wave-glow-scan)" clipPath="url(#scan-clip-1)" />
+      <path ref={r2} d="" stroke="url(#wave-gradient)" strokeWidth="2.8" fill="none" className="wave-line wave-line-3" filter="url(#wave-glow-scan)" clipPath="url(#scan-clip-2)" />
+      <path ref={r3} d="" stroke="url(#wave-gradient)" strokeWidth="2.9" fill="none" className="wave-line wave-line-4" filter="url(#wave-glow-scan)" clipPath="url(#scan-clip-3)" />
     </svg>
   );
 }

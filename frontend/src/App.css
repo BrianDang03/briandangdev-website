@@ -610,6 +610,7 @@ img {
     width: 3000px;
     height: 1000px;
     transform: translate(-50%, -50%);
+    will-change: transform;
     z-index: -1;
     pointer-events: none;
 }
@@ -679,41 +680,43 @@ img {
 
 
 /* Override: path geometry + dasharray are JS-driven; CSS handles glow only. */
+/* Glow is applied via SVG <filter> attribute on the paths, not CSS filter,   */
+/* to avoid per-frame compositing-layer repaints that cause flicker.          */
 .wave-line {
-    stroke-width: 2.1px;
+    stroke-width: 2.3px;
     stroke-linecap: round;
-    filter: drop-shadow(0 0 7px rgba(120, 205, 255, 0.52)) drop-shadow(0 0 16px rgba(120, 205, 255, 0.3));
-    animation: wave-glow-flow 6s ease-in-out infinite, wave-startup-clamp 0.72s ease-out 1;
-    animation-delay: 0s, 0s;
+    animation: wave-startup-clamp 0.72s ease-out 1;
+    animation-delay: 0s;
     opacity: 1;
 }
 
 .wave-line-2 {
     stroke-dasharray: 4 8;
-    animation: wave-glow-flow 7s ease-in-out infinite, wave-startup-clamp 0.72s ease-out 1;
-    animation-delay: 0.22s, 0s;
+    animation: wave-startup-clamp 0.72s ease-out 1;
+    animation-delay: 0.22s;
     opacity: 1;
 }
 
 .wave-line-3 {
     stroke-dasharray: 2 4;
-    animation: wave-glow-flow 5.8s ease-in-out infinite, wave-startup-clamp 0.72s ease-out 1;
-    animation-delay: 0.12s, 0s;
+    animation: wave-startup-clamp 0.72s ease-out 1;
+    animation-delay: 0.12s;
     opacity: 1;
 }
 
 .wave-line-4 {
-    animation: wave-glow-flow 6.5s ease-in-out infinite, wave-startup-clamp 0.72s ease-out 1;
-    animation-delay: 0.34s, 0s;
+    animation: wave-startup-clamp 0.72s ease-out 1;
+    animation-delay: 0.34s;
     opacity: 1;
 }
 
 /* Always-visible base lines; scan highlights travel over the top. */
+/* No CSS filter here — glow is applied as SVG filter attribute to avoid      */
+/* per-frame compositing-layer invalidation from d attribute changes.         */
 .wave-base {
     stroke-linecap: round;
     stroke-linejoin: round;
     opacity: 0.32;
-    filter: drop-shadow(0 0 4px rgba(120, 205, 255, 0.22));
     animation: wave-startup-clamp 0.72s ease-out 1;
 }
 
@@ -725,7 +728,7 @@ img {
 [data-theme="light"] .wave-base-2,
 [data-theme="light"] .wave-base-3,
 [data-theme="light"] .wave-base-4 {
-    filter: drop-shadow(0 0 4px rgba(36, 82, 150, 0.3));
+    /* SVG filter handles glow; nothing to override here */
 }
 
 
@@ -733,7 +736,7 @@ img {
 [data-theme="light"] .wave-line-2,
 [data-theme="light"] .wave-line-3,
 [data-theme="light"] .wave-line-4 {
-    filter: drop-shadow(0 0 7px rgba(36, 82, 150, 0.58)) drop-shadow(0 0 15px rgba(64, 120, 200, 0.34));
+    /* SVG filter handles glow; nothing to override here */
 }
 
 .orb,
