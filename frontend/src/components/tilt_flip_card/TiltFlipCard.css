@@ -51,6 +51,10 @@
   animation-name: tfc-enter-from-top;
 }
 
+.tfc-scene.tfc-enter-front {
+  animation-name: tfc-enter-from-front;
+}
+
 .tfc-scene.tfc-enter-right {
   animation-name: tfc-enter-from-right;
 }
@@ -80,6 +84,18 @@
   from {
     opacity: 0;
     transform: translate3d(0, -44px, 0) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes tfc-enter-from-front {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.9);
   }
 
   to {
@@ -133,7 +149,6 @@
   border-radius: var(--tfc-radius);
   will-change: transform, box-shadow;
   transition:
-    transform 1200ms cubic-bezier(0.19, 1, 0.22, 1),
     box-shadow 400ms cubic-bezier(0.19, 1, 0.22, 1) 1100ms,
     filter 400ms var(--tfc-ease),
     top 900ms cubic-bezier(0.19, 1, 0.22, 1),
@@ -298,6 +313,7 @@
   transform: scale(1.045);
   filter: saturate(0.9) contrast(0.95);
   transition: opacity 860ms cubic-bezier(0.19, 1, 0.22, 1), transform 980ms cubic-bezier(0.19, 1, 0.22, 1), filter 760ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--tfc-bg-enter-delay, 0ms);
   background: rgba(16, 22, 31, 0.4);
 }
 
@@ -449,5 +465,21 @@
 @media (max-width: 768px) {
   .back-overlay {
     padding: 64px 18px 18px;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .tfc-backdrop {
+    backdrop-filter: blur(3px);
+  }
+
+  .tfc-glare {
+    opacity: 0 !important;
+  }
+
+  .tfc-tilt {
+    box-shadow:
+      var(--shadow-x, 0px) var(--shadow-y, 0px) var(--shadow-blur, 20px) rgba(0, 0, 0, 0.24),
+      0 calc(var(--hover, 0) * 18px) calc(var(--hover, 0) * 24px) rgba(0, 0, 0, 0.2);
   }
 }

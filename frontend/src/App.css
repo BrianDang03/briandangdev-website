@@ -1126,6 +1126,27 @@ img {
     }
 }
 
+@media (hover: none) and (pointer: coarse) {
+
+    .theme-bg,
+    .theme-bg-footer {
+        filter: none;
+    }
+
+    .wave-line,
+    .wave-line-2,
+    .wave-line-3,
+    .wave-line-4 {
+        filter: none;
+        stroke-width: 2px;
+        animation: pulse-ltr-scan 9.5s linear infinite;
+    }
+
+    .orb {
+        filter: none;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
 
     *,

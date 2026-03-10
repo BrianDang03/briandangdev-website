@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy } from "react";
 import { Link } from "react-router-dom";
 import FlipIcon from "../../components/FlipIcon/FlipIcon";
 import SEO from "../../components/SEO";
@@ -9,40 +9,12 @@ import "../../components/ActionButton.css";
 const ASSET_BASE = import.meta.env.BASE_URL;
 const CARD_HINT_TEXT = "Tap to Learn More";
 const TiltFlipCard = lazy(() => import("../../components/tilt_flip_card/TiltFlipCard"));
-const HERO_IMAGES = ["modem.jpg", "headshot.jpg", "contact.png"];
 
 function CardFallback() {
   return <div className="tilt-card-fallback" aria-hidden="true" />;
 }
 
 export default function Home({ name, job }) {
-  useEffect(() => {
-    let idleHandle;
-    let timeoutHandle;
-
-    const warmImages = () => {
-      HERO_IMAGES.forEach((imageName) => {
-        const img = new Image();
-        img.src = `${ASSET_BASE}${imageName}`;
-      });
-    };
-
-    if (typeof window.requestIdleCallback === "function") {
-      idleHandle = window.requestIdleCallback(warmImages, { timeout: 500 });
-    } else {
-      timeoutHandle = window.setTimeout(warmImages, 200);
-    }
-
-    return () => {
-      if (idleHandle) {
-        window.cancelIdleCallback(idleHandle);
-      }
-      if (timeoutHandle) {
-        window.clearTimeout(timeoutHandle);
-      }
-    };
-  }, []);
-
   return (
     <PageTransition>
       <SEO />
@@ -102,7 +74,7 @@ export default function Home({ name, job }) {
           <Suspense fallback={<CardFallback />}>
             <TiltFlipCard
               frontImg={`${ASSET_BASE}headshot.jpg`}
-              entranceFrom="top"
+              entranceFrom="front"
               entranceOrder={0}
               front={
                 <div className="card-copy-front">

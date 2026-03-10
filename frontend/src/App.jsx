@@ -3,15 +3,42 @@ import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import Navbar from "./components/Navbar/Navbar";
-import Home from "./pages/Home/Home";
 import Footer from "./components/Footer/Footer";
 import ErrorBoundary from "./components/ErrorBoundary";
 import SkipToContent from "./components/SkipToContent/SkipToContent";
 import PageTransition from "./components/PageTransition";
 import SEO from "./components/SEO";
 
+const Home = lazy(() => import("./pages/Home/Home"));
 const Portfolio = lazy(() => import("./pages/Portfolio/Portfolio"));
 const About = lazy(() => import("./pages/About/About"));
+
+const BOOT_MIN_DELAY_MS = 420;
+const BOOT_ASSET_TIMEOUT_MS = 1800;
+const BOOT_IMAGES = ["modem.jpg", "headshot.jpg", "contact.png", "flipIcon.png"];
+
+function withTimeout(promise, timeoutMs) {
+  return Promise.race([
+    promise,
+    new Promise((resolve) => {
+      window.setTimeout(resolve, timeoutMs);
+    })
+  ]);
+}
+
+function preloadImage(src) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    const done = () => resolve();
+    img.onload = done;
+    img.onerror = done;
+    img.src = src;
+
+    if (typeof img.decode === "function") {
+      img.decode().then(done).catch(done);
+    }
+  });
+}
 
 function App() {
   const location = useLocation();
@@ -55,12 +82,13 @@ function App() {
     let idleHandle;
     let fallbackPreloadTimeout;
     let minDelayTimeout;
+    let bootTimeout;
     let rafBootA;
     let rafBootB;
 
     const boot = async () => {
       const minDelay = new Promise((resolve) => {
-        minDelayTimeout = window.setTimeout(resolve, 180);
+        minDelayTimeout = window.setTimeout(resolve, BOOT_MIN_DELAY_MS);
       });
 
       const nextPaint = new Promise((resolve) => {
@@ -69,7 +97,27 @@ function App() {
         });
       });
 
-      await Promise.allSettled([minDelay, nextPaint]);
+      const preloadImages = Promise.allSettled(
+        BOOT_IMAGES.map((name) => preloadImage(`${import.meta.env.BASE_URL}${name}`))
+      );
+
+      const preloadRoutes = Promise.allSettled([
+        import("./pages/About/About"),
+        import("./pages/Portfolio/Portfolio")
+      ]);
+
+      const preloadReady = withTimeout(
+        Promise.allSettled([preloadImages, preloadRoutes]),
+        BOOT_ASSET_TIMEOUT_MS
+      );
+
+      bootTimeout = window.setTimeout(() => {
+        if (!isCancelled) {
+          setIsBootReady(true);
+        }
+      }, BOOT_ASSET_TIMEOUT_MS + BOOT_MIN_DELAY_MS + 300);
+
+      await Promise.allSettled([minDelay, nextPaint, preloadReady]);
 
       if (!isCancelled) {
         setIsBootReady(true);
@@ -98,6 +146,7 @@ function App() {
     return () => {
       isCancelled = true;
       window.clearTimeout(minDelayTimeout);
+      window.clearTimeout(bootTimeout);
       window.clearTimeout(fallbackPreloadTimeout);
       window.cancelAnimationFrame(rafBootA);
       window.cancelAnimationFrame(rafBootB);
@@ -281,7 +330,14 @@ function App() {
           <main className="main-content" id="main-content">
             <AnimatePresence mode="wait">
               <Routes location={location} key={location.pathname}>
-                <Route path="/" element={<Home name="Brian Dang" job="Software Engineer" />} />
+                <Route
+                  path="/"
+                  element={
+                    <Suspense fallback={<section className="page-shell route-loading">Loading home...</section>}>
+                      <Home name="Brian Dang" job="Software Engineer" />
+                    </Suspense>
+                  }
+                />
                 <Route
                   path="/portfolio"
                   element={

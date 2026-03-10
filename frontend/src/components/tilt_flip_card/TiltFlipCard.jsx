@@ -12,7 +12,10 @@ const MOVE_THRESHOLD_PX = 10;
 const DEFAULT_EXPAND_SCALE_MAX = 2.2;
 const DEFAULT_EDGE_GAP_PX = 48;
 const DEFAULT_EDGE_GAP_RATIO = 0.06;
-const LERP_FACTOR = 0.12; // Smoothness: lower = smoother but slower
+const BASE_ENTRANCE_DELAY_MS = 200; // Base delay before any card animates in
+const LERP_FACTOR_TILT = 0.24; // Tilt rotation responsiveness: higher = faster tracking
+const LERP_FACTOR = 0.24; // Glare/shadow responsiveness
+const LERP_FACTOR_POPOUT = 0.06; // Popout responsiveness
 
 const POINTER_INITIAL_STATE = {
   isDown: false,
@@ -133,40 +136,33 @@ export default function TiltFlipCard({
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
-  const [isFrontImageLoaded, setIsFrontImageLoaded] = useState(!frontImg);
-  const [isBackImageLoaded, setIsBackImageLoaded] = useState(!backImg);
-  const [isFrontImageVisible, setIsFrontImageVisible] = useState(!frontImg);
-  const [isBackImageVisible, setIsBackImageVisible] = useState(!backImg);
+  const [frontVisibleSrc, setFrontVisibleSrc] = useState(frontImg || null);
+  const [backVisibleSrc, setBackVisibleSrc] = useState(backImg || null);
 
-  useEffect(() => {
-    setIsFrontImageLoaded(!frontImg);
-    setIsFrontImageVisible(!frontImg);
-  }, [frontImg]);
-
-  useEffect(() => {
-    setIsBackImageLoaded(!backImg);
-    setIsBackImageVisible(!backImg);
-  }, [backImg]);
+  const isFrontImageVisible = !frontImg || frontVisibleSrc === frontImg;
+  const isBackImageVisible = !backImg || backVisibleSrc === backImg;
 
   useEffect(() => {
     if (!frontImg) {
       return;
     }
 
+    const source = frontImg;
     let isCancelled = false;
+    let isResolved = false;
     let revealTimeout;
     const img = new Image();
 
     const markLoaded = () => {
-      if (isCancelled) return;
-      setIsFrontImageLoaded(true);
+      if (isCancelled || isResolved) return;
+      isResolved = true;
 
       // Ensure at least one paint in loading state so cached images still fade in.
       window.requestAnimationFrame(() => {
         if (isCancelled) return;
         revealTimeout = window.setTimeout(() => {
           if (!isCancelled) {
-            setIsFrontImageVisible(true);
+            setFrontVisibleSrc((prev) => (prev === source ? prev : source));
           }
         }, 140);
       });
@@ -191,19 +187,21 @@ export default function TiltFlipCard({
       return;
     }
 
+    const source = backImg;
     let isCancelled = false;
+    let isResolved = false;
     let revealTimeout;
     const img = new Image();
 
     const markLoaded = () => {
-      if (isCancelled) return;
-      setIsBackImageLoaded(true);
+      if (isCancelled || isResolved) return;
+      isResolved = true;
 
       window.requestAnimationFrame(() => {
         if (isCancelled) return;
         revealTimeout = window.setTimeout(() => {
           if (!isCancelled) {
-            setIsBackImageVisible(true);
+            setBackVisibleSrc((prev) => (prev === source ? prev : source));
           }
         }, 140);
       });
@@ -235,7 +233,8 @@ export default function TiltFlipCard({
       "--card-w": `${width}px`,
       "--card-h": `${height}px`,
       "--pop-out": `${popOut}px`,
-      "--tfc-enter-delay": `${Math.max(0, entranceOrder) * 120}ms`
+      "--tfc-enter-delay": `${BASE_ENTRANCE_DELAY_MS + Math.max(0, entranceOrder) * 120}ms`,
+      "--tfc-bg-enter-delay": `${BASE_ENTRANCE_DELAY_MS + Math.max(0, entranceOrder) * 120}ms`
     }),
     [width, height, popOut, entranceOrder]
   );
@@ -245,7 +244,9 @@ export default function TiltFlipCard({
       ? "tfc-enter-left"
       : entranceFrom === "right"
         ? "tfc-enter-right"
-        : "tfc-enter-top";
+        : entranceFrom === "front"
+          ? "tfc-enter-front"
+          : "tfc-enter-top";
 
   const applyCssVars = useCallback((vars) => {
     const element = tiltRef.current;
@@ -289,32 +290,38 @@ export default function TiltFlipCard({
   const animateLerp = useCallback(() => {
     if (!isAnimatingRef.current) return;
 
+    const element = tiltRef.current;
+    if (!element) {
+      isAnimatingRef.current = false;
+      return;
+    }
+
+    const style = element.style;
+
     const state = lerpStateRef.current;
     const { current, target } = state;
 
-    // Lerp all values
-    current.rx = lerp(current.rx, target.rx, LERP_FACTOR);
-    current.ry = lerp(current.ry, target.ry, LERP_FACTOR);
+    // Lerp all values with independent factors
+    current.rx = lerp(current.rx, target.rx, LERP_FACTOR_TILT);
+    current.ry = lerp(current.ry, target.ry, LERP_FACTOR_TILT);
     current.glareX = lerp(current.glareX, target.glareX, LERP_FACTOR);
     current.glareY = lerp(current.glareY, target.glareY, LERP_FACTOR);
     current.glareO = lerp(current.glareO, target.glareO, LERP_FACTOR);
     current.shadowX = lerp(current.shadowX, target.shadowX, LERP_FACTOR);
     current.shadowY = lerp(current.shadowY, target.shadowY, LERP_FACTOR);
     current.shadowBlur = lerp(current.shadowBlur, target.shadowBlur, LERP_FACTOR);
-    current.hover = lerp(current.hover, target.hover, LERP_FACTOR);
+    current.hover = lerp(current.hover, target.hover, LERP_FACTOR_POPOUT);
 
-    // Apply the lerped values
-    applyCssVars({
-      "--hover": current.hover.toString(),
-      "--rx": `${current.rx}deg`,
-      "--ry": `${current.ry}deg`,
-      "--glare-x": `${current.glareX}%`,
-      "--glare-y": `${current.glareY}%`,
-      "--glare-o": current.glareO.toString(),
-      "--shadow-x": `${current.shadowX}px`,
-      "--shadow-y": `${current.shadowY}px`,
-      "--shadow-blur": `${current.shadowBlur}px`
-    });
+    // Apply lerped values directly to avoid per-frame object allocation.
+    style.setProperty("--hover", current.hover.toString());
+    style.setProperty("--rx", `${current.rx}deg`);
+    style.setProperty("--ry", `${current.ry}deg`);
+    style.setProperty("--glare-x", `${current.glareX}%`);
+    style.setProperty("--glare-y", `${current.glareY}%`);
+    style.setProperty("--glare-o", current.glareO.toString());
+    style.setProperty("--shadow-x", `${current.shadowX}px`);
+    style.setProperty("--shadow-y", `${current.shadowY}px`);
+    style.setProperty("--shadow-blur", `${current.shadowBlur}px`);
 
     // Check if we're close enough to stop animating
     const threshold = 0.001;
@@ -332,7 +339,7 @@ export default function TiltFlipCard({
     } else {
       isAnimatingRef.current = false;
     }
-  }, [applyCssVars]);
+  }, []);
 
   useEffect(() => {
     animateLerpRef.current = animateLerp;
@@ -748,14 +755,6 @@ export default function TiltFlipCard({
                   loading="eager"
                   fetchPriority="high"
                   decoding="async"
-                  onLoad={() => {
-                    setIsFrontImageLoaded(true);
-                    window.setTimeout(() => setIsFrontImageVisible(true), 120);
-                  }}
-                  onError={() => {
-                    setIsFrontImageLoaded(true);
-                    setIsFrontImageVisible(true);
-                  }}
                   draggable="false"
                 />
               )}
@@ -777,14 +776,6 @@ export default function TiltFlipCard({
                   className={`card-bg-image ${isBackImageVisible ? "is-loaded" : "is-loading"}`}
                   loading="lazy"
                   decoding="async"
-                  onLoad={() => {
-                    setIsBackImageLoaded(true);
-                    window.setTimeout(() => setIsBackImageVisible(true), 120);
-                  }}
-                  onError={() => {
-                    setIsBackImageLoaded(true);
-                    setIsBackImageVisible(true);
-                  }}
                   draggable="false"
                 />
               )}
