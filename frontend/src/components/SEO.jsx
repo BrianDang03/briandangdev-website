@@ -1,6 +1,54 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
+const headTagCache = new Map();
+
+function getOrCreateMeta(attribute, value) {
+    const cacheKey = `meta:${attribute}:${value}`;
+    const cached = headTagCache.get(cacheKey);
+    if (cached) {
+        return cached;
+    }
+
+    let tag = document.querySelector(`meta[${attribute}="${value}"]`);
+    if (!tag) {
+        tag = document.createElement('meta');
+        tag.setAttribute(attribute, value);
+        document.head.appendChild(tag);
+    }
+
+    headTagCache.set(cacheKey, tag);
+    return tag;
+}
+
+function getOrCreateNamedMeta(name) {
+    return getOrCreateMeta('name', name);
+}
+
+function getOrCreateCanonicalLink() {
+    const cacheKey = 'link:canonical';
+    const cached = headTagCache.get(cacheKey);
+    if (cached) {
+        return cached;
+    }
+
+    let link = document.querySelector('link[rel="canonical"]');
+    if (!link) {
+        link = document.createElement('link');
+        link.rel = 'canonical';
+        document.head.appendChild(link);
+    }
+
+    headTagCache.set(cacheKey, link);
+    return link;
+}
+
+function setContentIfChanged(element, value) {
+    if (element.content !== value) {
+        element.content = value;
+    }
+}
+
 export default function SEO({ title, description, keywords }) {
     const location = useLocation();
 
@@ -14,56 +62,27 @@ export default function SEO({ title, description, keywords }) {
     const canonicalUrl = `https://briandangdev.com${location.pathname}`;
 
     useEffect(() => {
-        document.title = pageTitle;
-
-        // Update meta description
-        let metaDescription = document.querySelector('meta[name="description"]');
-        if (!metaDescription) {
-            metaDescription = document.createElement('meta');
-            metaDescription.name = 'description';
-            document.head.appendChild(metaDescription);
+        if (document.title !== pageTitle) {
+            document.title = pageTitle;
         }
-        metaDescription.content = pageDescription;
 
-        // Update meta keywords
-        let metaKeywords = document.querySelector('meta[name="keywords"]');
-        if (!metaKeywords) {
-            metaKeywords = document.createElement('meta');
-            metaKeywords.name = 'keywords';
-            document.head.appendChild(metaKeywords);
+        setContentIfChanged(getOrCreateNamedMeta('description'), pageDescription);
+        setContentIfChanged(getOrCreateNamedMeta('keywords'), pageKeywords);
+
+        setContentIfChanged(getOrCreateMeta('property', 'og:title'), pageTitle);
+        setContentIfChanged(getOrCreateMeta('property', 'og:description'), pageDescription);
+        setContentIfChanged(getOrCreateMeta('property', 'og:url'), canonicalUrl);
+        setContentIfChanged(getOrCreateMeta('property', 'og:type'), 'website');
+
+        setContentIfChanged(getOrCreateNamedMeta('twitter:card'), 'summary_large_image');
+        setContentIfChanged(getOrCreateNamedMeta('twitter:title'), pageTitle);
+        setContentIfChanged(getOrCreateNamedMeta('twitter:description'), pageDescription);
+
+        const canonical = getOrCreateCanonicalLink();
+        if (canonical.href !== canonicalUrl) {
+            canonical.href = canonicalUrl;
         }
-        metaKeywords.content = pageKeywords;
-
-        // Update Open Graph tags
-        updateMetaTag('property', 'og:title', pageTitle);
-        updateMetaTag('property', 'og:description', pageDescription);
-        updateMetaTag('property', 'og:url', canonicalUrl);
-        updateMetaTag('property', 'og:type', 'website');
-
-        // Update Twitter Card tags
-        updateMetaTag('name', 'twitter:card', 'summary_large_image');
-        updateMetaTag('name', 'twitter:title', pageTitle);
-        updateMetaTag('name', 'twitter:description', pageDescription);
-
-        // Update canonical link
-        let canonical = document.querySelector('link[rel="canonical"]');
-        if (!canonical) {
-            canonical = document.createElement('link');
-            canonical.rel = 'canonical';
-            document.head.appendChild(canonical);
-        }
-        canonical.href = canonicalUrl;
     }, [pageTitle, pageDescription, pageKeywords, canonicalUrl]);
 
     return null;
-}
-
-function updateMetaTag(attribute, value, content) {
-    let tag = document.querySelector(`meta[${attribute}="${value}"]`);
-    if (!tag) {
-        tag = document.createElement('meta');
-        tag.setAttribute(attribute, value);
-        document.head.appendChild(tag);
-    }
-    tag.content = content;
 }

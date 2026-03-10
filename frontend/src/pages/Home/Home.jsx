@@ -9,6 +9,11 @@ import "../../components/ActionButton.css";
 const ASSET_BASE = import.meta.env.BASE_URL;
 const CARD_HINT_TEXT = "Tap to Learn More";
 const TiltFlipCard = lazy(() => import("../../components/tilt_flip_card/TiltFlipCard"));
+const CARD_IMAGE_SIZES = "(max-width: 640px) 88vw, (max-width: 1024px) 42vw, 320px";
+
+function makeSrcSet(name, ext) {
+  return `${ASSET_BASE}${name}-480.${ext} 480w, ${ASSET_BASE}${name}-768.${ext} 768w, ${ASSET_BASE}${name}-1200.${ext} 1200w`;
+}
 
 function CardFallback() {
   return <div className="tilt-card-fallback" aria-hidden="true" />;
@@ -31,6 +36,10 @@ export default function Home({ name, job }) {
           <Suspense fallback={<CardFallback />}>
             <TiltFlipCard
               frontImg={`${ASSET_BASE}modem.jpg`}
+              frontWebpSrcSet={makeSrcSet("modem", "webp")}
+              frontJpegSrcSet={makeSrcSet("modem", "jpg")}
+              frontSizes={CARD_IMAGE_SIZES}
+              prioritizeFrontImage
               entranceFrom="left"
               entranceOrder={0}
               front={
@@ -74,6 +83,9 @@ export default function Home({ name, job }) {
           <Suspense fallback={<CardFallback />}>
             <TiltFlipCard
               frontImg={`${ASSET_BASE}headshot.jpg`}
+              frontWebpSrcSet={makeSrcSet("headshot", "webp")}
+              frontJpegSrcSet={makeSrcSet("headshot", "jpg")}
+              frontSizes={CARD_IMAGE_SIZES}
               entranceFrom="front"
               entranceOrder={0}
               front={
@@ -106,6 +118,9 @@ export default function Home({ name, job }) {
           <Suspense fallback={<CardFallback />}>
             <TiltFlipCard
               frontImg={`${ASSET_BASE}contact.png`}
+              frontWebpSrcSet={makeSrcSet("contact", "webp")}
+              frontJpegSrcSet={makeSrcSet("contact", "jpg")}
+              frontSizes={CARD_IMAGE_SIZES}
               entranceFrom="right"
               entranceOrder={0}
               front={

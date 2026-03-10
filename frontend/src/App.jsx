@@ -16,6 +16,10 @@ const About = lazy(() => import("./pages/About/About"));
 const BOOT_MIN_DELAY_MS = 420;
 const BOOT_ASSET_TIMEOUT_MS = 1800;
 const BOOT_IMAGES = ["modem.jpg", "headshot.jpg", "contact.png", "flipIcon.png"];
+const ROUTE_PRELOADERS = [
+  () => import("./pages/About/About"),
+  () => import("./pages/Portfolio/Portfolio")
+];
 
 function withTimeout(promise, timeoutMs) {
   return Promise.race([
@@ -29,7 +33,13 @@ function withTimeout(promise, timeoutMs) {
 function preloadImage(src) {
   return new Promise((resolve) => {
     const img = new Image();
-    const done = () => resolve();
+    let settled = false;
+    const done = () => {
+      if (!settled) {
+        settled = true;
+        resolve();
+      }
+    };
     img.onload = done;
     img.onerror = done;
     img.src = src;
@@ -38,6 +48,17 @@ function preloadImage(src) {
       img.decode().then(done).catch(done);
     }
   });
+}
+
+function RouteLoadingFallback({ label }) {
+  return (
+    <section className="page-shell route-loading" role="status" aria-live="polite" aria-busy="true">
+      <div className="route-loading-content">
+        <div className="app-loader-mark" aria-hidden="true" />
+        <p className="app-loader-text">{label}</p>
+      </div>
+    </section>
+  );
 }
 
 function App() {
@@ -101,13 +122,8 @@ function App() {
         BOOT_IMAGES.map((name) => preloadImage(`${import.meta.env.BASE_URL}${name}`))
       );
 
-      const preloadRoutes = Promise.allSettled([
-        import("./pages/About/About"),
-        import("./pages/Portfolio/Portfolio")
-      ]);
-
       const preloadReady = withTimeout(
-        Promise.allSettled([preloadImages, preloadRoutes]),
+        preloadImages,
         BOOT_ASSET_TIMEOUT_MS
       );
 
@@ -127,14 +143,14 @@ function App() {
     boot();
 
     const preloadNonCriticalInBackground = () => {
-      const imageNames = ["modem.jpg", "headshot.jpg", "contact.png", "flipIcon.png"];
-      imageNames.forEach((name) => {
+      BOOT_IMAGES.forEach((name) => {
         const img = new Image();
         img.src = `${import.meta.env.BASE_URL}${name}`;
       });
 
-      void import("./pages/About/About");
-      void import("./pages/Portfolio/Portfolio");
+      ROUTE_PRELOADERS.forEach((loadRoute) => {
+        void loadRoute();
+      });
     };
 
     if (typeof window.requestIdleCallback === "function") {
@@ -333,7 +349,7 @@ function App() {
                 <Route
                   path="/"
                   element={
-                    <Suspense fallback={<section className="page-shell route-loading">Loading home...</section>}>
+                    <Suspense fallback={<RouteLoadingFallback label="Loading home..." />}>
                       <Home name="Brian Dang" job="Software Engineer" />
                     </Suspense>
                   }
@@ -341,7 +357,7 @@ function App() {
                 <Route
                   path="/portfolio"
                   element={
-                    <Suspense fallback={<section className="page-shell route-loading">Loading portfolio...</section>}>
+                    <Suspense fallback={<RouteLoadingFallback label="Loading portfolio..." />}>
                       <Portfolio />
                     </Suspense>
                   }
@@ -349,7 +365,7 @@ function App() {
                 <Route
                   path="/about"
                   element={
-                    <Suspense fallback={<section className="page-shell route-loading">Loading about...</section>}>
+                    <Suspense fallback={<RouteLoadingFallback label="Loading about..." />}>
                       <About />
                     </Suspense>
                   }

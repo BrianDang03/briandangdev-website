@@ -3,12 +3,18 @@ import PageTransition from '../../components/PageTransition';
 import ProjectCard from '../../components/ProjectCard/ProjectCard';
 import './Portfolio.css';
 
+const ASSET_BASE = import.meta.env.BASE_URL;
+const PROJECT_IMAGE_SIZES = "(max-width: 900px) 92vw, 420px";
+
 const projects = [
     {
         title: "Interactive Portfolio Website",
         description: "Modern portfolio with 3D tilt effects, smooth animations, and responsive design. Features custom-built flip cards with GPU-accelerated transforms for 60fps performance.",
         technologies: ["React", "Vite", "Framer Motion", "CSS3"],
-        image: `${import.meta.env.BASE_URL}modem.jpg`,
+        image: `${ASSET_BASE}modem.jpg`,
+        imageWebpSrcSet: `${ASSET_BASE}modem-480.webp 480w, ${ASSET_BASE}modem-768.webp 768w, ${ASSET_BASE}modem-1200.webp 1200w`,
+        imageJpegSrcSet: `${ASSET_BASE}modem-480.jpg 480w, ${ASSET_BASE}modem-768.jpg 768w, ${ASSET_BASE}modem-1200.jpg 1200w`,
+        imageSizes: PROJECT_IMAGE_SIZES,
         demo: "https://briandangdev.com",
         github: "https://github.com/BrianDang03/briandangdev-website"
     },

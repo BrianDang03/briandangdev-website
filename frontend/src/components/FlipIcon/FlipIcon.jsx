@@ -7,6 +7,8 @@ export default function FlipIcon() {
                 src={`${import.meta.env.BASE_URL}flipIcon.png`}
                 alt=""
                 className="flip-icon-img"
+                loading="lazy"
+                decoding="async"
             />
         </span>
     );

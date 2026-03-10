@@ -91,9 +91,13 @@ function getExpandedMetrics(rect) {
 
 export default function TiltFlipCard({
   frontImg,
+  frontWebpSrcSet,
+  frontJpegSrcSet,
+  frontSizes,
   front,
   backImg,
   back,
+  prioritizeFrontImage = false,
   width = 320,
   height = 420,
   maxTilt = 12,
@@ -150,22 +154,13 @@ export default function TiltFlipCard({
     const source = frontImg;
     let isCancelled = false;
     let isResolved = false;
-    let revealTimeout;
     const img = new Image();
 
     const markLoaded = () => {
       if (isCancelled || isResolved) return;
       isResolved = true;
 
-      // Ensure at least one paint in loading state so cached images still fade in.
-      window.requestAnimationFrame(() => {
-        if (isCancelled) return;
-        revealTimeout = window.setTimeout(() => {
-          if (!isCancelled) {
-            setFrontVisibleSrc((prev) => (prev === source ? prev : source));
-          }
-        }, 140);
-      });
+      setFrontVisibleSrc((prev) => (prev === source ? prev : source));
     };
 
     img.onload = markLoaded;
@@ -178,7 +173,6 @@ export default function TiltFlipCard({
 
     return () => {
       isCancelled = true;
-      window.clearTimeout(revealTimeout);
     };
   }, [frontImg]);
 
@@ -190,21 +184,13 @@ export default function TiltFlipCard({
     const source = backImg;
     let isCancelled = false;
     let isResolved = false;
-    let revealTimeout;
     const img = new Image();
 
     const markLoaded = () => {
       if (isCancelled || isResolved) return;
       isResolved = true;
 
-      window.requestAnimationFrame(() => {
-        if (isCancelled) return;
-        revealTimeout = window.setTimeout(() => {
-          if (!isCancelled) {
-            setBackVisibleSrc((prev) => (prev === source ? prev : source));
-          }
-        }, 140);
-      });
+      setBackVisibleSrc((prev) => (prev === source ? prev : source));
     };
 
     img.onload = markLoaded;
@@ -217,7 +203,6 @@ export default function TiltFlipCard({
 
     return () => {
       isCancelled = true;
-      window.clearTimeout(revealTimeout);
     };
   }, [backImg]);
 
@@ -748,15 +733,32 @@ export default function TiltFlipCard({
           <div className={`tfc-flip ${isFlipped ? "is-flipped" : ""}`}>
             <div className={`tfc-face tfc-front ${frontImg && !isFrontImageVisible ? "has-loading-image" : ""}`}>
               {frontImg && (
-                <img
-                  src={frontImg}
-                  alt=""
-                  className={`card-bg-image ${isFrontImageVisible ? "is-loaded" : "is-loading"}`}
-                  loading="eager"
-                  fetchPriority="high"
-                  decoding="async"
-                  draggable="false"
-                />
+                <picture>
+                  {frontWebpSrcSet && (
+                    <source
+                      type="image/webp"
+                      srcSet={frontWebpSrcSet}
+                      sizes={frontSizes}
+                    />
+                  )}
+                  {frontJpegSrcSet && (
+                    <source
+                      type="image/jpeg"
+                      srcSet={frontJpegSrcSet}
+                      sizes={frontSizes}
+                    />
+                  )}
+                  <img
+                    src={frontImg}
+                    alt=""
+                    className={`card-bg-image ${isFrontImageVisible ? "is-loaded" : "is-loading"}`}
+                    loading={prioritizeFrontImage ? "eager" : "lazy"}
+                    fetchPriority={prioritizeFrontImage ? "high" : "auto"}
+                    decoding="async"
+                    draggable="false"
+                    sizes={frontSizes}
+                  />
+                </picture>
               )}
 
               {!isExpanded && <div className="tfc-glare" />}

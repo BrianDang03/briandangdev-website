@@ -27,7 +27,29 @@ export default function ProjectCard({ project }) {
         >
             {project.image && (
                 <div className="project-image">
-                    <img src={project.image} alt={project.title} loading="lazy" />
+                    <picture>
+                        {project.imageWebpSrcSet && (
+                            <source
+                                type="image/webp"
+                                srcSet={project.imageWebpSrcSet}
+                                sizes={project.imageSizes}
+                            />
+                        )}
+                        {project.imageJpegSrcSet && (
+                            <source
+                                type="image/jpeg"
+                                srcSet={project.imageJpegSrcSet}
+                                sizes={project.imageSizes}
+                            />
+                        )}
+                        <img
+                            src={project.image}
+                            alt={project.title}
+                            loading="lazy"
+                            decoding="async"
+                            sizes={project.imageSizes}
+                        />
+                    </picture>
                 </div>
             )}
 

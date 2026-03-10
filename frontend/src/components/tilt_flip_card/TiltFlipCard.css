@@ -246,6 +246,10 @@
   transform: translateZ(1px);
 }
 
+.tfc-face picture {
+  display: block;
+}
+
 .tfc-back {
   transform: rotateY(180deg) translateZ(1px);
 }
@@ -312,9 +316,8 @@
   opacity: 0;
   transform: scale(1.045);
   filter: saturate(0.9) contrast(0.95);
-  transition: opacity 860ms cubic-bezier(0.19, 1, 0.22, 1), transform 980ms cubic-bezier(0.19, 1, 0.22, 1), filter 760ms cubic-bezier(0.22, 1, 0.36, 1);
-  transition-delay: var(--tfc-bg-enter-delay, 0ms);
-  background: rgba(16, 22, 31, 0.4);
+  transition: opacity 340ms cubic-bezier(0.19, 1, 0.22, 1), transform 520ms cubic-bezier(0.19, 1, 0.22, 1), filter 380ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: 0ms;
 }
 
 .card-bg-image.is-loaded {
@@ -324,7 +327,7 @@
 }
 
 .card-bg-image.is-loading {
-  opacity: 0.04;
+  opacity: 0;
 }
 
 @keyframes tfc-skeleton-shimmer {
