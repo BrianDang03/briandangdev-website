@@ -69,6 +69,15 @@
   pointer-events: none;
 }
 
+/* Raise the hovered/active card above its siblings in flex/grid layouts
+   so the 3D tilt pop-out doesn't get painted over by adjacent cards.
+   Exclude expanded cards so the :hover rule (same specificity) doesn't
+   override .tfc-scene.is-expanded { z-index: 30 } and drop the card
+   behind the backdrop. */
+.tfc-scene:not(.is-expanded):hover {
+  z-index: 1;
+}
+
 @keyframes tfc-enter-from-left {
   from {
     opacity: 0;
@@ -454,7 +463,8 @@
   background: linear-gradient(160deg, rgba(26, 35, 47, 0.94), rgba(26, 35, 47, 0.78));
 }
 
-@media (hover: none), (pointer: coarse) {
+@media (hover: none),
+(pointer: coarse) {
   .tfc-close-btn:hover {
     transform: none;
     background: linear-gradient(160deg, rgba(20, 27, 37, 0.88), rgba(20, 27, 37, 0.7));
