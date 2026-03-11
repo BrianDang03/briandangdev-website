@@ -436,7 +436,7 @@ export default function TiltFlipCard({
       // Dot product: normal · halfway
       const specular = Math.max(0, normalX * hX + normalY * hY + normalZ * hZ);
 
-      const shininess = 18;
+      const shininess = 14;
       const specularIntensity = Math.pow(specular, shininess);
 
       // Calculate reflection
