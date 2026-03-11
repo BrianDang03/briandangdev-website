@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
 import "./Navbar.css";
 
 export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const navLinkClass = ({ isActive }) =>
         `nav-link ${isActive ? "is-active" : ""}`;
@@ -62,6 +64,16 @@ export default function Navbar() {
         setIsMenuOpen(false);
     };
 
+    const handleContact = () => {
+        closeMenu();
+        if (location.pathname === "/about") {
+            // Already on the About page — scroll directly, no navigation needed
+            document.getElementById("get-in-touch")?.scrollIntoView({ behavior: "smooth" });
+        } else {
+            navigate("/about", { state: { scrollTo: "get-in-touch" } });
+        }
+    };
+
     return (
         <header className="site-header">
             <nav className="site-nav" aria-label="Primary navigation">
@@ -108,9 +120,9 @@ export default function Navbar() {
                     </div>
 
                     <div className="nav-actions">
-                        <a href="mailto:briandang730@gmail.com" className="nav-cta" onClick={closeMenu}>
+                        <button type="button" className="nav-cta" onClick={handleContact}>
                             Contact
-                        </a>
+                        </button>
                         <ThemeToggle />
                     </div>
                 </div>

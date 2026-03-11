@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import SEO from '../../components/SEO';
 import PageTransition from '../../components/PageTransition';
 import SkillsGrid from '../../components/SkillsGrid/SkillsGrid';
@@ -5,6 +7,18 @@ import ContactForm from '../../components/ContactForm/ContactForm';
 import './About.css';
 
 export default function About() {
+  const { state } = useLocation();
+
+  useEffect(() => {
+    if (!state?.scrollTo) return;
+    // Delay past the 400ms page-enter transition so scroll isn't
+    // overridden by PageTransition's scroll-to-top on mount.
+    const id = setTimeout(() => {
+      document.getElementById(state.scrollTo)?.scrollIntoView({ behavior: "smooth" });
+    }, 480);
+    return () => clearTimeout(id);
+  }, [state?.scrollTo]);
+
   return (
     <PageTransition>
       <SEO
@@ -55,7 +69,7 @@ export default function About() {
             <SkillsGrid />
           </div>
 
-          <div className="about-section">
+          <div className="about-section" id="get-in-touch">
             <h2>Get in Touch</h2>
             <p>
               I'm always interested in discussing new projects, creative ideas, or opportunities
