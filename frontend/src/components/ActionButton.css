@@ -64,7 +64,8 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-@media (hover: none), (pointer: coarse) {
+@media (hover: none),
+(pointer: coarse) {
     .card-action-btn:hover {
         background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08));
         border-color: rgba(255, 255, 255, 0.3);
@@ -83,4 +84,42 @@
 .card-icon-btn .social-icon {
     width: 1.25rem;
     height: 1.25rem;
+}
+
+/* Light mode: the white-on-transparent style is unreadable on a light
+   page background. Switch to a solid dark button with light text. */
+[data-theme="light"] .card-action-btn {
+    background: linear-gradient(135deg, #1a2d43, #243448);
+    border-color: rgba(26, 45, 67, 0.5);
+    color: #ffffff;
+}
+
+[data-theme="light"] .card-action-btn:hover {
+    background: linear-gradient(135deg, #243448, #2e4060);
+    border-color: rgba(26, 45, 67, 0.75);
+    box-shadow: 0 4px 14px rgba(26, 45, 67, 0.25);
+}
+
+[data-theme="light"] .card-icon-btn {
+    background: linear-gradient(135deg, #1a2d43, #243448);
+    border-color: rgba(26, 45, 67, 0.5);
+    color: #ffffff;
+}
+
+[data-theme="light"] .card-icon-btn:hover {
+    background: linear-gradient(135deg, #243448, #2e4060);
+    border-color: rgba(26, 45, 67, 0.75);
+    box-shadow: 0 4px 14px rgba(26, 45, 67, 0.25);
+}
+
+@media (hover: none),
+(pointer: coarse) {
+
+    [data-theme="light"] .card-action-btn:hover,
+    [data-theme="light"] .card-icon-btn:hover {
+        background: linear-gradient(135deg, #1a2d43, #243448);
+        border-color: rgba(26, 45, 67, 0.5);
+        transform: none;
+        box-shadow: none;
+    }
 }

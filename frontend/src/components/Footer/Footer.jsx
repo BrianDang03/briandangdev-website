@@ -1,9 +1,20 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./Footer.css";
 
 const CURRENT_YEAR = new Date().getFullYear();
 
 export default function Footer() {
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const handleEmail = (e) => {
+        e.preventDefault();
+        if (location.pathname === "/about") {
+            document.getElementById("get-in-touch")?.scrollIntoView({ behavior: "smooth" });
+        } else {
+            navigate("/about", { state: { scrollTo: "get-in-touch" } });
+        }
+    };
     return (
         <footer className="site-footer">
             <div className="footer-grid">
@@ -27,7 +38,7 @@ export default function Footer() {
                 <div>
                     <p className="footer-title">Connect</p>
                     <div className="footer-links">
-                        <a href="mailto:briandang730@gmail.com">Email</a>
+                        <a href="/about#get-in-touch" onClick={handleEmail}>briandang730@gmail.com</a>
                         <a href="https://github.com/BrianDang03" target="_blank" rel="noreferrer">
                             GitHub
                         </a>
@@ -38,7 +49,7 @@ export default function Footer() {
                 </div>
             </div>
 
-            <p className="footer-legal">Copyright {CURRENT_YEAR} Brian Dang. All rights reserved.</p>
+            <p className="footer-legal">Copyright © {CURRENT_YEAR} Brian Dang. All rights reserved.</p>
         </footer>
     );
 }
