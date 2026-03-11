@@ -178,13 +178,13 @@ function AnimatedWaves() {
       );
       return pts.sort((a, b) => a.x - b.x);
     }
-    const W = 'white';
-    const B = 'rgb(100,180,255)';
+    const W = '#eaf4ff';
+    const B = '#2255dd';
     return [
       makeStops(mkRng(8291), 4, W),
-      makeStops(mkRng(1654), 6, W),
+      makeStops(mkRng(1654), 6, '#30b8ff'),
       makeStops(mkRng(6087), 7, B),
-      makeStops(mkRng(4315), 5, B),
+      makeStops(mkRng(4315), 5, '#6633ff'),
     ];
   }, []);
 
@@ -362,29 +362,34 @@ function AnimatedWaves() {
   return (
     <svg className="flowing-wave" viewBox="0 0 3000 1000" preserveAspectRatio="xMidYMid slice">
       <defs>
-        <linearGradient id="wave-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="rgba(255, 255, 255, 0)" />
-          <stop offset="20%" stopColor="rgba(100, 180, 255, 0.38)" />
-          <stop offset="50%" stopColor="rgba(130, 210, 255, 0.56)" />
-          <stop offset="80%" stopColor="rgba(100, 180, 255, 0.38)" />
-          <stop offset="100%" stopColor="rgba(255, 255, 255, 0)" />
+        <linearGradient id="wave-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="rgba(10,30,120,0)" />
+          <stop offset="15%" stopColor="rgba(20,80,200,0.3)" />
+          <stop offset="35%" stopColor="rgba(30,130,240,0.55)" />
+          <stop offset="50%" stopColor="rgba(50,160,255,0.65)" />
+          <stop offset="65%" stopColor="rgba(30,130,240,0.55)" />
+          <stop offset="85%" stopColor="rgba(20,80,200,0.3)" />
+          <stop offset="100%" stopColor="rgba(10,30,120,0)" />
         </linearGradient>
-        <linearGradient id="wave-gradient-white" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="rgba(255, 255, 255, 0)" />
-          <stop offset="20%" stopColor="rgba(255, 255, 255, 0.38)" />
-          <stop offset="50%" stopColor="rgba(255, 255, 255, 0.56)" />
-          <stop offset="80%" stopColor="rgba(255, 255, 255, 0.38)" />
-          <stop offset="100%" stopColor="rgba(255, 255, 255, 0)" />
+        <linearGradient id="wave-gradient-white" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="rgba(220,238,255,0)" />
+          <stop offset="15%" stopColor="rgba(220,238,255,0.32)" />
+          <stop offset="35%" stopColor="rgba(235,247,255,0.56)" />
+          <stop offset="50%" stopColor="rgba(245,252,255,0.68)" />
+          <stop offset="65%" stopColor="rgba(235,247,255,0.56)" />
+          <stop offset="85%" stopColor="rgba(220,238,255,0.32)" />
+          <stop offset="100%" stopColor="rgba(220,238,255,0)" />
         </linearGradient>
         {/* Scan glow: single-pass blur in absolute SVG coords (filterUnits="userSpaceOnUse").   */}
         {/* Using bbox-% would cover ~3500×500px per wave — far too much GPU work per frame.    */}
         {/* Wave sits at y≈500 ±152 SVG units → bound filter to y 320–680 (400px at 1080p).    */}
-        <filter id="wave-glow-scan" filterUnits="userSpaceOnUse" x="-20" y="320" width="3040" height="360" colorInterpolationFilters="sRGB">
-          <feGaussianBlur stdDeviation="6" result="blur" />
-          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+        <filter id="wave-glow-scan" filterUnits="userSpaceOnUse" x="-40" y="280" width="3080" height="440" colorInterpolationFilters="sRGB">
+          <feGaussianBlur stdDeviation="10" result="blur1" />
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur2" />
+          <feMerge><feMergeNode in="blur1" /><feMergeNode in="blur2" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
-        <filter id="wave-glow-scan-lite" filterUnits="userSpaceOnUse" x="-20" y="320" width="3040" height="360" colorInterpolationFilters="sRGB">
-          <feGaussianBlur stdDeviation="4" result="blur" />
+        <filter id="wave-glow-scan-lite" filterUnits="userSpaceOnUse" x="-30" y="300" width="3060" height="400" colorInterpolationFilters="sRGB">
+          <feGaussianBlur stdDeviation="6" result="blur" />
           <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
         {/* Clip rects control the visible window for each scan overlay */}
@@ -408,10 +413,10 @@ function AnimatedWaves() {
       {!simpleMotion && <path ref={b2} d="" stroke="url(#wave-gradient)" strokeWidth="1.5" fill="none" className="wave-base wave-base-3" />}
       {!simpleMotion && <path ref={b3} d="" stroke="url(#wave-gradient)" strokeWidth="1.6" fill="none" className="wave-base wave-base-4" />}
       {/* Scan highlights – clipPath reveals only the dots inside the window */}
-      <path ref={r0} d="" stroke="url(#wfg-0)" strokeWidth="2.9" fill="none" className="wave-line" filter={simpleMotion ? "url(#wave-glow-scan-lite)" : "url(#wave-glow-scan)"} clipPath="url(#scan-clip-0)" />
-      <path ref={r1} d="" stroke="url(#wfg-1)" strokeWidth="2.8" fill="none" className="wave-line wave-line-2" filter={simpleMotion ? "url(#wave-glow-scan-lite)" : "url(#wave-glow-scan)"} clipPath="url(#scan-clip-1)" />
-      {!simpleMotion && <path ref={r2} d="" stroke="url(#wfg-2)" strokeWidth="2.8" fill="none" className="wave-line wave-line-3" filter="url(#wave-glow-scan)" clipPath="url(#scan-clip-2)" />}
-      {!simpleMotion && <path ref={r3} d="" stroke="url(#wfg-3)" strokeWidth="2.9" fill="none" className="wave-line wave-line-4" filter="url(#wave-glow-scan)" clipPath="url(#scan-clip-3)" />}
+      <path ref={r0} d="" stroke="url(#wfg-0)" strokeWidth="3.5" fill="none" className="wave-line" filter={simpleMotion ? "url(#wave-glow-scan-lite)" : "url(#wave-glow-scan)"} clipPath="url(#scan-clip-0)" />
+      <path ref={r1} d="" stroke="url(#wfg-1)" strokeWidth="3.2" fill="none" className="wave-line wave-line-2" filter={simpleMotion ? "url(#wave-glow-scan-lite)" : "url(#wave-glow-scan)"} clipPath="url(#scan-clip-1)" />
+      {!simpleMotion && <path ref={r2} d="" stroke="url(#wfg-2)" strokeWidth="3.2" fill="none" className="wave-line wave-line-3" filter="url(#wave-glow-scan)" clipPath="url(#scan-clip-2)" />}
+      {!simpleMotion && <path ref={r3} d="" stroke="url(#wfg-3)" strokeWidth="3.5" fill="none" className="wave-line wave-line-4" filter="url(#wave-glow-scan)" clipPath="url(#scan-clip-3)" />}
     </svg>
   );
 }

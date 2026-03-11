@@ -743,7 +743,7 @@ img {
 .wave-base {
     stroke-linecap: round;
     stroke-linejoin: round;
-    opacity: 0.32;
+    opacity: 0.45;
     animation: wave-base-startup 0.72s ease-out 1;
 }
 
