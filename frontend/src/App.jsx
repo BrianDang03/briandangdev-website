@@ -43,7 +43,7 @@ function App() {
 
           {/* Layer 1 — Wave background (--z-wave: -4) */}
           <div className={`wave-bg ${showDecorations ? 'is-ready' : 'is-deferred'}`} aria-hidden="true">
-            {showDecorations && !simpleMotion && <WaveLines />}
+            {canRevealApp && !simpleMotion && <WaveLines />}
           </div>
 
           {/* Layer 2 — Decorative shapes (--z-shapes: 1) */}
