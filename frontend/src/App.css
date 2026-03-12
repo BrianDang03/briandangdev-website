@@ -143,6 +143,13 @@ body {
     background-attachment: fixed;
 }
 
+/* When a card modal is open, lift .main-content's stacking context above the
+   navbar (--z-navbar: 15) so the modal backdrop and expanded card always render
+   on top. The class is added/removed by TiltFlipCard via a useEffect. */
+body.has-modal .main-content {
+    z-index: 35;
+}
+
 /* ── App Root ────────────────────────────────────────────────────────────────
    Flex column so the app fills the full viewport height. Footer's
    margin-top: auto pushes it to the bottom inside this container. */
