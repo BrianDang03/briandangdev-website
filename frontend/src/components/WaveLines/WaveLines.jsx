@@ -1,12 +1,16 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import './WaveLines.css';
 
 // ─── constants ────────────────────────────────────────────────────────────
 const PI           = Math.PI;
-const NUM_SEGS     = 8;     // cubic bezier segments per line (sweet spot)
-const FRAME_MS     = 0;     // uncapped — runs at display refresh rate (60fps / 120fps)
-const SCAN_STOP_MS = 10400; // 500 + 13*130 + 8000 — last line fully drawn
-const WIND_DOWN_MS = 1200;  // smoothstep decel window before full stop
+const NUM_SEGS     = 8;
+const FRAME_MS     = 16;    // cap at ~60 fps for consistent dt
+const SCAN_STOP_MS = 14200; // 500 + 13*130 + 12000 — last line fully swept
+const WIND_DOWN_MS = 1200;
+
+// Fixed reference canvas — ensures identical wave shapes on every device/platform
+const VB_W = 1440;
+const VB_H = 900;
 
 // Module-level scratch arrays — zero GC in hot path
 const _y   = new Float32Array(NUM_SEGS + 1);
@@ -43,9 +47,12 @@ const STREAMS = [
 
 const GRAD = { blue: 'wl-grad-blue', teal: 'wl-grad-teal', white: 'wl-grad-white' };
 
+// ─── easing helpers ───────────────────────────────────────────────────────
+function easeInOutSine(t) { return -(Math.cos(PI * t) - 1) / 2; }
+function easeInQuad(t)    { return t * t; }
+
 // ─── buildPath ────────────────────────────────────────────────────────────
-// Zero heap allocations — reuses module-level Float32Arrays.
-// breathMul modulates amplitude: 1 + 0.18*sin(breathPhase)
+// Uses .toFixed(1) for smooth sub-pixel rendering without integer-snap jitter.
 function buildPath(s, phase, breathMul, vbW, vbH) {
     const startY = s.startYR * vbH;
     const endY   = s.endYR   * vbH;
@@ -61,38 +68,23 @@ function buildPath(s, phase, breathMul, vbW, vbH) {
         _tan[i] = slope  + amp * Math.cos(x * scale + phase) * scale;
     }
 
-    let d = `M0,${Math.round(_y[0])}`;
+    let d = `M0,${_y[0].toFixed(1)}`;
     for (let i = 0; i < NUM_SEGS; i++) {
         const x0 = i * segW, x1 = (i + 1) * segW;
-        d += ` C${Math.round(x0 + segCp)},${Math.round(_y[i] + _tan[i] * segCp)}`
-           + ` ${Math.round(x1 - segCp)},${Math.round(_y[i + 1] - _tan[i + 1] * segCp)}`
-           + ` ${Math.round(x1)},${Math.round(_y[i + 1])}`;
+        d += ` C${(x0 + segCp).toFixed(1)},${(_y[i] + _tan[i] * segCp).toFixed(1)}`
+           + ` ${(x1 - segCp).toFixed(1)},${(_y[i + 1] - _tan[i + 1] * segCp).toFixed(1)}`
+           + ` ${x1.toFixed(1)},${_y[i + 1].toFixed(1)}`;
     }
     return d;
 }
 
 // ─── component ────────────────────────────────────────────────────────────
 export default function WaveLines() {
-    const [dims, setDims]  = useState(() => ({ w: window.innerWidth, h: window.innerHeight }));
-    const dimsRef          = useRef(dims);
     const pathRefs         = useRef([]);
     const phaseRef         = useRef(STREAMS.map(s => s.phase));
     const breathRef        = useRef(STREAMS.map(s => s.bp));
     const lastTimeRef      = useRef(null);
     const rafRef           = useRef(null);
-
-    dimsRef.current = dims;
-
-    // Debounced resize so we don't thrash React state
-    useEffect(() => {
-        let tid;
-        function onResize() {
-            clearTimeout(tid);
-            tid = setTimeout(() => setDims({ w: window.innerWidth, h: window.innerHeight }), 150);
-        }
-        window.addEventListener('resize', onResize, { passive: true });
-        return () => { window.removeEventListener('resize', onResize); clearTimeout(tid); };
-    }, []);
 
     // RAF loop — mutates SVG path `d` attributes directly, never re-renders React
     useEffect(() => {
@@ -117,8 +109,6 @@ export default function WaveLines() {
 
             const dt = since === Infinity ? 0 : since / 1000;
             lastTimeRef.current = time;
-            const { w: vbW, h: vbH } = dimsRef.current;
-
             // Smoothstep wind-down over last WIND_DOWN_MS
             const windStart = SCAN_STOP_MS - WIND_DOWN_MS;
             let speedMul = 1;
@@ -128,12 +118,38 @@ export default function WaveLines() {
             }
 
             for (let i = 0; i < STREAMS.length; i++) {
-                const s = STREAMS[i];
+                const s  = STREAMS[i];
+                const el = pathRefs.current[i];
+                if (!el) continue;
+
+                // Update wave geometry
                 phaseRef.current[i]  += s.spd * speedMul * dt;
                 breathRef.current[i] += s.bs  * speedMul * dt;
                 const breathMul = 1 + 0.18 * Math.sin(breathRef.current[i]);
-                const el = pathRefs.current[i];
-                if (el) el.setAttribute('d', buildPath(s, phaseRef.current[i], breathMul, vbW, vbH));
+                el.setAttribute('d', buildPath(s, phaseRef.current[i], breathMul, VB_W, VB_H));
+
+                // Draw/sweep — purely time-driven, independent of speedMul
+                const streamStart   = 500 + i * 130;
+                const streamElapsed = elapsed - streamStart;
+                const t             = streamElapsed / 12000;
+
+                let dashOffset, opacity;
+                if (streamElapsed < 0) {
+                    dashOffset = 1;    opacity = 0;
+                } else if (t >= 1) {
+                    dashOffset = -1.1; opacity = 0;
+                } else if (t < 0.5) {
+                    const tp   = t / 0.5;
+                    dashOffset = 1 - easeInOutSine(tp);
+                    opacity    = (t < 0.04 ? t / 0.04 : 1) * s.opacity;
+                } else {
+                    const tp   = (t - 0.5) / 0.5;
+                    dashOffset = -easeInQuad(tp) * 1.1;
+                    opacity    = (1 - tp) * s.opacity;
+                }
+
+                el.style.strokeDashoffset = dashOffset;
+                el.style.opacity          = opacity;
             }
 
             rafRef.current = requestAnimationFrame(tick);
@@ -146,13 +162,11 @@ export default function WaveLines() {
         };
     }, []);
 
-    const { w: vbW, h: vbH } = dims;
-
     return (
         <svg
             className="wave-lines"
-            viewBox={`0 0 ${vbW} ${vbH}`}
-            preserveAspectRatio="none"
+            viewBox={`0 0 ${VB_W} ${VB_H}`}
+            preserveAspectRatio="xMidYMid slice"
             aria-hidden="true"
         >
             <defs>
@@ -184,14 +198,29 @@ export default function WaveLines() {
                     <path
                         key={i}
                         ref={el => { pathRefs.current[i] = el; }}
-                        d={buildPath(s, s.phase, 1, vbW, vbH)}
+                        d={buildPath(s, s.phase, 1, VB_W, VB_H)}
                         pathLength="1"
-                        style={{ '--wl-i': i }}
+                        style={{ '--wl-i': i, strokeDashoffset: 1, opacity: 0 }}
                         fill="none"
                         stroke={`url(#${GRAD[s.color]})`}
                         strokeWidth={s.width}
                         strokeLinecap="round"
-                        opacity={s.opacity}
+                    />
+                ))}
+            </g>
+
+            {/* Baseline — static dim traces that appear after the sweep, no glow */}
+            <g className="wl-base">
+                {STREAMS.map((s, i) => (
+                    <path
+                        key={i}
+                        style={{ '--wl-i': i }}
+                        d={buildPath(s, s.phase, 1, VB_W, VB_H)}
+                        pathLength="1"
+                        fill="none"
+                        stroke="rgba(160, 200, 240, 0.18)"
+                        strokeWidth={s.width * 0.7}
+                        strokeLinecap="round"
                     />
                 ))}
             </g>
