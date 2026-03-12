@@ -168,7 +168,8 @@
      transform-style:preserve-3d is set on the same element. The mask trick
      forces WebKit to composite the element on its own layer, where the
      border-radius clip is correctly applied before compositing children. */
-  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  -webkit-mask-image: radial-gradient(white, black);
+  mask-image: radial-gradient(white, black);
   will-change: transform;
   transition:
     box-shadow 400ms cubic-bezier(0.19, 1, 0.22, 1) 1100ms,
