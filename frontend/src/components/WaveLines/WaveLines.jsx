@@ -171,25 +171,25 @@ export default function WaveLines() {
         >
             <defs>
                 <linearGradient id="wl-grad-blue" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%"   stopColor="rgba(140,200,255,0)" />
-                    <stop offset="10%"  stopColor="rgba(165,218,255,0.9)" />
-                    <stop offset="50%"  stopColor="rgba(195,232,255,1)" />
-                    <stop offset="90%"  stopColor="rgba(165,218,255,0.9)" />
-                    <stop offset="100%" stopColor="rgba(140,200,255,0)" />
+                    <stop offset="0%"   stopColor="rgba(30,80,255,0)" />
+                    <stop offset="10%"  stopColor="rgba(60,120,255,0.95)" />
+                    <stop offset="50%"  stopColor="rgba(100,160,255,1)" />
+                    <stop offset="90%"  stopColor="rgba(60,120,255,0.95)" />
+                    <stop offset="100%" stopColor="rgba(30,80,255,0)" />
                 </linearGradient>
                 <linearGradient id="wl-grad-white" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%"   stopColor="rgba(215,235,255,0)" />
-                    <stop offset="10%"  stopColor="rgba(232,244,255,0.88)" />
-                    <stop offset="50%"  stopColor="rgba(248,252,255,1)" />
-                    <stop offset="90%"  stopColor="rgba(232,244,255,0.88)" />
-                    <stop offset="100%" stopColor="rgba(215,235,255,0)" />
+                    <stop offset="0%"   stopColor="rgba(80,100,255,0)" />
+                    <stop offset="10%"  stopColor="rgba(120,140,255,0.95)" />
+                    <stop offset="50%"  stopColor="rgba(160,180,255,1)" />
+                    <stop offset="90%"  stopColor="rgba(120,140,255,0.95)" />
+                    <stop offset="100%" stopColor="rgba(80,100,255,0)" />
                 </linearGradient>
                 <linearGradient id="wl-grad-teal" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%"   stopColor="rgba(90,210,195,0)" />
-                    <stop offset="10%"  stopColor="rgba(115,222,210,0.82)" />
-                    <stop offset="50%"  stopColor="rgba(138,232,220,1)" />
-                    <stop offset="90%"  stopColor="rgba(115,222,210,0.82)" />
-                    <stop offset="100%" stopColor="rgba(90,210,195,0)" />
+                    <stop offset="0%"   stopColor="rgba(50,50,220,0)" />
+                    <stop offset="10%"  stopColor="rgba(80,90,255,0.92)" />
+                    <stop offset="50%"  stopColor="rgba(110,130,255,1)" />
+                    <stop offset="90%"  stopColor="rgba(80,90,255,0.92)" />
+                    <stop offset="100%" stopColor="rgba(50,50,220,0)" />
                 </linearGradient>
             </defs>
 
@@ -218,7 +218,7 @@ export default function WaveLines() {
                         d={buildPath(s, s.phase, 1, VB_W, VB_H)}
                         pathLength="1"
                         fill="none"
-                        stroke="rgba(160, 200, 240, 0.18)"
+                        stroke="rgba(255, 255, 255, 0.2)"
                         strokeWidth={s.width * 0.7}
                         strokeLinecap="round"
                     />
