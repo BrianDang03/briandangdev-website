@@ -66,20 +66,20 @@
 }
 
 .tfc-scene.is-expanded {
-  z-index: 30;
+  z-index: var(--z-modal);
   pointer-events: none;
 }
 
-/* Drop returning card below the backdrop (z-index: 20) and any newly
-   opened card (z-index: 30) so it never bleeds through during close. */
+/* Drop returning card below the backdrop (--z-modal-backdrop: 20) and any newly
+   opened card (--z-modal: 30) so it never bleeds through during close. */
 .tfc-scene.is-expanded.is-returning {
-  z-index: 5;
+  z-index: var(--z-modal-returning);
 }
 
 /* Raise the hovered/active card above its siblings in flex/grid layouts
    so the 3D tilt pop-out doesn't get painted over by adjacent cards.
    Exclude expanded cards so the :hover rule (same specificity) doesn't
-   override .tfc-scene.is-expanded { z-index: 30 } and drop the card
+   override .tfc-scene.is-expanded { --z-modal: 30 } and drop the card
    behind the backdrop. */
 .tfc-scene:not(.is-expanded):hover {
   z-index: 1;
@@ -136,7 +136,7 @@
 .tfc-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 20;
+  z-index: var(--z-modal-backdrop);
   background: var(--tfc-backdrop-bg);
   backdrop-filter: blur(6px);
   -webkit-user-drag: none;
@@ -191,7 +191,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 30;
+  z-index: var(--z-modal);
   width: var(--card-w);
   height: var(--card-h);
   transform-origin: top left;
@@ -215,10 +215,10 @@
      position:fixed can escape to the root stacking context in browsers
      where will-change:transform doesn't create a containing block, making
      z-index tricks ineffective. Absolute positioning guarantees the element
-     stays within the scene (z-index: 5) and never paints above a newly
-     opened card's backdrop (z-index: 20) or its scene (z-index: 30). */
+     stays within the scene (--z-modal-returning: 5) and never paints above a newly
+     opened card's backdrop (--z-modal-backdrop: 20) or its scene (--z-modal: 30). */
   position: absolute;
-  z-index: 5;
+  z-index: var(--z-modal-returning);
   transition: transform 720ms cubic-bezier(0.2, 0.85, 0.2, 1);
 }
 

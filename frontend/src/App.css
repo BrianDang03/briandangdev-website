@@ -1,4 +1,29 @@
-﻿:root {
+/* ── Z-Index Scale ───────────────────────────────────────────────────────────
+   Single source of truth for the entire stacking order.
+   All components consume these tokens — never hardcode a z-index value.
+
+   Local stacking contexts (e.g. inside a card face) may use plain integers
+   that are scoped within that context and do not compete with this scale. */
+:root {
+    --z-wave:             -4;  /* Wave SVG — furthest back                  */
+    --z-shapes:            1;  /* Decorative orbs / beams / plus signs      */
+    --z-shapes-nav-cut:   12;  /* Orbs that bleed behind the navbar         */
+    --z-footer:            2;  /* Footer — above shapes, below navbar        */
+    --z-navbar:           15;  /* Sticky site header                        */
+    --z-modal-backdrop:   20;  /* Dark blur overlay behind expanded card    */
+    --z-modal:            30;  /* Expanded card modal                       */
+    --z-modal-returning:   5;  /* Card closing — drops below backdrop       */
+    --z-nav-backdrop:     39;  /* Mobile nav dim overlay                    */
+    --z-nav-panel:        40;  /* Mobile slide-in nav panel                 */
+    --z-nav-btn:          41;  /* Hamburger button (above panel)            */
+    --z-loader:           60;  /* Full-screen boot loader                   */
+    --z-skip:           9999;  /* Skip-to-content (accessibility, always top) */
+}
+
+/* ── CSS Variables ───────────────────────────────────────────────────────────
+   Dark theme is the default. Light theme overrides are applied via
+   [data-theme="light"] on the <html> element. */
+:root {
     --theme-brightness: 1.15;
     --bg-0: #0f141c;
     --bg-1: #1a2330;
@@ -31,161 +56,21 @@
     --shadow-deep: 0 24px 60px rgba(0, 0, 0, 0.12);
 }
 
-[data-theme="light"] html {
-    background-color: #eef5ff;
-}
-
-[data-theme="light"] body {
-    background:
-        radial-gradient(circle at 20% 25%, rgba(18, 34, 54, 0.6) 1px, transparent 2px),
-        radial-gradient(circle at 70% 40%, rgba(18, 34, 54, 0.55) 1px, transparent 2px),
-        radial-gradient(circle at 90% 75%, rgba(18, 34, 54, 0.6) 1px, transparent 2px),
-        radial-gradient(circle at 32% 68%, rgba(18, 34, 54, 0.55) 1px, transparent 2px),
-        radial-gradient(circle at 18% 10%, rgba(64, 110, 230, 0.38), transparent 42%),
-        radial-gradient(circle at 88% 72%, rgba(82, 150, 245, 0.32), transparent 44%),
-        radial-gradient(circle at 50% 36%, rgba(102, 170, 255, 0.2), transparent 46%),
-        linear-gradient(180deg, #dbe9ff 0%, #eef5ff 52%, #e3eeff 100%);
-    background-size: 18.75vw 33.33vh, 18.75vw 33.33vh, 18.75vw 33.33vh, 18.75vw 33.33vh, auto, auto, auto, auto;
-    background-attachment: fixed;
-}
-
-[data-theme="light"] body::before {
-    opacity: 0;
-}
-
-* {
+/* ── Base Resets ─────────────────────────────────────────────────────────────*/
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
-/* Remove blue/grey flash on any element touched during mobile scroll.
-   The browser's default -webkit-tap-highlight-color fires on every element
-   the finger contacts â€” not just interactive ones â€” so a global reset is the
-   only way to prevent mid-scroll highlights on divs, sections, imgs, etc. */
 * {
     -webkit-tap-highlight-color: transparent;
 }
 
-/* Keyboard-only focus ring â€” visible, accessible, but unobtrusive. Component-
-   level :focus/:focus-visible rules always override this global fallback. */
 :focus-visible {
-    outline: 2px solid rgba(255, 255, 255, 0.55);
+    outline: 2px solid var(--line-strong);
     outline-offset: 3px;
     border-radius: 4px;
-}
-
-[data-theme="light"] :focus-visible {
-    outline-color: rgba(26, 45, 67, 0.65);
-}
-
-html {
-    height: 100%;
-    overflow-y: scroll;
-    scrollbar-gutter: stable;
-    scroll-behavior: smooth;
-    /* Canvas fallback so areas below the body gradient never show white. */
-    background-color: #161f2b;
-    /* Firefox */
-    scrollbar-color: rgba(255, 255, 255, 0.14) #0c1118;
-    scrollbar-width: thin;
-}
-
-html.scroll-locked {
-    /* Firefox: dim the thumb while locked */
-    scrollbar-color: rgba(255, 255, 255, 0.05) #0c1118;
-}
-
-/* â”€â”€ Palette-styled scrollbar (Webkit: Chrome, Edge, Safari) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-html::-webkit-scrollbar {
-    width: 8px;
-}
-
-html::-webkit-scrollbar-track {
-    background: #0c1118;
-}
-
-html::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.14);
-    border-radius: 4px;
-    border: 2px solid #0c1118;
-    transition: background 0.25s ease;
-}
-
-html::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.28);
-}
-
-/* Grey out the thumb when scroll is locked */
-html.scroll-locked::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.05);
-}
-
-/* Light theme overrides */
-html[data-theme="light"] {
-    scrollbar-color: rgba(26, 35, 48, 0.22) #dce3ec;
-}
-
-html[data-theme="light"]::-webkit-scrollbar-track {
-    background: #dce3ec;
-}
-
-html[data-theme="light"]::-webkit-scrollbar-thumb {
-    background: rgba(26, 35, 48, 0.22);
-    border-color: #dce3ec;
-}
-
-html[data-theme="light"]::-webkit-scrollbar-thumb:hover {
-    background: rgba(26, 35, 48, 0.38);
-}
-
-html[data-theme="light"].scroll-locked {
-    scrollbar-color: rgba(26, 35, 48, 0.07) #dce3ec;
-}
-
-html[data-theme="light"].scroll-locked::-webkit-scrollbar-thumb {
-    background: rgba(26, 35, 48, 0.07);
-}
-
-body {
-    margin: 0;
-    min-height: 100%;
-    font-family: "Manrope", "Segoe UI", sans-serif;
-    /* Radials + gradient combined in one background declaration.
-       background-attachment:fixed keeps all layers viewport-anchored
-       so the glows never shift with scroll position. */
-    background:
-        radial-gradient(circle at 20% 25%, rgba(255, 255, 255, 0.7) 1px, transparent 2px),
-        radial-gradient(circle at 70% 40%, rgba(255, 255, 255, 0.65) 1px, transparent 2px),
-        radial-gradient(circle at 90% 75%, rgba(255, 255, 255, 0.7) 1px, transparent 2px),
-        radial-gradient(circle at 32% 68%, rgba(255, 255, 255, 0.65) 1px, transparent 2px),
-        radial-gradient(circle at 18% 10%, rgba(255, 255, 255, 0.22), transparent 35%),
-        radial-gradient(circle at 88% 72%, rgba(255, 255, 255, 0.18), transparent 38%),
-        linear-gradient(180deg, #0d131b 0%, #161f2b 54%, #0e141d 100%);
-    background-size: 18.75vw 33.33vh, 18.75vw 33.33vh, 18.75vw 33.33vh, 18.75vw 33.33vh, auto, auto, auto;
-    background-attachment: fixed;
-    color: var(--text-main);
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-text-size-adjust: 100%;
-    text-size-adjust: 100%;
-}
-
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -3;
-    opacity: 0;
-    pointer-events: none;
-}
-
-#root {
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100dvh;
 }
 
 img {
@@ -193,82 +78,110 @@ img {
     display: block;
 }
 
-.site-root {
-    position: relative;
-    display: grid;
-    grid-template-rows: auto minmax(0, 1fr) auto;
-    min-height: 100vh;
-    min-height: 100dvh;
-    flex: 1 0 auto;
-    isolation: isolate;
-    overflow: clip;
+/* ── Layer 0 — Body Background ───────────────────────────────────────────────
+   The deepest visual layer. A fixed dark gradient that covers the entire
+   viewport and never moves with scroll. All other layers sit on top of this.
+   html provides a solid canvas fallback colour for areas outside the gradient. */
+html {
+    height: 100%;
+    background-color: var(--bg-0);
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
 }
 
-.site-root-preboot {
+body {
+    margin: 0;
+    min-height: 100%;
+    font-family: "Manrope", "Segoe UI", sans-serif;
+    color: var(--text-main);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background:
+        /* Dot stars — tiny 1px radials tiled across the viewport */
+        radial-gradient(circle at 20% 25%, rgba(255, 255, 255, 0.70) 1px, transparent 2px),
+        radial-gradient(circle at 70% 40%, rgba(255, 255, 255, 0.65) 1px, transparent 2px),
+        radial-gradient(circle at 90% 75%, rgba(255, 255, 255, 0.70) 1px, transparent 2px),
+        radial-gradient(circle at 32% 68%, rgba(255, 255, 255, 0.65) 1px, transparent 2px),
+        /* Ambient glow — soft bloom spots anchored to the viewport */
+        radial-gradient(circle at 18% 10%, rgba(255, 255, 255, 0.22), transparent 35%),
+        radial-gradient(circle at 88% 72%, rgba(255, 255, 255, 0.18), transparent 38%),
+        /* Base gradient */
+        linear-gradient(180deg, #0d131b 0%, #161f2b 54%, #0e141d 100%);
+    /* Dot stars tile at 18.75vw × 33.33vh; glows + gradient fill naturally */
+    background-size: 18.75vw 33.33vh, 18.75vw 33.33vh, 18.75vw 33.33vh, 18.75vw 33.33vh, auto, auto, auto;
+    background-attachment: fixed;
+}
+
+/* Strip fixed attachment on touch devices — it causes full-page repaint
+   on every scroll frame, which tanks performance on mobile. Also drop the
+   dot stars and glow radials since the tiled background-size only works
+   correctly with background-attachment: fixed. */
+@media (max-width: 900px), (pointer: coarse) {
+    body {
+        background: linear-gradient(180deg, #0d131b 0%, #161f2b 54%, #0e141d 100%);
+        background-attachment: scroll;
+    }
+}
+
+/* ── App Root ────────────────────────────────────────────────────────────────
+   Flex column so the app fills the full viewport height. Footer's
+   margin-top: auto pushes it to the bottom inside this container. */
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+}
+
+.app-root {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+    position: relative;
+    isolation: isolate;
+}
+
+/* Hidden during boot — loader covers the screen. Revealed once boot completes. */
+.app-root-preboot {
     opacity: 0;
     pointer-events: none;
 }
 
-.site-root-enter {
+.app-root-enter {
     animation: app-root-reveal 160ms ease-out both;
 }
 
 @keyframes app-root-reveal {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
-/* Fixed container for the animated wave SVG only */
-.wave-bg {
-    position: fixed;
-    inset: 0;
-    z-index: -4;
-    /* Layer 1 (back): behind shapes */
-    overflow: visible;
-    pointer-events: none;
-    /* No CSS filter here â€” a filter on the container creates a compositing stacking
-       context that flattens all children into one layer, preventing the SVG from
-       getting its own independent GPU layer and causing full-layer invalidation on
-       every RAF frame. Brightness is applied directly to .flowing-wave instead. */
-}
-
-.wave-bg.is-deferred {
-    opacity: 0.001;
-}
-
-.wave-bg.is-ready {
-    opacity: 1;
-    transition: opacity 220ms ease-out;
-}
-
-/* â”€â”€ Shape containers and styles live in DecorativeShapes/DecorativeShapes.css â”€â”€ */
-
+/* ── Layer 4 — Main Content ──────────────────────────────────────────────────
+   No explicit z-index — sits in normal document flow between the
+   navbar and footer. Constrains page width and provides scroll context. */
 .main-content {
+    flex: 1 0 auto;
     min-width: 0;
     width: min(1360px, calc(100% - 2.4rem));
     margin: 0 auto;
     padding: 0 0 2rem;
 }
 
-.route-loading {
-    min-height: 240px;
-    display: grid;
-    place-items: center;
-    color: var(--text-dim);
+@media (max-width: 640px) {
+    .main-content {
+        width: min(1360px, calc(100% - 1.4rem));
+    }
 }
 
-.route-loading-content {
-    display: grid;
-    justify-items: center;
-    gap: 0.9rem;
+@media (min-width: 1400px) {
+    .main-content {
+        width: min(1480px, calc(100% - 4rem));
+    }
 }
 
-
+/* ── Page Shell ──────────────────────────────────────────────────────────────
+   Frosted glass card used by Portfolio, About, and the 404 page. */
 .page-shell {
     max-width: min(860px, 100%);
     margin: clamp(2rem, 5vw, 4rem) auto;
@@ -288,14 +201,6 @@ img {
     }
 }
 
-.hero-kicker {
-    margin: 0;
-    color: var(--text-muted);
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    font-size: 0.72rem;
-}
-
 .page-shell h1 {
     margin-bottom: 0.8rem;
     font-family: "Cinzel", "Times New Roman", serif;
@@ -309,59 +214,35 @@ img {
     line-height: 1.7;
 }
 
-@media (max-width: 640px) {
-    .main-content {
-        width: min(1360px, calc(100% - 1.4rem));
-    }
+/* ── Shared typography utilities ─────────────────────────────────────────────*/
+.hero-kicker {
+    margin: 0;
+    color: var(--text-muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
 }
 
-/* Large desktop: give the layout more breathing room */
-@media (min-width: 1400px) {
-    .main-content {
-        width: min(1480px, calc(100% - 4rem));
-    }
+/* ── Route loading state ─────────────────────────────────────────────────────
+   Minimal placeholder shown during lazy route suspense. */
+.route-loading {
+    min-height: 240px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.9rem;
 }
 
-@media (min-width: 1800px) {
-    .main-content {
-        width: min(1600px, calc(100% - 6rem));
-    }
-}
-
-/* pointer:coarse catches touch devices wider than 900px (tablets in landscape).
-   background-attachment:fixed is not just slow on phones — any touch-primary
-   device repaint-floods the entire background layer on scroll. */
-@media (max-width: 900px), (pointer: coarse) {
-
-    /* background-attachment:fixed triggers full-page repaint on scroll on mobile.
-       Strip the radials on mobile (the fixed orbs provide ambient glow) and
-       switch to scroll so the plain gradient never causes repaint jank. */
-    body {
-        background: linear-gradient(180deg, #0d131b 0%, #161f2b 54%, #0e141d 100%);
-        background-attachment: scroll;
-    }
-
-    [data-theme="light"] body {
-        background: linear-gradient(180deg, #dbe9ff 0%, #eef5ff 52%, #e3eeff 100%);
-        background-attachment: scroll;
-    }
-
-    .theme-bg .orb,
-    .theme-bg .floating-plus,
-    .theme-bg-footer .orb,
-    .theme-bg-footer .floating-plus {
-        animation: none;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-    }
+/* ── Layer 1 — Wave Background Container (z-wave: -4) ────────────────────────
+   Fixed container that holds the wave SVG. Sits behind all page content.
+   No CSS filter here — a filter creates a stacking context that flattens
+   all children into one GPU layer, causing full invalidation on every frame.
+   Brightness is applied directly on the SVG element in WaveLines.css. */
+.wave-bg {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-wave);
+    overflow: visible;
+    pointer-events: none;
 }

@@ -1,7 +1,7 @@
 .site-header {
     position: sticky;
     top: 0;
-    z-index: 15;
+    z-index: var(--z-navbar);
     -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
     background: linear-gradient(180deg, rgba(13, 18, 26, 0.34), rgba(13, 18, 26, 0.08));
@@ -111,7 +111,7 @@
 
 .nav-menu-btn {
     position: relative;
-    z-index: 41;
+    z-index: var(--z-nav-btn);
     width: 42px;
     height: 42px;
     border: 1px solid rgba(255, 255, 255, 0.26);
@@ -160,7 +160,7 @@
 .nav-backdrop {
     position: fixed;
     inset: 0;
-    z-index: 39;
+    z-index: var(--z-nav-backdrop);
     border: 0;
     background: rgba(6, 10, 16, 0.58);
     opacity: 0;
@@ -262,7 +262,7 @@
         position: fixed;
         top: 0;
         right: 0;
-        z-index: 40;
+        z-index: var(--z-nav-panel);
         width: min(84vw, 320px);
         min-height: 100vh;
         height: 100dvh;

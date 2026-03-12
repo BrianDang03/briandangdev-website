@@ -1,34 +1,12 @@
-/* ── Wave background container ───────────────────────────────────────────────
-   Fixed container for the animated wave SVG. Sits furthest back (z=-4) so it
-   renders behind both shapes and page content. CSS filter is intentionally
-   omitted here — a filter creates a stacking context that forces the SVG into
-   a single GPU layer, causing full-layer invalidation on every RAF tick.
-   Brightness is applied directly on the SVG element via WaveLines.css instead. */
-.wave-bg {
-    position: fixed;
-    inset: 0;
-    z-index: -4;
-    overflow: visible;
-    pointer-events: none;
-}
-
-.wave-bg.is-deferred {
-    opacity: 0.001;
-}
-
-.wave-bg.is-ready {
-    opacity: 1;
-    transition: opacity 220ms ease-out;
-}
-
 /* ── Shape containers ────────────────────────────────────────────────────────
-   Two absolute containers so the main-viewport shapes and footer shapes can
-   be positioned independently without conflicting stacking contexts.
-   Both sit at z=-3 (in front of waves, behind page content). */
+   Two absolute containers positioned independently so the main-viewport
+   shapes and footer shapes don't share a stacking context.
+   Both consume --z-shapes (1) so they sit in front of the wave layer
+   but behind all page content. */
 .theme-bg {
     position: absolute;
     inset: 0;
-    z-index: 1;
+    z-index: var(--z-shapes);
     overflow: visible;
     pointer-events: none;
     --nav-orb-left-x: -3.35vw;
@@ -42,7 +20,7 @@
 .theme-bg-footer {
     position: absolute;
     inset: 0;
-    z-index: 1;
+    z-index: var(--z-shapes);
     overflow: visible;
     pointer-events: none;
 }
@@ -172,9 +150,9 @@
     animation-name: float-in-from-right;
 }
 
-/* Orbs that overlap the navbar use a higher z-index so the nav blurs over them */
+/* Orbs that overlap the navbar use --z-shapes-nav-cut so the nav blurs over them */
 .orb-nav-cut {
-    z-index: 12;
+    z-index: var(--z-shapes-nav-cut);
 }
 
 .orb-nav-1 {
