@@ -1,4 +1,4 @@
-// Decorative background shapes — orbs, hexagons, beams, and floating-plus signs.
+// Decorative background shapes — orbs, beams, and floating-plus signs.
 // Split into two containers so the main shapes scroll with the page while
 // the footer shapes stay anchored near the bottom.
 export default function DecorativeShapes({ show, isLocked }) {
@@ -13,10 +13,6 @@ export default function DecorativeShapes({ show, isLocked }) {
                         <span className="orb orb-left" />
                         <span className="orb orb-nav-cut orb-nav-1" />
                         <span className="orb orb-nav-cut orb-nav-2" />
-                        <span className="hexagon hex-1" />
-                        <span className="hexagon hex-2" />
-                        <span className="hexagon hex-5" />
-                        <span className="hexagon hex-6" />
                         <span className="orb orb-3" />
                         <span className="orb orb-8" />
                         <span className="floating-plus plus-1" />
@@ -31,10 +27,6 @@ export default function DecorativeShapes({ show, isLocked }) {
                 {show && (
                     <>
                         <span className="beam beam-two" />
-                        <span className="hexagon hex-3" />
-                        <span className="hexagon hex-4" />
-                        <span className="hexagon hex-7" />
-                        <span className="hexagon hex-8" />
                         <span className="orb orb-10" />
                         <span className="floating-plus plus-7" />
                     </>
