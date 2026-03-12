@@ -159,7 +159,10 @@ export default function TiltFlipCard({
   const isBackImageVisible = !backImg || backVisibleSrc === backImg;
 
   useEffect(() => {
-    if (!frontImg) {
+    // When a responsive srcset is provided, the <picture> element handles all
+    // loading and size selection. Manually preloading frontImg here would bypass
+    // the srcset and unconditionally download the full-size original (up to 1.8 MB).
+    if (!frontImg || frontWebpSrcSet || frontJpegSrcSet) {
       return;
     }
 
@@ -186,7 +189,7 @@ export default function TiltFlipCard({
     return () => {
       isCancelled = true;
     };
-  }, [frontImg]);
+  }, [frontImg, frontWebpSrcSet, frontJpegSrcSet]);
 
   useEffect(() => {
     if (!backImg) {

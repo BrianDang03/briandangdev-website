@@ -8,6 +8,15 @@ import {
     preloadImage,
 } from "../utils/boot";
 
+// Non-critical images to prefetch during idle time after first paint.
+// These are the smallest responsive variants for the remaining two home cards
+// so they feel instant when the user scrolls or flips.
+const IDLE_PREFETCH_IMAGES = [
+    "headshot-480.webp",
+    "contact-480.webp",
+    "flipIcon.png",
+];
+
 /**
  * Orchestrates the full app boot sequence:
  *   1. Mark perf start (DEV only)
@@ -108,7 +117,9 @@ export function useAppBoot(simpleMotion) {
         const preloadNonCritical = () => {
             if (isCancelled) return;
 
-            BOOT_IMAGES.forEach((name) => {
+            // Prefetch the small responsive variants (not the originals) so
+            // the browser has them warm for the second and third home cards.
+            IDLE_PREFETCH_IMAGES.forEach((name) => {
                 const img = new Image();
                 img.src = `${import.meta.env.BASE_URL}${name}`;
             });
@@ -160,6 +171,8 @@ export function useAppBoot(simpleMotion) {
 
     // Wait for decorations to be mounted and painted — two RAF frames for path
     // geometry to settle, then a short extra delay before clearing the loader.
+    // On simpleMotion devices WaveLines are never rendered, so we skip the
+    // wait entirely and set ready immediately after two paints.
     useEffect(() => {
         if (!showDecorations) return;
 
@@ -168,9 +181,13 @@ export function useAppBoot(simpleMotion) {
 
         rafA = window.requestAnimationFrame(() => {
             rafB = window.requestAnimationFrame(() => {
+                if (simpleMotion) {
+                    if (!isCancelled) setIsWavePaintReady(true);
+                    return;
+                }
                 paintTimer = window.setTimeout(() => {
                     if (!isCancelled) setIsWavePaintReady(true);
-                }, 280);
+                }, 150);
             });
         });
 
@@ -180,7 +197,7 @@ export function useAppBoot(simpleMotion) {
             window.cancelAnimationFrame(rafB);
             window.clearTimeout(paintTimer);
         };
-    }, [showDecorations]);
+    }, [showDecorations, simpleMotion]);
 
     // Lock shape entrance animations after their intro window to free GPU layers.
     useEffect(() => {

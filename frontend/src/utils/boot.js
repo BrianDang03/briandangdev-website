@@ -1,8 +1,13 @@
 // ── Boot sequencing constants ─────────────────────────────────────────────
-export const BOOT_MIN_DELAY_MS = 420;
+export const BOOT_MIN_DELAY_MS = 200;
 export const BOOT_ASSET_TIMEOUT_MS = 1800;
 
-export const BOOT_IMAGES = ["modem.jpg", "headshot.jpg", "contact.png", "flipIcon.png"];
+// Only preload the LCP-critical image at its smallest responsive size.
+// Loading full-size originals (~1-1.8 MB each) as "critical" assets delayed
+// FCP/LCP by forcing 4+ MB onto the blocking network waterfall.
+// headshot.jpg, contact.png, and flipIcon.png are below the fold — the
+// browser will prefetch them lazily via srcset after first paint.
+export const BOOT_IMAGES = ["modem-480.webp"];
 
 export const ROUTE_PRELOADERS = [
     () => import("../pages/About/About"),
