@@ -1,6 +1,10 @@
 # briandangdev-website — Codebase Overview
 
-> **Update this file after every session that changes architecture, adds/removes files, or changes key patterns.**
+> **After every session that changes architecture, adds/removes files, or changes key patterns:**
+> 1. Update this file — `CODEBASE.md` at the repo root
+> 2. Update the memory copy — `/memories/repo/codebase-overview.md`
+>
+> Both must stay in sync.
 > Last updated: 2026-03-12
 
 ---
