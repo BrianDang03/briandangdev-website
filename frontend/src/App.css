@@ -5,10 +5,10 @@
    Local stacking contexts (e.g. inside a card face) may use plain integers
    that are scoped within that context and do not compete with this scale. */
 :root {
-    --z-wave:             -4;  /* Wave SVG — furthest back                  */
+    --z-wave:             2;  /* Wave SVG — above shapes, below content     */
     --z-shapes:            1;  /* Decorative orbs / beams / plus signs      */
     --z-shapes-nav-cut:   12;  /* Orbs that bleed behind the navbar         */
-    --z-footer:            2;  /* Footer — above shapes, below navbar        */
+    --z-footer:            4;  /* Footer — above waves                      */
     --z-navbar:           15;  /* Sticky site header                        */
     --z-modal-backdrop:   20;  /* Dark blur overlay behind expanded card    */
     --z-modal:            30;  /* Expanded card modal                       */
@@ -157,14 +157,15 @@ body {
 }
 
 /* ── Layer 4 — Main Content ──────────────────────────────────────────────────
-   No explicit z-index — sits in normal document flow between the
-   navbar and footer. Constrains page width and provides scroll context. */
+   Explicit z-index above the wave layer so content always renders on top. */
 .main-content {
     flex: 1 0 auto;
     min-width: 0;
     width: min(1360px, calc(100% - 2.4rem));
     margin: 0 auto;
     padding: 0 0 2rem;
+    position: relative;
+    z-index: 4;
 }
 
 @media (max-width: 640px) {

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './WaveLines.css';
 
 // ─── constants ────────────────────────────────────────────────────────────
@@ -7,10 +7,6 @@ const NUM_SEGS     = 8;
 const FRAME_MS     = 16;    // cap at ~60 fps for consistent dt
 const SCAN_STOP_MS = 14200; // 500 + 13*130 + 12000 — last line fully swept
 const WIND_DOWN_MS = 1200;
-
-// Fixed reference canvas — ensures identical wave shapes on every device/platform
-const VB_W = 1440;
-const VB_H = 900;
 
 // Module-level scratch arrays — zero GC in hot path
 const _y   = new Float32Array(NUM_SEGS + 1);
@@ -46,6 +42,8 @@ const STREAMS = [
 ];
 
 const GRAD = { blue: 'wl-grad-blue', teal: 'wl-grad-teal', white: 'wl-grad-white' };
+const OVERSHOOT_R = 0.08;  // extend paths 8% beyond each edge; SVG viewport clips the transparent ends
+const WAVE_REF_W  = 1440;  // fixed reference width for wave frequency — prevents squishing on narrow screens
 
 // ─── easing helpers ───────────────────────────────────────────────────────
 function easeInOutSine(t) { return -(Math.cos(PI * t) - 1) / 2; }
@@ -54,23 +52,28 @@ function easeInQuad(t)    { return t * t; }
 // ─── buildPath ────────────────────────────────────────────────────────────
 // Uses .toFixed(1) for smooth sub-pixel rendering without integer-snap jitter.
 function buildPath(s, phase, breathMul, vbW, vbH) {
+    const os     = vbW * OVERSHOOT_R;
+    const startX = -os;
+    const totalW = vbW + os * 2;
     const startY = s.startYR * vbH;
     const endY   = s.endYR   * vbH;
     const amp    = s.ampR * breathMul * vbH;
-    const scale  = (PI * 2 * s.cycles) / vbW;
-    const segW   = vbW / NUM_SEGS;
+    // scale is based on a fixed reference width so wave shape stays consistent on all screen widths
+    const refTotalW = WAVE_REF_W * (1 + OVERSHOOT_R * 2);
+    const scale  = (PI * 2 * s.cycles) / refTotalW;
+    const segW   = totalW / NUM_SEGS;
     const segCp  = segW / 3;
-    const slope  = (endY - startY) / vbW;
+    const slope  = (endY - startY) / totalW;
 
     for (let i = 0; i <= NUM_SEGS; i++) {
-        const x = i * segW;
-        _y[i]   = startY + slope * x + amp * Math.sin(x * scale + phase);
-        _tan[i] = slope  + amp * Math.cos(x * scale + phase) * scale;
+        const xn = i * segW; // x relative to startX, used for wave math
+        _y[i]   = startY + slope * xn + amp * Math.sin(xn * scale + phase);
+        _tan[i] = slope  + amp * Math.cos(xn * scale + phase) * scale;
     }
 
-    let d = `M0,${_y[0].toFixed(1)}`;
+    let d = `M${startX.toFixed(1)},${_y[0].toFixed(1)}`;
     for (let i = 0; i < NUM_SEGS; i++) {
-        const x0 = i * segW, x1 = (i + 1) * segW;
+        const x0 = startX + i * segW, x1 = startX + (i + 1) * segW;
         d += ` C${(x0 + segCp).toFixed(1)},${(_y[i] + _tan[i] * segCp).toFixed(1)}`
            + ` ${(x1 - segCp).toFixed(1)},${(_y[i + 1] - _tan[i + 1] * segCp).toFixed(1)}`
            + ` ${x1.toFixed(1)},${_y[i + 1].toFixed(1)}`;
@@ -80,11 +83,26 @@ function buildPath(s, phase, breathMul, vbW, vbH) {
 
 // ─── component ────────────────────────────────────────────────────────────
 export default function WaveLines() {
+    const [dims, setDims]  = useState(() => ({ w: window.innerWidth, h: window.innerHeight }));
+    const dimsRef          = useRef(dims);
     const pathRefs         = useRef([]);
     const phaseRef         = useRef(STREAMS.map(s => s.phase));
     const breathRef        = useRef(STREAMS.map(s => s.bp));
     const lastTimeRef      = useRef(null);
     const rafRef           = useRef(null);
+
+    dimsRef.current = dims;
+
+    // Debounced resize — updates viewBox so waves always span the full viewport
+    useEffect(() => {
+        let tid;
+        function onResize() {
+            clearTimeout(tid);
+            tid = setTimeout(() => setDims({ w: window.innerWidth, h: window.innerHeight }), 150);
+        }
+        window.addEventListener('resize', onResize, { passive: true });
+        return () => { window.removeEventListener('resize', onResize); clearTimeout(tid); };
+    }, []);
 
     // RAF loop — mutates SVG path `d` attributes directly, never re-renders React
     useEffect(() => {
@@ -109,6 +127,7 @@ export default function WaveLines() {
 
             const dt = since === Infinity ? 0 : since / 1000;
             lastTimeRef.current = time;
+            const { w: vbW, h: vbH } = dimsRef.current;
             // Smoothstep wind-down over last WIND_DOWN_MS
             const windStart = SCAN_STOP_MS - WIND_DOWN_MS;
             let speedMul = 1;
@@ -126,7 +145,7 @@ export default function WaveLines() {
                 phaseRef.current[i]  += s.spd * speedMul * dt;
                 breathRef.current[i] += s.bs  * speedMul * dt;
                 const breathMul = 1 + 0.18 * Math.sin(breathRef.current[i]);
-                el.setAttribute('d', buildPath(s, phaseRef.current[i], breathMul, VB_W, VB_H));
+                el.setAttribute('d', buildPath(s, phaseRef.current[i], breathMul, vbW, vbH));
 
                 // Draw/sweep — purely time-driven, independent of speedMul
                 const streamStart   = 500 + i * 130;
@@ -162,33 +181,35 @@ export default function WaveLines() {
         };
     }, []);
 
+    const { w: vbW, h: vbH } = dims;
+
     return (
         <svg
             className="wave-lines"
-            viewBox={`0 0 ${VB_W} ${VB_H}`}
-            preserveAspectRatio="xMidYMid slice"
+            viewBox={`0 0 ${vbW} ${vbH}`}
+            preserveAspectRatio="none"
             aria-hidden="true"
         >
             <defs>
                 <linearGradient id="wl-grad-blue" x1="0%" y1="0%" x2="100%" y2="0%">
                     <stop offset="0%"   stopColor="rgba(30,80,255,0)" />
-                    <stop offset="10%"  stopColor="rgba(60,120,255,0.95)" />
+                    <stop offset="3%"   stopColor="rgba(60,120,255,0.95)" />
                     <stop offset="50%"  stopColor="rgba(100,160,255,1)" />
-                    <stop offset="90%"  stopColor="rgba(60,120,255,0.95)" />
+                    <stop offset="97%"  stopColor="rgba(60,120,255,0.95)" />
                     <stop offset="100%" stopColor="rgba(30,80,255,0)" />
                 </linearGradient>
                 <linearGradient id="wl-grad-white" x1="0%" y1="0%" x2="100%" y2="0%">
                     <stop offset="0%"   stopColor="rgba(80,100,255,0)" />
-                    <stop offset="10%"  stopColor="rgba(120,140,255,0.95)" />
+                    <stop offset="3%"   stopColor="rgba(120,140,255,0.95)" />
                     <stop offset="50%"  stopColor="rgba(160,180,255,1)" />
-                    <stop offset="90%"  stopColor="rgba(120,140,255,0.95)" />
+                    <stop offset="97%"  stopColor="rgba(120,140,255,0.95)" />
                     <stop offset="100%" stopColor="rgba(80,100,255,0)" />
                 </linearGradient>
                 <linearGradient id="wl-grad-teal" x1="0%" y1="0%" x2="100%" y2="0%">
                     <stop offset="0%"   stopColor="rgba(50,50,220,0)" />
-                    <stop offset="10%"  stopColor="rgba(80,90,255,0.92)" />
+                    <stop offset="3%"   stopColor="rgba(80,90,255,0.92)" />
                     <stop offset="50%"  stopColor="rgba(110,130,255,1)" />
-                    <stop offset="90%"  stopColor="rgba(80,90,255,0.92)" />
+                    <stop offset="97%"  stopColor="rgba(80,90,255,0.92)" />
                     <stop offset="100%" stopColor="rgba(50,50,220,0)" />
                 </linearGradient>
             </defs>
@@ -198,7 +219,7 @@ export default function WaveLines() {
                     <path
                         key={i}
                         ref={el => { pathRefs.current[i] = el; }}
-                        d={buildPath(s, s.phase, 1, VB_W, VB_H)}
+                        d={buildPath(s, s.phase, 1, vbW, vbH)}
                         pathLength="1"
                         style={{ '--wl-i': i, strokeDashoffset: 1, opacity: 0 }}
                         fill="none"
@@ -215,7 +236,7 @@ export default function WaveLines() {
                     <path
                         key={i}
                         style={{ '--wl-i': i }}
-                        d={buildPath(s, s.phase, 1, VB_W, VB_H)}
+                        d={buildPath(s, s.phase, 1, vbW, vbH)}
                         pathLength="1"
                         fill="none"
                         stroke="rgba(255, 255, 255, 0.2)"

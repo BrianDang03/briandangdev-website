@@ -11,10 +11,10 @@
     pointer-events: none;
     --nav-orb-left-x: -3.35vw;
     --nav-orb-left-y: 10vh;
-    --nav-orb-left-size: 15.1vw;
-    --nav-orb-small-size: 5vw;
-    --nav-orb-small-overlap-x: 3.96vw;
-    --nav-orb-small-overlap-y: 6.67vh;
+    --nav-orb-left-size: clamp(120px, 15.1vw, 220px);
+    --nav-orb-small-size: clamp(38px, 5vw, 72px);
+    --nav-orb-small-overlap-x: clamp(28px, 3.96vw, 57px);
+    --nav-orb-small-overlap-y: clamp(36px, 6.67vh, 60px);
 }
 
 .theme-bg-footer {
@@ -137,6 +137,7 @@
 .orb {
     border: 1px solid var(--line-soft);
     border-radius: 999px;
+    background: #0d131b;
     box-shadow: 0 0 18px rgba(255, 255, 255, 0.18), 0 0 6px rgba(255, 255, 255, 0.08);
     transform: translate3d(calc(var(--space-base-x, 0px) * 0.45), calc(var(--space-scroll-y, 0px) * 1.5), 0);
     animation: float-in-from-top 2.4s cubic-bezier(0.16, 0.84, 0.44, 1) backwards;
@@ -156,7 +157,7 @@
 }
 
 .orb-nav-1 {
-    width: 10.9vw;
+    width: clamp(80px, 10.9vw, 160px);
     aspect-ratio: 1;
     top: 26vh;
     left: 64vw;
@@ -166,7 +167,7 @@
 }
 
 .orb-nav-2 {
-    width: 6.8vw;
+    width: clamp(52px, 6.8vw, 100px);
     aspect-ratio: 1;
     top: 28vh;
     left: 31vw;
@@ -176,7 +177,7 @@
 }
 
 .orb-left {
-    width: 15.1vw;
+    width: clamp(120px, 15.1vw, 220px);
     aspect-ratio: 1;
     top: 6vh;
     left: -3.65vw;
@@ -186,7 +187,7 @@
 }
 
 .orb-3 {
-    width: 6.875vw;
+    width: clamp(52px, 6.875vw, 100px);
     aspect-ratio: 1;
     top: 36vh;
     right: 4vw;
@@ -196,7 +197,7 @@
 }
 
 .orb-8 {
-    width: 5vw;
+    width: clamp(38px, 5vw, 72px);
     aspect-ratio: 1;
     top: 26vh;
     left: 8vw;
@@ -206,7 +207,7 @@
 }
 
 .orb-10 {
-    width: 6.875vw;
+    width: clamp(52px, 6.875vw, 100px);
     aspect-ratio: 1;
     bottom: 12vh;
     left: -2.1vw;
@@ -238,8 +239,8 @@
 .floating-plus {
     position: absolute;
     z-index: -2;
-    width: 1.05vw;
-    height: 1.05vw;
+    width: clamp(10px, 1.05vw, 16px);
+    height: clamp(10px, 1.05vw, 16px);
     margin: 0;
     padding: 0;
     transform: translate3d(calc(var(--space-base-x, 0px) * 0.85), calc(var(--space-scroll-y, 0px) * 1.95), 0);
@@ -262,7 +263,7 @@
 }
 
 .floating-plus::before {
-    width: 0.12vw;
+    width: clamp(1px, 0.12vw, 2px);
     height: 100%;
     left: 45%;
     top: 0;
@@ -270,7 +271,7 @@
 
 .floating-plus::after {
     width: 100%;
-    height: 0.12vw;
+    height: clamp(1px, 0.12vw, 2px);
     left: 0;
     top: 45%;
 }
@@ -419,6 +420,7 @@
 /* ── Light theme overrides ───────────────────────────────────────────────────*/
 [data-theme="light"] .orb {
     border-color: rgba(18, 34, 54, 0.44);
+    background: #f0f3f7;
     box-shadow: 0 0 18px rgba(18, 34, 54, 0.22);
 }
 
@@ -441,5 +443,36 @@
     .theme-bg-footer .orb,
     .theme-bg-footer .floating-plus {
         animation: none;
+    }
+
+    /* Re-anchor nav orbs to sensible mobile positions */
+    .theme-bg .orb-nav-1 {
+        top: -4vh;
+        left: 58vw;
+    }
+
+    .theme-bg .orb-nav-2 {
+        top: -3vh;
+        left: 25vw;
+    }
+
+    .theme-bg .orb-3 {
+        top: 28vh;
+        right: 3vw;
+    }
+
+    .theme-bg .plus-1 {
+        top: 10vh;
+        right: 10vw;
+    }
+
+    .theme-bg .plus-4 {
+        top: 38vh;
+        right: 6vw;
+    }
+
+    .theme-bg .plus-6 {
+        top: 18vh;
+        left: 20vw;
     }
 }
