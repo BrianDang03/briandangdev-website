@@ -71,10 +71,6 @@
     background: rgba(18, 34, 54, 0.56);
 }
 
-[data-theme="light"] .flowing-wave {
-    filter: contrast(1.34) saturate(0.86) brightness(0.5);
-}
-
 [data-theme="light"] .site-header {
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.16));
     border-bottom-color: rgba(0, 0, 0, 0.1);
@@ -446,27 +442,6 @@ img {
     pointer-events: none;
 }
 
-@keyframes wave-startup-clamp {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes wave-base-startup {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 0.32;
-    }
-}
-
-
 @keyframes float-in-from-top {
     from {
         transform: translate3d(calc(var(--space-base-x, 0px) * 0.45), calc(var(--space-scroll-y, 0px) * 1.5 - 180px), 0);
@@ -660,24 +635,6 @@ img {
 
 
 
-.flowing-wave {
-    /* Fill the fixed .theme-bg container so wave covers 100% of viewport. */
-    /* preserveAspectRatio="slice" inside the SVG keeps proportions uniform  */
-    /* across all screen sizes (like background-size: cover).                */
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    pointer-events: none;
-    /* will-change promotes the SVG to its own GPU compositing layer so that */
-    /* path mutations in the RAF loop don't invalidate the parent layer.      */
-    will-change: transform;
-    /* Dark-mode brightness boost (was on parent .theme-bg, moved here so   */
-    /* the parent has no CSS filter and cannot collapse child GPU layers).    */
-    filter: brightness(1.15);
-}
-
 .theme-bg.is-ready {
     opacity: 1;
     transition: opacity 220ms ease-out;
@@ -707,56 +664,7 @@ img {
     position: absolute;
 }
 
-/* Path geometry + dasharray are JS-driven; CSS handles glow and stroke only. */
-/* Glow is applied via SVG <filter> attribute on the paths, not CSS filter,   */
-/* to avoid per-frame compositing-layer repaints that cause flicker.          */
-.wave-line {
-    stroke-width: 2.3px;
-    stroke-linecap: round;
-    animation: wave-startup-clamp 0.72s ease-out 1;
-    animation-delay: 0s;
-    opacity: 1;
-}
 
-.wave-line-2 {
-    animation: wave-startup-clamp 0.72s ease-out 1;
-    animation-delay: 0.22s;
-    opacity: 1;
-}
-
-.wave-line-3 {
-    animation: wave-startup-clamp 0.72s ease-out 1;
-    animation-delay: 0.12s;
-    opacity: 1;
-}
-
-.wave-line-4 {
-    animation: wave-startup-clamp 0.72s ease-out 1;
-    animation-delay: 0.34s;
-    opacity: 1;
-}
-
-/* Always-visible base lines; scan highlights travel over the top. */
-/* No CSS filter here — glow is applied as SVG filter attribute to avoid      */
-/* per-frame compositing-layer invalidation from d attribute changes.         */
-.wave-base {
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    opacity: 0.45;
-    animation: wave-base-startup 0.72s ease-out 1;
-}
-
-.wave-base-2 {
-    animation-delay: 0.16s;
-}
-
-.wave-base-3 {
-    animation-delay: 0.32s;
-}
-
-.wave-base-4 {
-    animation-delay: 0.48s;
-}
 
 [data-theme="light"] .wave-base,
 [data-theme="light"] .wave-base-2,
