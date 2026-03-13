@@ -5,10 +5,11 @@
    Local stacking contexts (e.g. inside a card face) may use plain integers
    that are scoped within that context and do not compete with this scale. */
 :root {
-    --z-wave: 2;
-    /* Wave SVG — above shapes, below content     */
-    --z-shapes: 1;
-    /* Decorative orbs / beams / plus signs      */
+    --z-wave: -1;
+    /* Wave SVG — negative: behind all content without needing z-index on main-content */
+    --z-shapes: -2;
+    /* Decorative orbs/beams — behind waves. theme-bg has no z-index so orbs
+       participate directly in app-root's stacking context (nav-cut orbs reach z:12) */
     --z-shapes-nav-cut: 12;
     /* Orbs that bleed behind the navbar         */
     --z-footer: 3;
@@ -163,13 +164,6 @@ body {
     background-attachment: fixed;
 }
 
-/* When a card modal is open, lift .main-content's stacking context above the
-   navbar (--z-navbar: 15) so the modal backdrop and expanded card always render
-   on top. The class is added/removed by TiltFlipCard via a useEffect. */
-body.has-modal .main-content {
-    z-index: 35;
-}
-
 /* ── App Root ────────────────────────────────────────────────────────────────
    Flex column so the app fills the full viewport height. Footer's
    margin-top: auto pushes it to the bottom inside this container. */
@@ -218,7 +212,10 @@ body.has-modal .main-content {
 }
 
 /* ── Layer 4 — Main Content ──────────────────────────────────────────────────
-   Explicit z-index above the wave layer so content always renders on top. */
+   No z-index here — that would create a stacking context that traps all cards
+   at the same global level. Instead each .tfc-scene participates directly in
+   .app-root's stacking context so non-expanded cards (z:0) stay below the
+   navbar (z:15) and the expanded card (z:30) rises above it on its own. */
 .main-content {
     flex: 1 0 auto;
     min-width: 0;
@@ -226,7 +223,6 @@ body.has-modal .main-content {
     margin: 0 auto;
     padding: 0 0 2rem;
     position: relative;
-    z-index: 4;
 }
 
 @media (max-width: 640px) {

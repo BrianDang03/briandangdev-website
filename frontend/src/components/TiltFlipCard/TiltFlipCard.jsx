@@ -153,16 +153,6 @@ export default function TiltFlipCard({
   const [isReturning, setIsReturning] = useState(false);
   const [isBackdropVisible, setIsBackdropVisible] = useState(false);
 
-  // Lift .main-content above the navbar stacking context while expanded so the
-  // modal and backdrop are never clipped by the sticky header or footer.
-  useEffect(() => {
-    if (isExpanded) {
-      document.body.classList.add('has-modal');
-    }
-    return () => {
-      document.body.classList.remove('has-modal');
-    };
-  }, [isExpanded]);
   const [frontVisibleSrc, setFrontVisibleSrc] = useState(frontImg || null);
   const [backVisibleSrc, setBackVisibleSrc] = useState(backImg || null);
 
