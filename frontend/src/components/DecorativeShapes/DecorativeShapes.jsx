@@ -24,16 +24,7 @@ export default function DecorativeShapes({ show, isLocked }) {
                 )}
             </div>
 
-            {/* Footer shapes — anchored near the bottom of the page */}
-            <div className={`theme-bg-footer ${show ? "is-ready" : "is-deferred"} ${lockClass}`} aria-hidden="true">
-                {show && (
-                    <>
-                        <span className="beam beam-two" />
-                        <span className="orb orb-10" />
-                        <span className="floating-plus plus-7" />
-                    </>
-                )}
-            </div>
+            {/* Footer shapes have been moved into Footer.jsx */}
         </>
     );
 }

@@ -220,7 +220,7 @@
      opened card's backdrop (--z-modal-backdrop: 20) or its scene (--z-modal: 30). */
   position: absolute;
   z-index: var(--z-modal-returning);
-  transition: transform 720ms cubic-bezier(0.2, 0.85, 0.2, 1);
+  transition: transform 480ms cubic-bezier(0.2, 0.85, 0.2, 1);
 }
 
 .tfc-flip {

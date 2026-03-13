@@ -11,8 +11,8 @@
     /* Decorative orbs / beams / plus signs      */
     --z-shapes-nav-cut: 12;
     /* Orbs that bleed behind the navbar         */
-    --z-footer: 4;
-    /* Footer — above waves                      */
+    --z-footer: 3;
+    /* Footer — above waves, below content       */
     --z-navbar: 15;
     /* Sticky site header                        */
     --z-modal-backdrop: 20;
@@ -184,7 +184,7 @@ body.has-modal .main-content {
     flex-direction: column;
     min-height: 100dvh;
     position: relative;
-    isolation: isolate;
+    z-index: 0;
 }
 
 /* Hidden during boot — loader covers the screen. Revealed once boot completes. */
@@ -310,4 +310,8 @@ body.has-modal .main-content {
     z-index: var(--z-wave);
     overflow: visible;
     pointer-events: none;
+    /* Mask waves to only appear in the bottom ~35% of the viewport,
+       regardless of screen size — prevents overlap with cards/content. */
+    mask-image: linear-gradient(to bottom, transparent 55%, black 72%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 55%, black 72%);
 }

@@ -17,13 +17,7 @@
     --nav-orb-small-overlap-y: clamp(36px, 6.67vh, 60px);
 }
 
-.theme-bg-footer {
-    position: absolute;
-    inset: 0;
-    z-index: var(--z-shapes);
-    overflow: visible;
-    pointer-events: none;
-}
+
 
 /* ── Shape entrance keyframes ────────────────────────────────────────────────
    All shapes slide in from slightly off-screen on first paint. The translate3d
@@ -93,24 +87,14 @@
    Containers start transparent (rendered but invisible during boot) then fade
    in. The is-locked class strips entrance animations after their intro window
    to free GPU composite layers. */
-.theme-bg.is-ready,
-.theme-bg-footer.is-ready {
+.theme-bg.is-ready {
     opacity: 1;
     transition: opacity 220ms ease-out;
 }
 
 .theme-bg.is-locked .orb,
-.theme-bg.is-locked .floating-plus,
-.theme-bg-footer.is-locked .orb,
-.theme-bg-footer.is-locked .floating-plus {
+.theme-bg.is-locked .floating-plus {
     animation: none !important;
-}
-
-/* Footer shapes need position: absolute so they anchor within .theme-bg-footer */
-.theme-bg-footer .orb,
-.theme-bg-footer .beam,
-.theme-bg-footer .floating-plus {
-    position: absolute;
 }
 
 /* ── Shared shape base styles ────────────────────────────────────────────────
@@ -416,24 +400,6 @@
     left: 28vw;
 }
 
-/* ── Footer-anchored layout overrides ────────────────────────────────────────
-   Inside .theme-bg-footer, shapes are re-positioned near the bottom viewport band. */
-.theme-bg-footer .beam-two {
-    bottom: 6vh;
-    left: -10vw;
-    transform: rotate(16deg);
-}
-
-.theme-bg-footer .orb-10 {
-    bottom: -3vh;
-    left: -1.77vw;
-}
-
-.theme-bg-footer .plus-7 {
-    bottom: 16vh;
-    right: 12vw;
-    top: auto;
-}
 
 /* On coarse-pointer devices each orb backdrop-filter adds a GPU compositor
    layer. Strip the blur and rely on the solid opaque fill instead. */
