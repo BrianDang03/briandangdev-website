@@ -402,11 +402,17 @@
 
 
 /* On coarse-pointer devices each orb backdrop-filter adds a GPU compositor
-   layer. Strip the blur and rely on the solid opaque fill instead. */
+   layer. Strip the blur and rely on the solid opaque fill instead.
+   Also dial back the glow so the bloom doesn't bleed onto hero text. */
 @media (pointer: coarse) {
     .orb {
         -webkit-backdrop-filter: none;
         backdrop-filter: none;
+        box-shadow:
+            inset 0 1px 0 rgba(235, 243, 255, 0.30),
+            0 0 8px  rgba(220, 232, 252, 0.28),
+            0 0 18px rgba(195, 212, 245, 0.16),
+            0 0 40px rgba(165, 188, 235, 0.07);
     }
 }
 
@@ -465,19 +471,30 @@
     }
 
     /* Re-anchor nav orbs to sensible mobile positions */
+    .theme-bg .orb-left {
+        top: 8vh;
+        left: -12vw;
+    }
+
+    .theme-bg .orb-8 {
+        top: 18vh;
+        left: -5vw;
+    }
+
     .theme-bg .orb-nav-1 {
-        top: -4vh;
-        left: 58vw;
+        top: 6vh;
+        left: 56vw;
     }
 
     .theme-bg .orb-nav-2 {
-        top: -3vh;
-        left: 25vw;
+        top: 8vh;
+        left: 72vw;
     }
 
     .theme-bg .orb-3 {
-        top: 28vh;
-        right: 3vw;
+        top: 72vh;
+        right: -4vw;
+        left: auto;
     }
 
     .theme-bg .plus-1 {
