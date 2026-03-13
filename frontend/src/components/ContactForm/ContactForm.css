@@ -87,6 +87,10 @@
         transform: none;
         box-shadow: none;
     }
+
+    .submit-btn {
+        transition: none;
+    }
 }
 
 [data-theme="light"] .submit-btn {

@@ -165,6 +165,12 @@
 }
 
 @media (hover: none), (pointer: coarse) {
+    /* Disable transitions — scroll-triggered :hover on touch causes an animated
+       flash/rollback; instant state change is the correct behaviour on touch. */
+    .hero-btn {
+        transition: none;
+    }
+
     .hero-btn-primary:hover,
     .hero-btn-secondary:hover {
         transform: none;

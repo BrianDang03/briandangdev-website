@@ -82,6 +82,12 @@
         transform: none;
         box-shadow: none;
     }
+
+    /* Disable transitions — no animated flash when scroll-triggered :hover fires */
+    .card-action-btn,
+    .card-icon-btn {
+        transition: none;
+    }
 }
 
 .card-icon-btn .social-icon {

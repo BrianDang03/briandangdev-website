@@ -81,6 +81,10 @@
         border-color: var(--line-soft);
         box-shadow: none;
     }
+
+    .skill-tag {
+        transition: none;
+    }
 }
 
 /* In light mode the white-overlay gradient backgrounds are invisible.

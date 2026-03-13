@@ -16,6 +16,8 @@
     color: #ffffff;
     cursor: pointer;
     padding: 0;
+    /* Eliminate iOS double-tap zoom delay on the theme toggle button */
+    touch-action: manipulation;
     transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
 }
 
@@ -57,5 +59,16 @@
 (pointer: coarse) {
     .theme-toggle:hover {
         transform: none;
+    }
+
+    /* Prevent transition flash on scroll-triggered hover */
+    .theme-toggle {
+        transition: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .theme-toggle {
+        transition: none;
     }
 }

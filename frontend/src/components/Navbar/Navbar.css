@@ -111,6 +111,12 @@
         filter: none;
         transform: none;
     }
+
+    /* Disable transitions so scroll-triggered :hover causes no animated flash */
+    .nav-link,
+    .nav-cta {
+        transition: none;
+    }
 }
 
 .nav-menu-btn,
@@ -128,6 +134,8 @@
     background: rgba(255, 255, 255, 0.08);
     cursor: pointer;
     padding: 0;
+    /* Eliminate iOS double-tap zoom on the hamburger button */
+    touch-action: manipulation;
 }
 
 .nav-menu-btn span {
@@ -337,5 +345,21 @@
 
     .nav-backdrop {
         display: block;
+    }
+}
+
+/* Stop the nav-panel slide, backdrop fade, and hamburger icon morph for
+   users who prefer reduced motion — instant show/hide instead. */
+@media (prefers-reduced-motion: reduce) {
+    .nav-panel {
+        transition: none;
+    }
+
+    .nav-backdrop {
+        transition: none;
+    }
+
+    .nav-menu-btn span {
+        transition: none;
     }
 }
