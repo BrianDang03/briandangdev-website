@@ -409,7 +409,6 @@
   background: linear-gradient(var(--tfc-overlay-front),
       var(--tfc-overlay-back));
   text-align: left;
-  -webkit-overflow-scrolling: touch;
   -webkit-touch-callout: none;
   -webkit-user-drag: none;
   user-select: none;
@@ -427,8 +426,8 @@
 
 .tfc-close-btn {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: max(12px, calc(env(safe-area-inset-top) + 8px));
+  right: max(12px, calc(env(safe-area-inset-right) + 8px));
   z-index: 20;
   display: flex;
   align-items: center;

@@ -133,6 +133,14 @@
     }
 }
 
+/* Strip expensive backdrop-filter on touch devices */
+@media (pointer: coarse) {
+    .site-footer {
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+}
+
 /* Light theme overrides */
 [data-theme="light"] .site-footer {
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.42));

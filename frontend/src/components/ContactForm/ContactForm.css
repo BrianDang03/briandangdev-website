@@ -50,6 +50,7 @@
 .submit-btn {
     width: 100%;
     border: none;
+    min-height: 44px;
 }
 
 .submit-btn:disabled {

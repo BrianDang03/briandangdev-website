@@ -41,7 +41,7 @@
 .about-section h2 {
     margin: 0 0 1.25rem;
     font-family: "Cinzel", "Times New Roman", serif;
-    font-size: 1.75rem;
+    font-size: clamp(1.25rem, 4.5vw, 1.75rem);
     letter-spacing: 0.06em;
     color: var(--text-main);
 }
