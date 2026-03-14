@@ -21,24 +21,24 @@ const _tan = new Float32Array(NUM_SEGS + 1);
 // bs / bp = breath speed (rad/s) and initial breath phase — modulates ampR ±18%
 const STREAMS = [
     // Layer A — slow background haze
-    { startYR: 0.77, endYR: 0.97, ampR: 0.070, cycles: 1.5, phase: 0, color: 'blue', opacity: 0.38, width: 0.70, spd: 0.14, bs: 0.11, bp: 0 },
-    { startYR: 0.81, endYR: 1.00, ampR: 0.080, cycles: 1.5, phase: PI * 0.5, color: 'teal', opacity: 0.34, width: 0.65, spd: 0.17, bs: 0.09, bp: PI * 0.7 },
-    { startYR: 0.87, endYR: 1.04, ampR: 0.075, cycles: 1.5, phase: PI, color: 'blue', opacity: 0.36, width: 0.65, spd: 0.12, bs: 0.13, bp: PI * 1.3 },
-    { startYR: 0.93, endYR: 1.09, ampR: 0.080, cycles: 1.5, phase: PI * 1.5, color: 'teal', opacity: 0.32, width: 0.60, spd: 0.15, bs: 0.10, bp: PI * 0.4 },
+    { startYR: 0.82, endYR: 1.02, ampR: 0.070, cycles: 1.5, phase: 0, color: 'blue', opacity: 0.38, width: 0.70, spd: 0.14, bs: 0.11, bp: 0 },
+    { startYR: 0.86, endYR: 1.05, ampR: 0.080, cycles: 1.5, phase: PI * 0.5, color: 'teal', opacity: 0.34, width: 0.65, spd: 0.17, bs: 0.09, bp: PI * 0.7 },
+    { startYR: 0.92, endYR: 1.09, ampR: 0.075, cycles: 1.5, phase: PI, color: 'blue', opacity: 0.36, width: 0.65, spd: 0.12, bs: 0.13, bp: PI * 1.3 },
+    { startYR: 0.98, endYR: 1.14, ampR: 0.080, cycles: 1.5, phase: PI * 1.5, color: 'teal', opacity: 0.32, width: 0.60, spd: 0.15, bs: 0.10, bp: PI * 0.4 },
 
     // Layer B — main energy band
-    { startYR: 0.79, endYR: 0.98, ampR: 0.090, cycles: 1.5, phase: 0, color: 'blue', opacity: 0.82, width: 1.40, spd: 0.29, bs: 0.17, bp: PI * 0.2 },
-    { startYR: 0.82, endYR: 1.00, ampR: 0.095, cycles: 1.5, phase: PI * 0.4, color: 'white', opacity: 0.76, width: 1.20, spd: 0.32, bs: 0.14, bp: PI * 1.1 },
-    { startYR: 0.84, endYR: 1.02, ampR: 0.100, cycles: 1.5, phase: PI, color: 'blue', opacity: 0.88, width: 1.50, spd: 0.26, bs: 0.19, bp: PI * 0.6 },
-    { startYR: 0.87, endYR: 1.04, ampR: 0.085, cycles: 1.5, phase: PI * 0.6, color: 'teal', opacity: 0.72, width: 1.10, spd: 0.33, bs: 0.15, bp: PI * 1.8 },
-    { startYR: 0.90, endYR: 1.07, ampR: 0.095, cycles: 1.5, phase: PI * 1.2, color: 'blue', opacity: 0.80, width: 1.30, spd: 0.30, bs: 0.18, bp: PI * 0.9 },
-    { startYR: 0.93, endYR: 1.10, ampR: 0.080, cycles: 1.5, phase: PI * 0.8, color: 'white', opacity: 0.68, width: 1.00, spd: 0.27, bs: 0.12, bp: PI * 1.5 },
+    { startYR: 0.84, endYR: 1.03, ampR: 0.090, cycles: 1.5, phase: 0, color: 'blue', opacity: 0.82, width: 1.40, spd: 0.29, bs: 0.17, bp: PI * 0.2 },
+    { startYR: 0.87, endYR: 1.05, ampR: 0.095, cycles: 1.5, phase: PI * 0.4, color: 'white', opacity: 0.76, width: 1.20, spd: 0.32, bs: 0.14, bp: PI * 1.1 },
+    { startYR: 0.89, endYR: 1.07, ampR: 0.100, cycles: 1.5, phase: PI, color: 'blue', opacity: 0.88, width: 1.50, spd: 0.26, bs: 0.19, bp: PI * 0.6 },
+    { startYR: 0.92, endYR: 1.09, ampR: 0.085, cycles: 1.5, phase: PI * 0.6, color: 'teal', opacity: 0.72, width: 1.10, spd: 0.33, bs: 0.15, bp: PI * 1.8 },
+    { startYR: 0.95, endYR: 1.12, ampR: 0.095, cycles: 1.5, phase: PI * 1.2, color: 'blue', opacity: 0.80, width: 1.30, spd: 0.30, bs: 0.18, bp: PI * 0.9 },
+    { startYR: 0.98, endYR: 1.15, ampR: 0.080, cycles: 1.5, phase: PI * 0.8, color: 'white', opacity: 0.68, width: 1.00, spd: 0.27, bs: 0.12, bp: PI * 1.5 },
 
     // Layer C — fast foreground wisps
-    { startYR: 0.80, endYR: 0.99, ampR: 0.100, cycles: 1.5, phase: PI * 0.2, color: 'white', opacity: 0.90, width: 0.90, spd: 0.47, bs: 0.22, bp: PI * 0.3 },
-    { startYR: 0.83, endYR: 1.01, ampR: 0.095, cycles: 1.5, phase: PI * 0.9, color: 'blue', opacity: 0.84, width: 0.85, spd: 0.44, bs: 0.20, bp: PI * 1.6 },
-    { startYR: 0.86, endYR: 1.04, ampR: 0.090, cycles: 1.5, phase: PI * 0.3, color: 'teal', opacity: 0.78, width: 0.80, spd: 0.50, bs: 0.24, bp: PI * 0.8 },
-    { startYR: 0.91, endYR: 1.08, ampR: 0.100, cycles: 1.5, phase: PI * 1.1, color: 'white', opacity: 0.72, width: 0.75, spd: 0.41, bs: 0.21, bp: PI * 1.2 },
+    { startYR: 0.85, endYR: 1.04, ampR: 0.100, cycles: 1.5, phase: PI * 0.2, color: 'white', opacity: 0.90, width: 0.90, spd: 0.47, bs: 0.22, bp: PI * 0.3 },
+    { startYR: 0.88, endYR: 1.06, ampR: 0.095, cycles: 1.5, phase: PI * 0.9, color: 'blue', opacity: 0.84, width: 0.85, spd: 0.44, bs: 0.20, bp: PI * 1.6 },
+    { startYR: 0.91, endYR: 1.09, ampR: 0.090, cycles: 1.5, phase: PI * 0.3, color: 'teal', opacity: 0.78, width: 0.80, spd: 0.50, bs: 0.24, bp: PI * 0.8 },
+    { startYR: 0.96, endYR: 1.13, ampR: 0.100, cycles: 1.5, phase: PI * 1.1, color: 'white', opacity: 0.72, width: 0.75, spd: 0.41, bs: 0.21, bp: PI * 1.2 },
 ];
 
 const GRAD = { blue: 'wl-grad-blue', teal: 'wl-grad-teal', white: 'wl-grad-white' };
