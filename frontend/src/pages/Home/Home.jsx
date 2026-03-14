@@ -3,6 +3,7 @@ import SEO from "../../components/SEO";
 import PageTransition from "../../components/PageTransition";
 import HeroBlock from "../../components/HeroBlock/HeroBlock";
 import HomeCards from "../../components/HomeCards/HomeCards";
+import CareerScroller from "../../components/CareerScroller/CareerScroller";
 import "./Home.css";
 
 const PILLARS = [
@@ -70,6 +71,9 @@ export default function Home({ name, job }) {
 
         <div className="home-bottom-line" aria-hidden="true" />
       </section>
+
+      {/* Scroll-driven career timeline */}
+      <CareerScroller />
     </PageTransition>
   );
 }
