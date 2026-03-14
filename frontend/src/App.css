@@ -28,6 +28,10 @@
     /* Mobile slide-in nav panel                 */
     --z-nav-btn: 41;
     /* Hamburger button (above panel)            */
+    --z-scroll-fade: 50;
+    /* Full-screen fade-to-black overlay         */
+    --z-timeline: 52;
+    /* Home timeline line-drawing overlay        */
     --z-loader: 60;
     /* Full-screen boot loader                   */
     --z-skip: 9999;
@@ -384,8 +388,9 @@ body {
 .scroll-fade-overlay {
     position: fixed;
     inset: 0;
-    z-index: 50;
+    z-index: var(--z-scroll-fade);
     background: #000;
     opacity: 0;
     pointer-events: none;
+    will-change: opacity;
 }

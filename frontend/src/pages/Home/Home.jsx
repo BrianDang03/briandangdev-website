@@ -1,4 +1,3 @@
-import { useRef, useEffect } from 'react';
 import { Zap, Layers, Cpu } from 'lucide-react';
 import SEO from "../../components/SEO";
 import PageTransition from "../../components/PageTransition";
@@ -33,33 +32,11 @@ const TECH = [
 ];
 
 export default function Home({ name, job }) {
-  const fadeOverlayRef = useRef(null);
-  const heroRef = useRef(null);
-
-  useEffect(() => {
-    function onScroll() {
-      const el = fadeOverlayRef.current;
-      const hero = heroRef.current;
-      if (!el || !hero) return;
-      // Bottom of the hero block relative to the viewport
-      const heroBottom = hero.getBoundingClientRect().bottom;
-      // Navbar is ~60px; once hero bottom clears it, start fading
-      const FADE_START = 60;   // px — hero bottom at this viewport position triggers start
-      const FADE_RANGE = 320;  // px — distance over which opacity goes 0 → 1
-      const gone = FADE_START - heroBottom;          // positive once hero has left
-      const progress = Math.min(Math.max(gone / FADE_RANGE, 0), 1);
-      el.style.opacity = progress.toFixed(4);
-    }
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
   return (
     <PageTransition>
       <SEO />
       <section className="home-shell">
-        <div className="home-hero" ref={heroRef}>
+        <div className="home-hero">
           <HeroBlock
             name={name}
             job={job}
@@ -94,10 +71,6 @@ export default function Home({ name, job }) {
         <div className="home-bottom-line" aria-hidden="true" />
       </section>
 
-      {/* Scroll space so the fade-to-black has room to complete */}
-      <div className="home-fade-spacer" aria-hidden="true" />
-
-      <div className="scroll-fade-overlay" ref={fadeOverlayRef} aria-hidden="true" />
     </PageTransition>
   );
 }

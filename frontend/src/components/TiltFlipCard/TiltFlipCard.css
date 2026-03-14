@@ -170,8 +170,13 @@
 }
 
 @keyframes tfc-fade-simple {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .tfc-tilt {
@@ -239,7 +244,7 @@
      opened card's backdrop (--z-modal-backdrop: 20) or its scene (--z-modal: 30). */
   position: absolute;
   z-index: var(--z-modal-returning);
-  transition: transform 480ms cubic-bezier(0.2, 0.85, 0.2, 1);
+  transition: transform 900ms cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 /* Promote tilt, expand, and flip to their own GPU layers only during active
@@ -266,6 +271,10 @@
 
 .tfc-flip.is-flipped {
   transform: rotateY(180deg);
+}
+
+.tfc-tilt.is-returning .tfc-flip {
+  transition: transform 1100ms cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .tfc-scene:not(.is-expanded):hover .tfc-glare {
