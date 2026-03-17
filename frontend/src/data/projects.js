@@ -5,7 +5,7 @@ const projects = [
     {
         slug: "modem-wizard",
         title: "Modem Wizard",
-        summary: "Full-stack internal tool that automates modem setup, activation, and configuration for Wanco Inc.'s production floor, processing 40 to 90 units per week.",
+        summary: "Full stack internal tool that automates modem setup, activation, and configuration for Wanco Inc.'s production floor, processing 40 to 90 units per week.",
         description: "Internal production tool built for Wanco Inc. to streamline the setup, activation, and configuration of modems deployed on Message Board Trailers. Interfaces directly with the modem's REST API and integrates with Verizon's Thingspace API to handle cellular activation programmatically. Architected and shipped from scratch in 6 weeks, including learning the full MERN stack for the first time, and is now a critical dependency in weekly production, processing 40 to 90 modems per week. Without it, the production floor has no reliable fallback process.",
         technologies: ["MongoDB", "Express", "React", "Node.js", "Verizon Thingspace API", "REST"],
         proprietary: true,
@@ -33,7 +33,7 @@ const projects = [
     {
         slug: "asset-tracker-automation",
         title: "Asset Tracker Automation",
-        summary: "Python automation tool that cut Suntech asset tracker order fulfillment from 4 hours to 10 minutes per box, serving three active production lines at Wanco Inc.",
+        summary: "Python automation tool that cut Suntech asset tracker order fulfillment from 4 hours to 10 minutes per box. Serves three active production lines at Wanco Inc.",
         description: "Python automation tool built for Wanco Inc. that reduced Suntech asset tracker order fulfillment from 4 hours to 10 minutes per box. Orchestrates the full workflow: activating each tracker, performing all data entry into Plex ERP, and automating label printing. A process that previously required an operator to manually click through Plex four times per tracker just to print labels. Built with Playwright for browser automation as a cost-effective alternative to Plex's paid API. Serves three active production lines processing 30-unit orders.",
         technologies: ["Python", "Playwright", "Browser Automation"],
         proprietary: true,
@@ -57,7 +57,7 @@ const projects = [
     {
         slug: "tlapack",
         title: "<T>LAPACK — Open Source Contributions",
-        summary: "Contributor to an NSF-funded open-source C++ template linear algebra library. Implemented core symmetric eigenvalue routines, test cases, and usage examples.",
+        summary: "Contributor to an NSF funded open source C++ template linear algebra library. Implemented core symmetric eigenvalue routines, test cases, and usage examples.",
         description: "Contributor to <T>LAPACK, an NSF-funded open-source C++ template linear algebra library developed at the University of Colorado Denver. Implemented and refined core symmetric eigenvalue routines, primarily laed4 and laed6, the secular equation solvers at the heart of the divide-and-conquer eigenvalue algorithm, along with laed2, lamrg, steqr quicksort, and in-place triangular matrix multiplication routines (mult_llh, mult_uhu). Authored test cases and usage examples for each implemented routine. Contributions merged across multiple pull requests as one of 17 contributors.",
         technologies: ["C++", "Numerical Linear Algebra", "CMake", "CI/CD Pipeline", "Open Source"],
         image: `${ASSET_BASE}tlapack.jpg`,
