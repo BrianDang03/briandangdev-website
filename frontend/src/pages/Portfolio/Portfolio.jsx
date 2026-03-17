@@ -23,9 +23,8 @@ export default function Portfolio() {
                 <p className="hero-kicker">Selected Work</p>
                 <h1>Portfolio</h1>
                 <p className="page-intro">
-                    A collection of creator-led projects where system design meets
-                    implementation: gameplay-driven features, immersive interaction,
-                    and resilient builds shaped by challenge and constant growth.
+                    I design, develop, and deliver. Every project here was built to solve
+                    a real problem, shipped under real pressure, and used by real people.
                 </p>
 
                 <ProjectsGrid />
