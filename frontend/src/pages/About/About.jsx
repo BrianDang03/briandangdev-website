@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import SEO from '../../components/SEO';
 import PageTransition from '../../components/PageTransition';
 import SkillsGrid from '../../components/SkillsGrid/SkillsGrid';
@@ -8,6 +9,7 @@ import './About.css';
 
 export default function About() {
   const { state } = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!state?.scrollTo) return;
@@ -27,6 +29,10 @@ export default function About() {
         keywords="about, bio, skills, experience, software engineer, gameplay engineer"
       />
       <section className="page-shell about-page">
+        <button className="back-link" onClick={() => navigate(-1)} aria-label="Go back">
+          <ArrowLeft size={16} />
+          <span>Back</span>
+        </button>
         <p className="hero-kicker">Background</p>
         <h1>About Me</h1>
 

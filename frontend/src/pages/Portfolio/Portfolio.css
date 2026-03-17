@@ -2,6 +2,31 @@
     max-width: min(1240px, 100%);
 }
 
+.back-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--mist);
+    border: 1px solid var(--line-soft);
+    border-radius: 999px;
+    cursor: pointer;
+    color: var(--text-sub);
+    font-size: 0.875rem;
+    font-family: inherit;
+    font-weight: 500;
+    padding: 0.4rem 1rem 0.4rem 0.75rem;
+    margin-bottom: 2rem;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    text-decoration: none;
+    width: fit-content;
+}
+
+.back-link:hover {
+    color: var(--text);
+    border-color: var(--line-strong);
+    background: var(--surface);
+}
+
 .page-intro {
     max-width: 760px;
     margin: 1rem auto;

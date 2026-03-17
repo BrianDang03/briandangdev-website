@@ -207,3 +207,23 @@
         transition: none;
     }
 }
+
+/* ── Light mode (card back) ──────────────────────────────────────────────────*/
+[data-theme="light"] .card-copy-back h3 {
+    color: var(--text);
+}
+
+[data-theme="light"] .card-copy-back ul {
+    color: var(--text-sub);
+}
+
+[data-theme="light"] .social-icon-link {
+    background: rgba(80, 100, 145, 0.07);
+    border-color: rgba(80, 100, 145, 0.22);
+    color: var(--text);
+}
+
+[data-theme="light"] .social-icon-link:hover {
+    background: rgba(80, 100, 145, 0.14);
+    border-color: rgba(80, 100, 145, 0.38);
+}

@@ -353,6 +353,10 @@ body {
     flex-shrink: 0;
 }
 
+[data-theme="light"] .hero-kicker::before {
+    background: linear-gradient(90deg, rgba(80, 110, 200, 0.6), rgba(80, 110, 200, 0.1));
+}
+
 /* ── Route loading state ─────────────────────────────────────────────────────
    Minimal placeholder shown during lazy route suspense. */
 .route-loading {

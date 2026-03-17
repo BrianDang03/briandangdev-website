@@ -1,9 +1,13 @@
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import SEO from '../../components/SEO';
 import PageTransition from '../../components/PageTransition';
 import ProjectsGrid from '../../components/ProjectsGrid/ProjectsGrid';
 import './Portfolio.css';
 
 export default function Portfolio() {
+    const navigate = useNavigate();
+
     return (
         <PageTransition>
             <SEO
@@ -12,6 +16,10 @@ export default function Portfolio() {
                 keywords="portfolio, projects, software development, game development, web applications"
             />
             <section className="page-shell portfolio-page">
+                <button className="back-link" onClick={() => navigate(-1)} aria-label="Go back">
+                    <ArrowLeft size={16} />
+                    <span>Back</span>
+                </button>
                 <p className="hero-kicker">Selected Work</p>
                 <h1>Portfolio</h1>
                 <p className="page-intro">
