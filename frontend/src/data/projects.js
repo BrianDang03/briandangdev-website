@@ -5,8 +5,8 @@ const projects = [
     {
         slug: "modem-wizard",
         title: "Modem Wizard",
-        summary: "Full-stack internal tool that automates InHand modem setup, activation, and configuration for Wanco Inc.'s production floor — processing 40–90 units per week.",
-        description: "Internal production tool built for Wanco Inc. to streamline the setup, activation, and configuration of InHand modems deployed on Message Board Trailers. Interfaces directly with the modem's REST API and integrates with Verizon's Thingspace API to handle cellular activation programmatically. Architected and shipped from scratch in 6 weeks — including learning the full MERN stack for the first time — and is now a critical dependency in weekly production, processing 40–90 modems per week. Without it, the production floor has no reliable fallback process.",
+        summary: "Full-stack internal tool that automates modem setup, activation, and configuration for Wanco Inc.'s production floor, processing 40 to 90 units per week.",
+        description: "Internal production tool built for Wanco Inc. to streamline the setup, activation, and configuration of modems deployed on Message Board Trailers. Interfaces directly with the modem's REST API and integrates with Verizon's Thingspace API to handle cellular activation programmatically. Architected and shipped from scratch in 6 weeks, including learning the full MERN stack for the first time, and is now a critical dependency in weekly production, processing 40 to 90 modems per week. Without it, the production floor has no reliable fallback process.",
         technologies: ["MongoDB", "Express", "React", "Node.js", "Verizon Thingspace API", "REST"],
         proprietary: true,
         image: `${ASSET_BASE}modem.jpg`,
@@ -16,17 +16,17 @@ const projects = [
         github: null,
         demo: null,
         details: {
-            overview: "Modem Wizard is an internal full-stack web application built for Wanco Inc. to solve a critical production bottleneck: setting up, activating, and configuring InHand cellular modems before they are installed on Message Board Trailers. Before this tool existed, there was no formalized, reliable process — the production floor would have had to plan a manual workflow from scratch each time.",
+            overview: "Modem Wizard is an internal full-stack web application built for Wanco Inc. to solve a critical production bottleneck: setting up, activating, and configuring cellular modems before they are installed on Message Board Trailers. Before this tool existed, there was no formalized, reliable process, and the production floor would have had to plan a manual workflow from scratch each time.",
             highlights: [
-                "Researched and reverse-engineered the InHand modem's REST API from scratch with no prior documentation workflow",
+                "Researched the InHand modem's REST API documentation and determined which endpoints applied to Wanco's use case, with no prior integration workflow or internal precedent to reference",
                 "Integrated Verizon Thingspace API to programmatically activate cellular service on each modem",
                 "Built a guided wizard UI that walks operators through every step: setup, activation, and configuration",
                 "Designed and implemented the full MERN stack (MongoDB, Express, React, Node.js) independently",
-                "Delivered a working, deployed production tool in 6 weeks — while learning the stack for the first time",
+                "Delivered a working, deployed production tool in 6 weeks, while learning the stack for the first time",
                 "Currently the sole system enabling 40–90 modems per week to be production-ready"
             ],
-            challenges: "The biggest challenge was the compressed timeline. I had never built a full-stack application before and had roughly six weeks to research the modem's communication protocol, learn MERN, integrate a third-party cellular activation API, and ship something the production floor could depend on. Every part of the stack — the database schema, the Express API, the React UI, the Verizon Thingspace integration — had to be figured out and wired together under real deadline pressure.",
-            impact: "Modem Wizard is now a critical dependency at Wanco Inc. The production floor processes 40 to 90 InHand modems every week using this tool. There is no fully flushed-out manual fallback — if the application goes down, production planning stops. It is actively used daily by the team responsible for modem fulfillment.",
+            challenges: "The biggest challenge was the compressed timeline. I had never built a full-stack application before and had roughly six weeks to research the modem's communication protocol, learn MERN, integrate a third-party cellular activation API, and ship something the production floor could depend on. Every part of the stack, the database schema, the Express API, the React UI, the Verizon Thingspace integration, had to be figured out and wired together under real deadline pressure.",
+            impact: "Modem Wizard is now a critical dependency at Wanco Inc. The production floor processes 40 to 90 modems every week using this tool. There is no fully flushed-out manual fallback. If the application goes down, production planning stops. It is actively used daily by the team responsible for modem fulfillment.",
             company: "Wanco Inc.",
         }
     },
@@ -34,7 +34,7 @@ const projects = [
         slug: "asset-tracker-automation",
         title: "Asset Tracker Automation",
         summary: "Python automation tool that cut Suntech asset tracker order fulfillment from 4 hours to 10 minutes per box, serving three active production lines at Wanco Inc.",
-        description: "Python automation tool built for Wanco Inc. that reduced Suntech asset tracker order fulfillment from 4 hours to 10 minutes per box. Orchestrates the full workflow: activating each tracker, performing all data entry into Plex ERP, and automating label printing — a process that previously required an operator to manually click through Plex four times per tracker just to print labels. Built with Playwright for browser automation as a cost-effective alternative to Plex's paid API. Serves three active production lines processing 30-unit orders.",
+        description: "Python automation tool built for Wanco Inc. that reduced Suntech asset tracker order fulfillment from 4 hours to 10 minutes per box. Orchestrates the full workflow: activating each tracker, performing all data entry into Plex ERP, and automating label printing. A process that previously required an operator to manually click through Plex four times per tracker just to print labels. Built with Playwright for browser automation as a cost-effective alternative to Plex's paid API. Serves three active production lines processing 30-unit orders.",
         technologies: ["Python", "Playwright", "Browser Automation"],
         proprietary: true,
         image: null,
@@ -45,11 +45,11 @@ const projects = [
             highlights: [
                 "Automated full end-to-end tracker fulfillment: activation, Plex ERP data entry, and label printing",
                 "Reduced per-box processing time from 4 hours (manual) to 10 minutes",
-                "Used Playwright for browser automation to interact with Plex ERP — chosen as a cost-effective alternative to Plex's paid API",
+                "Used Playwright for browser automation to interact with Plex ERP, chosen as a cost-effective alternative to Plex's paid API",
                 "Automated the label printing workflow that previously required an operator to manually click a barcode image 4 times per tracker in Plex",
                 "Serves three active production lines, each dependent on regular tracker orders"
             ],
-            challenges: "Plex ERP does not expose a free API for the operations needed — data entry and label printing required navigating its web UI. Rather than ask the company to absorb additional API costs, I built the automation entirely through Playwright browser automation, scripting every click, field input, and print trigger that an operator would otherwise perform manually. Mapping out the full Plex workflow and making it reliable across variable page load times was the core technical challenge.",
+            challenges: "Plex ERP does not expose a free API for the operations needed. Data entry and label printing required navigating its web UI. Rather than ask the company to absorb additional API costs, I built the automation entirely through Playwright browser automation, scripting every click, field input, and print trigger that an operator would otherwise perform manually. Mapping out the full Plex workflow and making it reliable across variable page load times was the core technical challenge.",
             impact: "What previously took a single operator 4 hours to complete per box of 30 trackers now takes 10 minutes. Three production lines rely on regular tracker orders, and this tool runs every order fulfillment cycle. The time savings free up production staff for higher-value work and eliminate a significant source of manual error.",
             company: "Wanco Inc.",
         }
@@ -58,7 +58,7 @@ const projects = [
         slug: "tlapack",
         title: "<T>LAPACK — Open Source Contributions",
         summary: "Contributor to an NSF-funded open-source C++ template linear algebra library. Implemented core symmetric eigenvalue routines, test cases, and usage examples.",
-        description: "Contributor to <T>LAPACK, an NSF-funded open-source C++ template linear algebra library developed at the University of Colorado Denver. Implemented and refined core symmetric eigenvalue routines — primarily laed4 and laed6, the secular equation solvers at the heart of the divide-and-conquer eigenvalue algorithm — along with laed2, lamrg, steqr quicksort, and in-place triangular matrix multiplication routines (mult_llh, mult_uhu). Authored test cases and usage examples for each implemented routine. Contributions merged across multiple pull requests as one of 17 contributors.",
+        description: "Contributor to <T>LAPACK, an NSF-funded open-source C++ template linear algebra library developed at the University of Colorado Denver. Implemented and refined core symmetric eigenvalue routines, primarily laed4 and laed6, the secular equation solvers at the heart of the divide-and-conquer eigenvalue algorithm, along with laed2, lamrg, steqr quicksort, and in-place triangular matrix multiplication routines (mult_llh, mult_uhu). Authored test cases and usage examples for each implemented routine. Contributions merged across multiple pull requests as one of 17 contributors.",
         technologies: ["C++", "Numerical Linear Algebra", "CMake", "CI/CD Pipeline", "Open Source"],
         image: `${ASSET_BASE}tlapack.jpg`,
         imageWebpSrcSet: `${ASSET_BASE}tlapack-480.webp 480w, ${ASSET_BASE}tlapack-768.webp 768w, ${ASSET_BASE}tlapack-1200.webp 1200w`,
@@ -71,41 +71,19 @@ const projects = [
         details: {
             overview: "<T>LAPACK is a precision-neutral C++ template library for dense linear algebra, developed at the University of Colorado Denver and supported by NSF grant ACI 2004850. It provides template implementations of BLAS and LAPACK routines that work across arbitrary numeric types and matrix data structures, including Eigen, mdspan, and custom types.",
             highlights: [
-                "Implemented laed4 and laed6 — the secular equation solvers central to the divide-and-conquer symmetric eigenvalue algorithm",
+                "Implemented laed4 and laed6, the secular equation solvers central to the divide-and-conquer symmetric eigenvalue algorithm",
                 "Implemented laed2 for the deflation step of the divide-and-conquer method",
                 "Implemented lamrg (merge routine) and updated it to remove real_t dependencies for greater type generality",
                 "Implemented and updated the quicksort variant used in steqr (tridiagonal eigenvalue solver)",
-                "Implemented mult_llh and mult_uhu — in-place triangular matrix multiplication routines",
+                "Implemented mult_llh and mult_uhu, in-place triangular matrix multiplication routines",
                 "Authored test cases and runnable usage examples for each routine contributed",
                 "Contributions reviewed and merged across multiple pull requests as one of 17 contributors"
             ],
-            challenges: "Implementing numerical linear algebra routines in a precision-neutral C++ template library requires careful attention to both mathematical correctness and type generality. The secular equation solvers (laed4, laed6) in particular involve iterative root-finding with stability constraints — understanding the algorithm well enough to implement it correctly while conforming to <T>LAPACK's template conventions was the core challenge.",
+            challenges: "Implementing numerical linear algebra routines in a precision-neutral C++ template library requires careful attention to both mathematical correctness and type generality. The secular equation solvers (laed4, laed6) in particular involve iterative root-finding with stability constraints. Understanding the algorithm well enough to implement it correctly while conforming to <T>LAPACK's template conventions was the core challenge.",
             impact: "Contributions are publicly merged and visible on the <T>LAPACK GitHub repository. The library is open source under BSD-3-Clause, tested continuously on Ubuntu, macOS, and Windows with GNU compilers, and is available for use by the broader scientific computing community.",
             company: null,
         }
     },
-    {
-        slug: "e-commerce-platform",
-        title: "E-commerce Platform",
-        summary: "Full-stack e-commerce solution with payment integration, inventory management, and admin dashboard.",
-        description: "Full-stack e-commerce solution with payment integration, inventory management, and admin dashboard. Implements secure authentication and RESTful API design.",
-        technologies: ["React", "Node.js", "PostgreSQL", "Stripe"],
-        image: null,
-        demo: null,
-        github: null,
-        details: null
-    },
-    {
-        slug: "data-visualization-dashboard",
-        title: "Data Visualization Dashboard",
-        summary: "Interactive analytics dashboard with real-time data streaming, customizable charts, and export functionality.",
-        description: "Interactive analytics dashboard with real-time data streaming, customizable charts, and export functionality. Built for performance with large datasets.",
-        technologies: ["Vue.js", "D3.js", "WebSocket", "Express"],
-        image: null,
-        demo: null,
-        github: null,
-        details: null
-    }
 ];
 
 export default projects;

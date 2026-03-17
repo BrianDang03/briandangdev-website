@@ -36,9 +36,9 @@ export default function HomeCards() {
           <div className="card-copy-back">
             <h3>Core Profile</h3>
             <ul>
-              <li>Creator mindset with a focus on memorable player and user experiences.</li>
-              <li>Designs and implements systems from concept through production.</li>
-              <li>Gameplay engineer who seeks challenge and continuous growth.</li>
+              <li>M.S. Computer Science at Colorado School of Mines.</li>
+              <li>Learns new tools quickly and delivers under pressure.</li>
+              <li>Mission driven, motivated by building tools that make a real difference.</li>
             </ul>
             <div className="card-action-wrapper">
               <Link to="/about" className="card-action-btn">See More</Link>

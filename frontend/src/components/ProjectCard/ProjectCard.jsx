@@ -126,9 +126,9 @@ function ProjectCard({ project }) {
                         <Link
                             to={`/portfolio/${project.slug}`}
                             className="project-link project-link-see-more"
-                            aria-label={`See more details about ${project.title}`}
+                            aria-label={`Details details about ${project.title}`}
                         >
-                            <span>See More</span>
+                            <span>Details</span>
                         </Link>
                     )}
                     {!project.github && !project.demo && !project.proprietary && !project.details && (

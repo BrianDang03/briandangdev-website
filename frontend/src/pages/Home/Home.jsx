@@ -7,28 +7,28 @@ import "./Home.css";
 
 const PILLARS = [
   {
-    Icon: Zap,
-    title: "Gameplay Engineering",
-    body: "Feel-first feature design: physics, state machines, and real-time systems built to run at 60 fps.",
-    color: "var(--pillar-color-a)",
-  },
-  {
     Icon: Layers,
-    title: "Full-Stack Web",
-    body: "React to backend — production-deployed applications built end-to-end with performance in mind.",
+    title: "Full-Stack Development",
+    body: "End-to-end web applications built from database to UI, production-deployed and relied on by real teams.",
     color: "var(--pillar-color-b)",
   },
   {
+    Icon: Zap,
+    title: "Automation & Tooling",
+    body: "Python-driven workflow automation that replaced manual processes and cut fulfillment time from hours to minutes.",
+    color: "var(--pillar-color-a)",
+  },
+  {
     Icon: Cpu,
-    title: "System Architecture",
-    body: "Modular, maintainable code designed for iteration, scalability, and long-term team support.",
+    title: "Algorithms & Open Source",
+    body: "Contributor to an NSF-funded C++ linear algebra library, implementing numerical routines and test cases for production use.",
     color: "var(--pillar-color-c)",
   },
 ];
 
 const TECH = [
-  "JavaScript", "TypeScript", "C#", "C++", "Python",
-  "React", "Node.js", "Unity", "Unreal Engine", "Git",
+  "JavaScript", "C#", "C++", "Python",
+  "React", "Node.js", "MongoDB", "Express", "Git",
 ];
 
 export default function Home({ name, job }) {

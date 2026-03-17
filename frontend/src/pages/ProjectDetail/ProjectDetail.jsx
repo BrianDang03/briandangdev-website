@@ -40,10 +40,10 @@ export default function ProjectDetail() {
                     <span>Back to Portfolio</span>
                 </button>
 
+                <h1>{project.title}</h1>
                 {details.company && (
                     <p className="hero-kicker">{details.company}</p>
                 )}
-                <h1>{project.title}</h1>
 
                 {project.image && (
                     <div className="project-detail-image">
