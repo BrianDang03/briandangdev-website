@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { motion as Motion } from 'framer-motion';
-import { ExternalLink, Github } from 'lucide-react';
+import { ExternalLink, Github, Lock } from 'lucide-react';
 import { shouldUseSimpleMotion } from '../../utils/motionProfile';
 import "./ProjectCard.css";
 
@@ -46,7 +46,7 @@ function ProjectCard({ project }) {
             transition={simpleMotion ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 20 }}
         >
             {project.image ? (
-                <div className="project-image">
+                <div className="project-image" style={project.imageAspectRatio ? { aspectRatio: project.imageAspectRatio } : undefined}>
                     <picture>
                         {project.imageWebpSrcSet && (
                             <source
@@ -68,6 +68,7 @@ function ProjectCard({ project }) {
                             loading="lazy"
                             decoding="async"
                             sizes={project.imageSizes}
+                            style={project.imageObjectPosition ? { objectPosition: project.imageObjectPosition } : undefined}
                         />
                     </picture>
                 </div>
@@ -114,7 +115,13 @@ function ProjectCard({ project }) {
                             <span>Live Demo</span>
                         </a>
                     )}
-                    {!project.github && !project.demo && (
+                    {!project.github && !project.demo && project.proprietary && (
+                        <span className="project-proprietary">
+                            <Lock size={13} aria-hidden="true" />
+                            Proprietary — Code Unavailable
+                        </span>
+                    )}
+                    {!project.github && !project.demo && !project.proprietary && (
                         <span className="project-coming-soon">Coming Soon</span>
                     )}
                 </div>
