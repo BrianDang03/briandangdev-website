@@ -7,60 +7,53 @@ const isH = () => window.innerWidth >= BREAKPOINT;
 
 const ENTRIES = [
     {
-        year: '2022',
-        title: 'Open Source Contributor',
-        company: '<T>LAPACK \u00b7 Univ. of Colorado Denver',
-        desc: 'Implemented core symmetric eigenvalue routines for an NSF-funded C++ template linear algebra library. Contributions reviewed and merged as one of 17 contributors.',
-        color: '#a87bf5',
-    },
-    {
         year: '2023',
-        title: 'Software Engineer',
-        company: 'Wanco Inc.',
-        desc: 'Built Modem Wizard from scratch in 6 weeks \u2014 a full-stack MERN app that became a critical dependency on the manufacturing floor, processing 40\u201390 modems every week.',
+        title: 'IT Help Desk Technician',
+        company: 'CU Denver · Business School',
+        desc: 'Supported ~500 students and faculty — troubleshot classroom AV and projector systems, imaged computers, managed asset tracking, set up offices, and maintained a full computer lab.',
         color: '#7b9cf5',
     },
     {
         year: '2024',
-        title: 'Software Engineer',
-        company: 'Wanco Inc.',
-        desc: 'Built a Python automation tool with Playwright that cut Suntech asset tracker fulfillment from 4 hours down to 10 minutes per box. Serves three active production lines.',
+        title: 'Math Tutor',
+        company: 'CU Denver · Math Department',
+        desc: 'Tutored students one-on-one across the full undergraduate math sequence — from algebra through Calculus III — building real conceptual understanding alongside exam prep.',
         color: '#4abf8e',
     },
     {
         year: '2025',
-        title: 'M.S. CS Candidate',
-        company: 'Colorado School of Mines',
-        desc: 'Pursuing a graduate degree in Computer Science \u2014 deepening expertise in algorithms, systems, and high-impact engineering while continuing to build production software.',
+        title: 'Teaching Assistant',
+        company: 'CU Denver · Computer Science Department',
+        desc: 'TA\'d an intro systems programming course for 40+ students — led lab sessions and graded assignments covering shell scripting, file systems, and core Unix tooling.',
         color: '#f5a97b',
     },
     {
-        year: '20xx',
-        title: 'Role Title',
-        company: 'Company Name A',
-        desc: 'Description of key responsibilities, impact, and technologies used in this role.',
+        year: '2025',
+        title: 'Reasearcher/Software Developer Intern',
+        company: '\u003cT\u003eLAPACK · CU Denver',
+        desc: 'Implemented core symmetric eigenvalue routines for an NSF-funded C++ template linear algebra library. Contributions reviewed and merged as one of 17 contributors.',
+        color: '#a87bf5',
+    },
+    {
+        year: '2025',
+        title: 'Junior Software Developer',
+        company: 'Wanco Inc.',
+        desc: 'Built Modem Wizard — a full-stack MERN app processing 40–90 modems weekly on the manufacturing floor. Also built a Python/Playwright automation tool that cut fulfillment from 4 hours to 10 minutes per box.',
         color: '#e87b7b',
     },
     {
-        year: '20xx',
-        title: 'Role Title',
-        company: 'Company Name B',
-        desc: 'Description of key responsibilities, impact, and technologies used in this role.',
-        color: '#f5e97b',
+        year: '2026',
+        title: 'B.A. Computer Science, Math Minor',
+        company: 'CU Denver',
+        desc: 'Graduated with a 3.9 GPA after four years of balancing rigorous coursework in algorithms and systems with concurrent research, teaching, and production engineering roles.',
+        color: '#c9be3a',
     },
     {
-        year: '20xx',
-        title: 'Role Title',
-        company: 'Company Name C',
-        desc: 'Description of key responsibilities, impact, and technologies used in this role.',
-        color: '#7be8f5',
-    },
-    {
-        year: '20xx',
-        title: 'Role Title',
-        company: 'Company Name D',
-        desc: 'Description of key responsibilities, impact, and technologies used in this role.',
-        color: '#b87bf5',
+        year: '2026',
+        title: 'M.S. CS Candidate',
+        company: 'Colorado School of Mines',
+        desc: 'Pursuing a graduate degree in Computer Science — deepening expertise in algorithms, systems, and high-impact engineering while continuing to build production software.',
+        color: '#2ab8d4',
     },
 ];
 
@@ -373,7 +366,7 @@ export default function TimelineSection() {
                             <div
                                 className="tl-content"
                                 ref={el => { entryRefs.current[i] = el; }}
-                                style={{ opacity: 0 }}
+                                style={{ opacity: 0, '--entry-color': item.color }}
                             >
                                 <div className="tl-meta">
                                     <span className="tl-company" style={{ color: item.color }}>
