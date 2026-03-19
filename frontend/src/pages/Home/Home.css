@@ -5,7 +5,7 @@
     flex-direction: column;
     justify-content: center;
     padding-top: clamp(0.6rem, 1.6vw, 1.2rem);
-    padding-bottom: clamp(5rem, 12vw, 10rem);
+    padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
 
     /* Pillar accent colours */
     --pillar-color-a: #7b9cf5;
@@ -309,7 +309,7 @@
 .home-bottom-line {
     width: min(980px, 92vw);
     height: 2px;
-    margin: 2.4rem auto 0;
+    margin: 1.2rem auto 0;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
     box-shadow: 0 0 28px rgba(255, 255, 255, 0.5);
     animation: home-line-in 1200ms cubic-bezier(0.22, 1, 0.36, 1) both;

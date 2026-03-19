@@ -7,15 +7,11 @@
 /*  Driver: scroll-space container (height set by JS)  */
 .tl-driver {
     position: relative;
-    margin-top: clamp(3.5rem, 7vw, 5.5rem);
+    margin-top: clamp(1rem, 2vw, 1.8rem);
 }
 
-/*  Sticky section  */
-/* top/height account for the sticky navbar: 68px mobile (<900px), 76px wider */
+/*  Section: tall enough to hold content, starts at top */
 .tl-section {
-    position: sticky;
-    top: 68px;
-    height: calc(100vh - 68px);
     width: calc(100% - 2rem);
     margin: 0 auto;
     padding: 0;
@@ -23,17 +19,11 @@
     flex-direction: column;
     overflow: hidden;
 }
-@media (min-width: 900px) {
-    .tl-section {
-        top: 76px;
-        height: calc(100vh - 76px);
-    }
-}
 
 /*  Header  */
 .tl-header {
     flex: none;
-    padding: clamp(1.5rem, 4vh, 3rem) 0 0;
+    padding: 1rem 0 0;
 }
 .tl-kicker {
     text-transform: uppercase;
@@ -53,8 +43,8 @@
 /*  Track: grows to fill remaining height  */
 .tl-track {
     position: relative;
-    flex: 1;
-    min-height: 0;
+    height: clamp(280px, 42vh, 380px);
+    flex: none;
 }
 
 /*  Rail (mobile = vertical, left side)  */
@@ -73,11 +63,9 @@
     background: color-mix(in srgb, var(--text) 12%, transparent);
     border-radius: inherit;
 }
-/* Mobile fill: top → bottom, stops 32px before the end */
 .tl-rail__fill {
     position: absolute;
     inset: 0;
-    bottom: 32px;
     background: linear-gradient(
         to bottom,
         #a87bf5 0%,
@@ -162,6 +150,76 @@
     -webkit-box-orient: vertical;
 }
 
+/*  Prev / Next navigation  */
+.tl-nav {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    justify-content: center;
+    padding: .6rem 1.1rem;
+    margin: .4rem auto 0;
+    background: var(--surface-strong);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--line-soft);
+    border-radius: 9999px;
+    box-shadow: var(--shadow-deep);
+    width: fit-content;
+}
+
+/* ── Dark mode buttons (default) ── */
+.tl-nav__btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 1.5px solid var(--line-strong);
+    background: var(--bg-2);
+    color: var(--text-main);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .18s, border-color .18s, color .18s, transform .18s, box-shadow .18s, opacity .18s;
+    box-shadow: 0 2px 8px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+}
+.tl-nav__btn:hover:not(:disabled) {
+    background: var(--bg-1);
+    border-color: var(--text-dim);
+    color: var(--text-main);
+    transform: scale(1.1);
+    box-shadow: 0 4px 18px rgba(0,0,0,.45);
+}
+.tl-nav__btn:active:not(:disabled) {
+    transform: scale(0.94);
+    box-shadow: 0 1px 4px rgba(0,0,0,.3);
+}
+.tl-nav__btn:disabled {
+    opacity: .22;
+    cursor: default;
+}
+
+/* ── Light mode buttons ── */
+[data-theme="light"] .tl-nav {
+    background: rgba(255,255,255,0.88);
+    border-color: rgba(0,0,0,0.10);
+    box-shadow: 0 4px 20px rgba(0,0,0,.10);
+}
+[data-theme="light"] .tl-nav__btn {
+    background: #ffffff;
+    border-color: rgba(0,0,0,0.18);
+    color: var(--text-main);
+    box-shadow: 0 2px 8px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.9);
+}
+[data-theme="light"] .tl-nav__btn:hover:not(:disabled) {
+    background: var(--bg-2);
+    border-color: rgba(0,0,0,0.35);
+    box-shadow: 0 4px 14px rgba(0,0,0,.14);
+}
+[data-theme="light"] .tl-nav__btn:disabled {
+    opacity: .3;
+}
+
 /*  Reduced-motion  */
 @media (prefers-reduced-motion: reduce) {
     .tl-rail__fill,
@@ -174,13 +232,11 @@
    ================================================================ */
 @media (min-width: 1024px) {
     .tl-section {
-        top: 76px;
-        height: calc(100vh - 76px);
         width: min(1200px, calc(100% - 3.2rem));
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-start;
     }
-    .tl-header { padding: 0; }
+    .tl-header { padding: 1rem 0 0; }
     .tl-heading { margin-bottom: 2rem; font-size: clamp(1.6rem, 4vw, 2.4rem); }
 
     /* Fixed-height track  no flex growth */
@@ -200,9 +256,7 @@
         transform: translateY(-50%);
     }
     .tl-rail__fill {
-        inset: 0;          /* reset mobile's bottom: 32px */
-        right: 32px;       /* stops 32px before the trailing end on desktop */
-        bottom: 0;
+        inset: 0;
         background: linear-gradient(
             to right,
             #a87bf5 0%,
