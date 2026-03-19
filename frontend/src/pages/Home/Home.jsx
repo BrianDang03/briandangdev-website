@@ -37,42 +37,46 @@ export default function Home({ name, job }) {
     <PageTransition>
       <SEO />
       <section className="home-shell">
-        <div className="home-hero">
-          <HeroBlock
-            name={name}
-            job={job}
-            intro="Software engineer who builds tools and products that create real impact. I ship production web applications, automate workflows, and contribute to open source. I thrive when the work has a clear purpose and real consequences."
-          />
-          <HomeCards />
+        {/* ── Above-the-fold: fills 100vh, hero centred ── */}
+        <div className="home-above-fold">
+          <div className="home-hero">
+            <HeroBlock
+              name={name}
+              job={job}
+              intro="Software engineer who builds tools and products that create real impact. I ship production web applications, automate workflows, and contribute to open source. I thrive when the work has a clear purpose and real consequences."
+            />
+            <HomeCards />
+          </div>
+
+          {/* Pillar tiles */}
+          <div className="home-pillars" role="list">
+            {PILLARS.map(({ Icon, title, body, color }, i) => (
+              <div
+                key={title}
+                className="home-pillar"
+                role="listitem"
+                style={{ "--pillar-accent": color, "--pillar-delay": `${500 + i * 120}ms` }}
+              >
+                <Icon className="home-pillar-icon" aria-hidden="true" />
+                <h3>{title}</h3>
+                <p>{body}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Skills & beam */}
+          <div className="home-tech-strip" aria-label="Technologies">
+            {TECH.map((t) => (
+              <span key={t} className="home-tag">{t}</span>
+            ))}
+          </div>
+
+          <div className="home-bottom-line" aria-hidden="true" />
+
+          {/* Career timeline */}
+          <TimelineSection />
         </div>
 
-        {/* Pillar tiles */}
-        <div className="home-pillars" role="list">
-          {PILLARS.map(({ Icon, title, body, color }, i) => (
-            <div
-              key={title}
-              className="home-pillar"
-              role="listitem"
-              style={{ "--pillar-accent": color, "--pillar-delay": `${500 + i * 120}ms` }}
-            >
-              <Icon className="home-pillar-icon" aria-hidden="true" />
-              <h3>{title}</h3>
-              <p>{body}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Skills & beam */}
-        <div className="home-tech-strip" aria-label="Technologies">
-          {TECH.map((t) => (
-            <span key={t} className="home-tag">{t}</span>
-          ))}
-        </div>
-
-        <div className="home-bottom-line" aria-hidden="true" />
-
-        {/* Career timeline */}
-        <TimelineSection />
       </section>
 
     </PageTransition>

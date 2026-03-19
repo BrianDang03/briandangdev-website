@@ -88,12 +88,11 @@ export default function TimelineSection() {
         const N           = ENTRIES.length;
         const extraSlides = N - VISIBLE;
         const FADE_RANGE  = 0.4;
-        // Desktop uses gentle smoothing; mobile uses a higher factor so the
-        // animation tracks touch-momentum scrolling without lagging behind.
-        const LERP_DESKTOP = 0.09;
-        const LERP_MOBILE  = 0.20;
-        // Intro animation: one continuous sweep over AUTO_FRAMES frames (~8 s at 60 fps)
-        const AUTO_FRAMES  = 480;
+        // Same lerp on all screen sizes for consistent feel
+        const LERP_DESKTOP = 0.06;
+        const LERP_MOBILE  = 0.06;
+        // Intro animation: one continuous sweep over AUTO_FRAMES frames (~3.3 s at 60 fps)
+        const AUTO_FRAMES  = 200;
         let   autoT        = 0;
         // ── Arrow-driven step navigation (no scroll dependency) ───────────
         // step 0           = blank
@@ -107,13 +106,13 @@ export default function TimelineSection() {
         let displaySlide = 0;
 
         function updateButtons(s) {
-            if (prevBtnRef.current) prevBtnRef.current.disabled = s <= 0;
+            if (prevBtnRef.current) prevBtnRef.current.disabled = s <= 1;
             if (nextBtnRef.current) nextBtnRef.current.disabled = s >= MAX_STEP;
         }
         updateButtons(0);
 
         function goToStep(s) {
-            const cs = Math.max(0, Math.min(MAX_STEP, s));
+            const cs = Math.max(1, Math.min(MAX_STEP, s));
             stepRef.current = cs;
             updateButtons(cs);
             if (cs === 0) {
@@ -283,10 +282,16 @@ export default function TimelineSection() {
         rafRef.current = requestAnimationFrame(tick);
 
         function onResize() {
+            // If autoplay was running, abort it cleanly and restart it
+            if (isAutoPlayingRef.current) {
+                isAutoPlayingRef.current = false;
+                setButtonsEnabled(false);
+            }
             displayFill  = 0; targetFill  = 0;
             displaySlide = 0; targetSlide = 0;
-            stepRef.current = 0;
-            updateButtons(0);
+            autoT = 0;
+            stepRef.current = 1;
+            updateButtons(1);
 
             const h = isH();
             if (fillRef.current) {
@@ -311,6 +316,8 @@ export default function TimelineSection() {
                     outer.style.height = '';
                 }
             });
+            // Re-run the intro sweep in the new orientation
+            isAutoPlayingRef.current = true;
         }
 
         window.addEventListener('resize', onResize, { passive: true });
