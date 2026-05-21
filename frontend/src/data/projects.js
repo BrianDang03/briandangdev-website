@@ -37,7 +37,10 @@ const projects = [
         description: "Python automation tool built for Wanco Inc. that reduced Suntech asset tracker order fulfillment from 4 hours to 10 minutes per box. Orchestrates the full workflow: activating each tracker, performing all data entry into Plex ERP, and automating label printing. A process that previously required an operator to manually click through Plex four times per tracker just to print labels. Built with Playwright for browser automation as a cost-effective alternative to Plex's paid API. Serves three active production lines processing 30-unit orders.",
         technologies: ["Python", "Playwright", "Browser Automation"],
         proprietary: true,
-        image: null,
+        image: `${ASSET_BASE}assetTracker.jpg`,
+        imageWebpSrcSet: `${ASSET_BASE}assetTracker-480.webp 480w, ${ASSET_BASE}assetTracker-768.webp 768w, ${ASSET_BASE}assetTracker-1200.webp 1200w`,
+        imageJpegSrcSet: `${ASSET_BASE}assetTracker-480.jpg 480w, ${ASSET_BASE}assetTracker-768.jpg 768w, ${ASSET_BASE}assetTracker-1200.jpg 1200w`,
+        imageSizes: PROJECT_IMAGE_SIZES,
         github: null,
         demo: null,
         details: {
