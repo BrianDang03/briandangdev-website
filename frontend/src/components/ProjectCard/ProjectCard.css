@@ -337,28 +337,6 @@
     border-color: rgba(60, 100, 220, 0.45);
 }
 
-.project-link.project-link-see-more {
-    background: rgba(123, 156, 245, 0.10);
-    border-color: rgba(123, 156, 245, 0.35);
-    color: rgba(165, 198, 255, 0.95);
-}
-
-.project-link.project-link-see-more:hover {
-    background: rgba(123, 156, 245, 0.18);
-    border-color: rgba(123, 156, 245, 0.55);
-}
-
-[data-theme="light"] .project-link.project-link-see-more {
-    background: rgba(60, 100, 220, 0.07);
-    border-color: rgba(60, 100, 220, 0.28);
-    color: rgba(30, 70, 180, 0.90);
-}
-
-[data-theme="light"] .project-link.project-link-see-more:hover {
-    background: rgba(60, 100, 220, 0.13);
-    border-color: rgba(60, 100, 220, 0.45);
-}
-
 /* Project title gradient light-mode override */
 [data-theme="light"] .project-content h3 {
     background: linear-gradient(135deg, #0c1826 60%, #1b3465);

@@ -291,6 +291,12 @@
         transition: none;
     }
 
+    .hero-btn-primary,
+    .hero-btn-secondary {
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+
     .hero-btn-primary:hover,
     .hero-btn-secondary:hover {
         transform: none;

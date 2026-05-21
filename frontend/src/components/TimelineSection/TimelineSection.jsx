@@ -29,7 +29,7 @@ const ENTRIES = [
     },
     {
         year: '2025',
-        title: 'Reasearcher/Software Developer Intern',
+        title: 'Researcher/Software Developer Intern',
         company: '\u003cT\u003eLAPACK · CU Denver',
         desc: 'Implemented core symmetric eigenvalue routines for an NSF-funded C++ template linear algebra library. Contributions reviewed and merged as one of 17 contributors.',
         color: '#a87bf5',
@@ -122,12 +122,17 @@ export default function TimelineSection() {
                 targetFill  = (VISIBLE - 0.5) / VISIBLE;
                 targetSlide = cs - VISIBLE;
             }
+            startRAFIfStopped();
         }
         goToStepRef.current = goToStep;
 
         function setButtonsEnabled(on) {
             if (prevBtnRef.current) prevBtnRef.current.style.pointerEvents = on ? '' : 'none';
             if (nextBtnRef.current) nextBtnRef.current.style.pointerEvents = on ? '' : 'none';
+        }
+
+        function startRAFIfStopped() {
+            if (!rafRef.current) rafRef.current = requestAnimationFrame(tick);
         }
 
         function tick() {
@@ -274,7 +279,11 @@ export default function TimelineSection() {
                 });
             }
 
-            rafRef.current = requestAnimationFrame(tick);
+            if (!isAutoPlayingRef.current && displayFill === targetFill && displaySlide === targetSlide) {
+                rafRef.current = null;
+            } else {
+                rafRef.current = requestAnimationFrame(tick);
+            }
         }
 
         rafRef.current = requestAnimationFrame(tick);
@@ -322,6 +331,7 @@ export default function TimelineSection() {
             });
             // Re-run the intro sweep in the new orientation
             isAutoPlayingRef.current = true;
+            startRAFIfStopped();
         }
 
         let prevW = window.innerWidth;
@@ -335,6 +345,7 @@ export default function TimelineSection() {
                 autoT = 0;
                 isAutoPlayingRef.current = true;
                 setButtonsEnabled(false);
+                startRAFIfStopped();
             },
             { threshold: 0.3 }
         );

@@ -90,6 +90,11 @@ export default function WaveLines() {
     const breathRef = useRef(STREAMS.map(s => s.bp));
     const lastTimeRef = useRef(null);
     const rafRef = useRef(null);
+    const isTouchRef = useRef(
+        typeof window !== 'undefined' &&
+        typeof window.matchMedia === 'function' &&
+        window.matchMedia('(pointer: coarse)').matches
+    );
 
     dimsRef.current = dims;
 
@@ -107,11 +112,7 @@ export default function WaveLines() {
     // RAF loop — mutates SVG path `d` attributes directly, never re-renders React
     useEffect(() => {
         // On touch devices only the CSS-driven baseline plays — skip the JS band loop entirely
-        const isTouchDevice =
-            typeof window !== 'undefined' &&
-            typeof window.matchMedia === 'function' &&
-            window.matchMedia('(pointer: coarse)').matches;
-        if (isTouchDevice) return;
+        if (isTouchRef.current) return;
 
         let startTime = null;
 
@@ -215,21 +216,23 @@ export default function WaveLines() {
                 </linearGradient>
             </defs>
 
-            <g className="wl-band">
-                {STREAMS.map((s, i) => (
-                    <path
-                        key={i}
-                        ref={el => { pathRefs.current[i] = el; }}
-                        d={buildPath(s, s.phase, 1, vbW, vbH)}
-                        pathLength="1"
-                        style={{ '--wl-i': i, strokeDashoffset: 1, opacity: 0 }}
-                        fill="none"
-                        stroke={`url(#${GRAD[s.color]})`}
-                        strokeWidth={s.width}
-                        strokeLinecap="round"
-                    />
-                ))}
-            </g>
+            {!isTouchRef.current && (
+                <g className="wl-band">
+                    {STREAMS.map((s, i) => (
+                        <path
+                            key={i}
+                            ref={el => { pathRefs.current[i] = el; }}
+                            d={buildPath(s, s.phase, 1, vbW, vbH)}
+                            pathLength="1"
+                            style={{ '--wl-i': i, strokeDashoffset: 1, opacity: 0 }}
+                            fill="none"
+                            stroke={`url(#${GRAD[s.color]})`}
+                            strokeWidth={s.width}
+                            strokeLinecap="round"
+                        />
+                    ))}
+                </g>
+            )}
 
             {/* Baseline — static dim traces that appear after the sweep, no glow */}
             <g className="wl-base">

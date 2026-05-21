@@ -40,10 +40,11 @@
 }
 
 /*  Track: grows to fill remaining height  */
+/*  Min 640px gives each of the 4 mobile slots ~160px — enough for multi-line titles + 3-line descs  */
 .tl-track {
     position: relative;
-    height: clamp(520px, 68vh, 620px);
-    height: clamp(520px, 68svh, 620px); /* iOS Safari: svh excludes address bar for stable sizing */
+    height: clamp(640px, 80vh, 720px);
+    height: clamp(640px, 80svh, 720px); /* iOS Safari: svh excludes address bar for stable sizing */
     flex: none;
 }
 
@@ -93,7 +94,7 @@
     left: 0;
     right: 0;
     display: flex;
-    align-items: center;
+    align-items: stretch;
     padding-left: 52px;
     padding-right: .75rem;
     padding-top: .35rem;
@@ -126,6 +127,10 @@
     border-radius: 10px;
     padding: .75rem 1rem;
     box-shadow: 0 2px 14px rgba(0,0,0,.22);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
 }
 .tl-meta {
     display: flex;
@@ -159,6 +164,10 @@
     line-height: 1.6;
     color: var(--text-dim, #9da5b4);
     margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 /*  Prev / Next navigation  */
@@ -262,6 +271,14 @@
     opacity: .45;
 }
 
+/*  Touch: skip the expensive blur compositing layer on the nav pill  */
+@media (pointer: coarse) {
+    .tl-nav {
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+}
+
 /*  Reduced-motion  */
 @media (prefers-reduced-motion: reduce) {
     .tl-rail__fill,
@@ -331,6 +348,7 @@
         left: .6rem;
         right: .6rem;
         text-align: center;
+        overflow: visible;
     }
     .tl-entry--above .tl-content {
         bottom: calc(50% + 22px);

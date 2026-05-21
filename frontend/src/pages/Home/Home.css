@@ -353,3 +353,34 @@
         justify-content: flex-start;
     }
 }
+
+@media (hover: none),
+(pointer: coarse) {
+    .home-pillar {
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        transition: none;
+    }
+    .home-pillar:hover {
+        border-color: rgba(255, 255, 255, 0.18);
+        background: var(--surface);
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.22),
+            0 0 0 1px rgba(200, 215, 240, 0.10),
+            0 0 18px 2px rgba(180, 200, 235, 0.12),
+            0 8px 32px rgba(0, 0, 0, 0.35);
+    }
+    .home-tag {
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        transition: none;
+    }
+    .home-tag:hover {
+        background: var(--surface);
+        border-color: rgba(255, 255, 255, 0.18);
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.18),
+            0 0 12px 1px rgba(180, 200, 235, 0.10),
+            0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+}

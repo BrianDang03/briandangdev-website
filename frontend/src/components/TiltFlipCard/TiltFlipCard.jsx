@@ -148,6 +148,11 @@ export default function TiltFlipCard({
     }
   });
   const isAnimatingRef = useRef(false);
+  const canHoverRef = useRef(
+    typeof window === "undefined" || typeof window.matchMedia !== "function"
+      ? true
+      : window.matchMedia("(hover: hover) and (pointer: fine)").matches
+  );
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -223,12 +228,6 @@ export default function TiltFlipCard({
     };
   }, [backImg]);
 
-  const supportsMouseHover = useCallback(() => {
-    if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
-      return true;
-    }
-    return window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-  }, []);
 
   const cssVars = useMemo(
     () => ({
@@ -614,10 +613,10 @@ export default function TiltFlipCard({
   const handlePointerEnter = useCallback(
     (event) => {
       if (isExpanded || isGlobalPointerSuppressed() || event.pointerType !== "mouse") return;
-      if (!supportsMouseHover()) return;
+      if (!canHoverRef.current) return;
       scheduleTiltUpdate(event.clientX, event.clientY);
     },
-    [isExpanded, supportsMouseHover, scheduleTiltUpdate]
+    [isExpanded, scheduleTiltUpdate]
   );
 
   const handlePointerDown = useCallback(
@@ -648,7 +647,7 @@ export default function TiltFlipCard({
       const pointerState = pointerStateRef.current;
 
       if (event.pointerType === "mouse") {
-        if (!supportsMouseHover()) return;
+        if (!canHoverRef.current) return;
         scheduleTiltUpdate(event.clientX, event.clientY);
         return;
       }
@@ -677,7 +676,7 @@ export default function TiltFlipCard({
 
       scheduleTiltUpdate(event.clientX, event.clientY);
     },
-    [isExpanded, supportsMouseHover, scheduleTiltUpdate, endInteraction]
+    [isExpanded, scheduleTiltUpdate, endInteraction]
   );
 
   const handlePointerUp = useCallback(
@@ -697,7 +696,7 @@ export default function TiltFlipCard({
       event.currentTarget.releasePointerCapture?.(event.pointerId);
 
       if (event.pointerType === "mouse") {
-        if (!supportsMouseHover()) {
+        if (!canHoverRef.current) {
           endInteraction();
           return;
         }
@@ -720,7 +719,7 @@ export default function TiltFlipCard({
 
       endInteraction();
     },
-    [isExpanded, openInspectView, endInteraction, supportsMouseHover]
+    [isExpanded, openInspectView, endInteraction]
   );
 
   const handlePointerLeave = useCallback(
@@ -728,7 +727,7 @@ export default function TiltFlipCard({
       if (isExpanded || isGlobalPointerSuppressed()) return;
 
       if (event.pointerType === "mouse") {
-        if (!supportsMouseHover()) return;
+        if (!canHoverRef.current) return;
         // Lerp back to rest state
         const tgt = lerpStateRef.current.target;
         tgt.rx = 0; tgt.ry = 0; tgt.glareX = 50; tgt.glareY = 50;
@@ -736,7 +735,7 @@ export default function TiltFlipCard({
         startLerpAnimation();
       }
     },
-    [isExpanded, supportsMouseHover, startLerpAnimation]
+    [isExpanded, startLerpAnimation]
   );
 
   const handlePointerCancel = useCallback(
