@@ -1,37 +1,48 @@
 import ProjectCard from './ProjectCard'
+import styles from './Project.module.css'
 
 const projects = [
-    {
-        title: 'Project Title',
-        description: 'Project description goes here.',
-        githubUrl: '#',
-    },
-    {
-        title: 'Project Title2',
-        description: 'Project description goes here.2',
-        githubUrl: '#',
-    },
-    {
-        title: 'Project Title3',
-        description: 'Project description goes here.3',
-        githubUrl: '#',
-    },
+  {
+    type: 'Full Stack',
+    title: 'Project Title',
+    company: 'Personal',
+    description: 'Project description goes here.',
+    impact: 'Impact or highlight goes here.',
+    stack: ['React', 'Node.js', 'PostgreSQL'],
+    githubUrl: '#',
+    liveUrl: '#',
+  },
+  {
+    type: 'Embedded',
+    title: 'Project Title 2',
+    company: 'Personal',
+    description: 'Project description goes here.',
+    impact: 'Impact or highlight goes here.',
+    stack: ['C', 'Python', 'Raspberry Pi'],
+    githubUrl: '#',
+  },
+  {
+    type: 'Game',
+    title: 'Project Title 3',
+    company: 'Personal',
+    description: 'Project description goes here.',
+    impact: 'Impact or highlight goes here.',
+    stack: ['Unity', 'C#'],
+    githubUrl: '#',
+  },
 ]
 
 export default function Project() {
-    return (
-        <section id="project">
-            <div className="project-section">
-                <h2 className="project-title">Projects</h2>
-                {projects.map((p) => (
-                    <ProjectCard
-                        key={p.title}
-                        title={p.title}
-                        description={p.description}
-                        githubUrl={p.githubUrl}
-                    />
-                ))}
-            </div>
-        </section>
-    )
+  return (
+    <section id="projects">
+      <div className="sec-tag">Projects</div>
+      <h2 className="sec-title">Things I've Built</h2>
+      <p className="sec-desc">A selection of projects across different domains.</p>
+      <div className={styles.grid}>
+        {projects.map(p => (
+          <ProjectCard key={p.title} {...p} />
+        ))}
+      </div>
+    </section>
+  )
 }

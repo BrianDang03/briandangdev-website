@@ -1,0 +1,76 @@
+.section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 24px;
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+
+.name {
+  font-size: clamp(56px, 10vw, 100px);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: var(--text);
+  margin-bottom: 10px;
+  animation: fadeUp 0.6s 0.05s ease both;
+}
+
+.title {
+  font-size: clamp(20px, 3vw, 30px);
+  font-weight: 300;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+  animation: fadeUp 0.6s 0.12s ease both;
+}
+
+.title strong {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.desc {
+  font-size: 17px;
+  color: var(--text-muted);
+  max-width: 540px;
+  line-height: 1.8;
+  margin-bottom: 36px;
+  animation: fadeUp 0.6s 0.2s ease both;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  animation: fadeUp 0.6s 0.28s ease both;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: color 0.15s;
+}
+
+.link:hover {
+  color: var(--text);
+}
+
+.link svg {
+  width: 15px;
+  height: 15px;
+  opacity: 0.7;
+}
+
+@media (max-width: 600px) {
+  .actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

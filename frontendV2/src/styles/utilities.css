@@ -1,0 +1,96 @@
+/* ── Scroll reveal ─────────────────────────────────── */
+.reveal               { opacity: 0; }
+.reveal.visible       { animation: fadeUp 0.55s var(--ease) both; }
+.reveal.d1.visible    { animation-delay: 0.08s; }
+.reveal.d2.visible    { animation-delay: 0.16s; }
+.reveal.d3.visible    { animation-delay: 0.24s; }
+.reveal.d4.visible    { animation-delay: 0.32s; }
+
+/* ── Section base ──────────────────────────────────── */
+section {
+  padding: 96px 24px;
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0 24px;
+}
+
+/* ── Section header ────────────────────────────────── */
+.sec-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.sec-tag::before {
+  content: '';
+  width: 18px;
+  height: 1px;
+  background: var(--accent);
+}
+
+.sec-title {
+  font-size: clamp(26px, 3.5vw, 38px);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.sec-desc {
+  font-size: 16px;
+  color: var(--text-muted);
+  max-width: 520px;
+  line-height: 1.8;
+}
+
+/* ── Buttons ───────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 22px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s var(--ease);
+  border: none;
+}
+
+.btn-primary {
+  background: var(--accent-dark);
+  color: #fff;
+  box-shadow: 0 0 24px var(--accent-glow);
+}
+.btn-primary:hover {
+  background: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 0 36px rgba(122, 178, 216, 0.4);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover {
+  color: var(--text);
+  border-color: var(--border-accent);
+  background: rgba(122, 178, 216, 0.05);
+}
+
+.btn-lg {
+  padding: 13px 28px;
+  font-size: 15px;
+  border-radius: 10px;
+}

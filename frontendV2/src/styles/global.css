@@ -1,0 +1,9 @@
+/* This file has been split into the 5-layer system.
+   See main.jsx for the import order:
+
+   tokens.css     — raw values
+   theme.css      — semantic roles
+   base.css       — element defaults
+   animations.css — keyframes
+   utilities.css  — shared patterns
+*/

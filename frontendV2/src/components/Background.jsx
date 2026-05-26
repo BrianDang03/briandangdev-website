@@ -4,30 +4,45 @@ const COUNT = 110
 const CONNECT_DIST = 160
 const MOUSE_RADIUS = 130
 
-const PALETTE = [
-  { r: 129, g: 140, b: 248 }, // indigo
-  { r: 99,  g: 102, b: 241 }, // deep indigo
-  { r: 165, g: 180, b: 252 }, // lavender
-  { r: 52,  g: 211, b: 153 }, // teal
-  { r: 110, g: 231, b: 183 }, // light teal
-  { r: 224, g: 231, b: 255 }, // near-white blue
+// Reference CSS variable names — no hardcoded colors
+const PALETTE_VARS = [
+  '--accent',
+  '--accent-dark',
+  '--canvas-secondary',
+  '--canvas-secondary-bright',
+  '--text',
+  '--text-muted',
 ]
+
+const WAVE_CONFIGS = [
+  { yFrac: 0.18, amp: 38, freq: 0.0042, speed: 0.007,  colorVar: '--accent',                   baseAlpha: 0.28, fadeSpeed: 0.011, fadeOffset: 0.0 },
+  { yFrac: 0.32, amp: 28, freq: 0.0031, speed: 0.005,  colorVar: '--accent-dark',              baseAlpha: 0.22, fadeSpeed: 0.009, fadeOffset: 1.2 },
+  { yFrac: 0.50, amp: 52, freq: 0.0025, speed: 0.004,  colorVar: '--canvas-secondary-bright',  baseAlpha: 0.26, fadeSpeed: 0.013, fadeOffset: 2.5 },
+  { yFrac: 0.65, amp: 34, freq: 0.0038, speed: 0.006,  colorVar: '--canvas-secondary',         baseAlpha: 0.22, fadeSpeed: 0.008, fadeOffset: 0.8 },
+  { yFrac: 0.80, amp: 44, freq: 0.0028, speed: 0.0045, colorVar: '--accent',                   baseAlpha: 0.24, fadeSpeed: 0.012, fadeOffset: 3.8 },
+  { yFrac: 0.92, amp: 22, freq: 0.0055, speed: 0.009,  colorVar: '--text',                     baseAlpha: 0.18, fadeSpeed: 0.010, fadeOffset: 1.9 },
+]
+
+function hexToRgb(hex) {
+  const h = hex.replace('#', '')
+  return {
+    r: parseInt(h.slice(0, 2), 16),
+    g: parseInt(h.slice(2, 4), 16),
+    b: parseInt(h.slice(4, 6), 16),
+  }
+}
+
+function resolveVar(name) {
+  const val = getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+  return hexToRgb(val)
+}
 
 function rand(a, b) {
   return a + Math.random() * (b - a)
 }
 
-const WAVE_DEFS = [
-  { yFrac: 0.18, amp: 38, freq: 0.0042, speed: 0.007,  color: { r: 129, g: 140, b: 248 }, baseAlpha: 0.28, fadeSpeed: 0.011, fadeOffset: 0.0 },
-  { yFrac: 0.32, amp: 28, freq: 0.0031, speed: 0.005,  color: { r: 52,  g: 211, b: 153 }, baseAlpha: 0.22, fadeSpeed: 0.009, fadeOffset: 1.2 },
-  { yFrac: 0.50, amp: 52, freq: 0.0025, speed: 0.004,  color: { r: 99,  g: 102, b: 241 }, baseAlpha: 0.26, fadeSpeed: 0.013, fadeOffset: 2.5 },
-  { yFrac: 0.65, amp: 34, freq: 0.0038, speed: 0.006,  color: { r: 110, g: 231, b: 183 }, baseAlpha: 0.22, fadeSpeed: 0.008, fadeOffset: 0.8 },
-  { yFrac: 0.80, amp: 44, freq: 0.0028, speed: 0.0045, color: { r: 165, g: 180, b: 252 }, baseAlpha: 0.24, fadeSpeed: 0.012, fadeOffset: 3.8 },
-  { yFrac: 0.92, amp: 22, freq: 0.0055, speed: 0.009,  color: { r: 129, g: 140, b: 248 }, baseAlpha: 0.18, fadeSpeed: 0.010, fadeOffset: 1.9 },
-]
-
-function makeParticle(w, h) {
-  const color = PALETTE[Math.floor(Math.random() * PALETTE.length)]
+function makeParticle(w, h, palette) {
+  const color = palette[Math.floor(Math.random() * palette.length)]
   const isGlowing = Math.random() > 0.45
   return {
     x: Math.random() * w,
@@ -56,6 +71,10 @@ export default function Background() {
     let particles = []
     let t = 0
 
+    // Resolve all colors from CSS variables once on mount
+    const palette = PALETTE_VARS.map(resolveVar)
+    const waveDefs = WAVE_CONFIGS.map(w => ({ ...w, color: resolveVar(w.colorVar) }))
+
     function resize() {
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
@@ -63,7 +82,7 @@ export default function Background() {
 
     function init() {
       particles = Array.from({ length: COUNT }, () =>
-        makeParticle(canvas.width, canvas.height)
+        makeParticle(canvas.width, canvas.height, palette)
       )
       particles.forEach(p => {
         p.baseVx = p.vx
@@ -72,7 +91,7 @@ export default function Background() {
     }
 
     function drawWaves() {
-      WAVE_DEFS.forEach(w => {
+      waveDefs.forEach(w => {
         const cy = canvas.height * w.yFrac
         const phase = t * w.speed
         const fade = 0.5 + 0.5 * Math.sin(t * w.fadeSpeed + w.fadeOffset)
@@ -128,11 +147,9 @@ export default function Background() {
         p.vy += (dy / dist) * force * 0.06
       }
 
-      // Dampen back toward base drift
       p.vx = p.vx * 0.97 + p.baseVx * 0.03
       p.vy = p.vy * 0.97 + p.baseVy * 0.03
 
-      // Speed cap
       const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy)
       if (speed > 0.7) {
         p.vx = (p.vx / speed) * 0.7
@@ -142,7 +159,6 @@ export default function Background() {
       p.x += p.vx
       p.y += p.vy
 
-      // Wrap
       if (p.x < -8) p.x = canvas.width + 8
       if (p.x > canvas.width + 8) p.x = -8
       if (p.y < -8) p.y = canvas.height + 8
@@ -183,18 +199,9 @@ export default function Background() {
     init()
     render()
 
-    function onResize() {
-      resize()
-      init()
-    }
-    function onMouseMove(e) {
-      mouse.current.x = e.clientX
-      mouse.current.y = e.clientY
-    }
-    function onMouseLeave() {
-      mouse.current.x = -9999
-      mouse.current.y = -9999
-    }
+    function onResize() { resize(); init() }
+    function onMouseMove(e) { mouse.current.x = e.clientX; mouse.current.y = e.clientY }
+    function onMouseLeave() { mouse.current.x = -9999; mouse.current.y = -9999 }
 
     window.addEventListener('resize', onResize)
     window.addEventListener('mousemove', onMouseMove)
