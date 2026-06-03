@@ -68,7 +68,7 @@ function getIntensity(width) {
   return 0.2 + ((width - 480) / (1200 - 480)) * 0.8
 }
 
-export default function Background() {
+export default function Background({ theme }) {
   const canvasRef = useRef(null)
   const mouse = useRef({ x: -9999, y: -9999 })
 
@@ -80,7 +80,7 @@ export default function Background() {
     let t = 0
     let intensity = 1
 
-    // Resolve all colors from CSS variables once on mount
+    // Re-resolve colors from CSS variables — re-runs when theme changes
     const palette = PALETTE_VARS.map(resolveVar)
     const waveDefs = WAVE_CONFIGS.map(w => ({ ...w, color: resolveVar(w.colorVar) }))
 
@@ -223,7 +223,7 @@ export default function Background() {
       window.removeEventListener('mousemove', onMouseMove)
       window.removeEventListener('mouseleave', onMouseLeave)
     }
-  }, [])
+  }, [theme])
 
   return (
     <canvas

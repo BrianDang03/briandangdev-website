@@ -3,8 +3,11 @@ import Background from './components/Background'
 import Navbar from './components/Navbar/Navbar'
 import Hero from './components/Hero/Hero'
 import Project from './components/Project/Project'
+import { useTheme } from './hooks/useTheme'
 
 export default function App() {
+  const [theme, toggleTheme] = useTheme()
+
   useEffect(() => {
     const els = document.querySelectorAll('.reveal')
     const obs = new IntersectionObserver(
@@ -23,8 +26,8 @@ export default function App() {
 
   return (
     <>
-      <Background />
-      <Navbar />
+      <Background theme={theme} />
+      <Navbar theme={theme} onToggleTheme={toggleTheme} />
       <Hero />
       <Project />
     </>

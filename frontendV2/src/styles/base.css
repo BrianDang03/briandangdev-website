@@ -38,6 +38,12 @@ body::before {
   z-index: -1;
 }
 
+[data-theme="light"] body::before {
+  background:
+    radial-gradient(ellipse 900px 600px at 15% -5%,  rgba(61, 135, 184, 0.06) 0%, transparent 55%),
+    radial-gradient(ellipse 700px 500px at 85% 105%, rgba(45, 116, 166, 0.04) 0%, transparent 55%);
+}
+
 /* ── Scrollbar ───────────────────────────────────── */
 ::-webkit-scrollbar       { width: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg); }

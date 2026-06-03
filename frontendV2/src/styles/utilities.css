@@ -13,7 +13,7 @@ html.scroll-locked {
 
 /* ── Section base ──────────────────────────────────── */
 section {
-  padding: 96px 24px;
+  padding: 64px 24px;
   max-width: var(--max-w);
   margin: 0 auto;
 }

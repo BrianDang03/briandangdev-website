@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Sun, Moon } from 'lucide-react'
 import styles from './Navbar.module.css'
 
 const links = [
@@ -7,7 +8,7 @@ const links = [
   { label: 'About',    href: '#about'    },
 ]
 
-export default function Navbar() {
+export default function Navbar({ theme, onToggleTheme }) {
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
@@ -29,6 +30,13 @@ export default function Navbar() {
             </li>
           ))}
         </ul>
+        <button
+          className={styles.themeToggle}
+          onClick={onToggleTheme}
+          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+        >
+          {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
+        </button>
       </div>
     </nav>
   )

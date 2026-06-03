@@ -37,6 +37,25 @@
   --token-radius-tag: 8px;
   --token-max-w: 1080px;
 
+  /* Light mode backgrounds */
+  --token-light-50:  #f4f7fb;
+  --token-light-100: #edf2f7;
+  --token-light-200: #e2eaf3;
+
+  /* Light mode text */
+  --token-dark-text:       #1a2332;
+  --token-muted-text-light: #56687e;
+  --token-dim-text-light:   #b0beca;
+
+  /* Light mode borders */
+  --token-border-light:        rgba(0, 0, 0, 0.09);
+  --token-border-accent-light: rgba(58, 122, 170, 0.4);
+
+  /* Light mode accent (slightly darker for contrast on white) */
+  --token-blue-light-mode:      #3d87b8;
+  --token-blue-mid-light-mode:  #2d74a6;
+  --token-blue-glow-light:      rgba(61, 135, 184, 0.15);
+
   /* Timing */
   --token-ease: cubic-bezier(0.4, 0, 0.2, 1);
 

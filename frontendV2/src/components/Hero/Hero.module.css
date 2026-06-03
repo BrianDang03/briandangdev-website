@@ -1,8 +1,7 @@
 /* ── Hero section ──────────────────────────────────── */
 .hero {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
+  padding-top: 100px;  /* clears the fixed navbar */
+  padding-bottom: 48px;
 }
 
 .section {
@@ -21,27 +20,65 @@
   flex-direction: column;
 }
 
+.greeting {
+  font-size: clamp(16px, 2vw, 22px);
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
 .name {
-  font-size: clamp(56px, 10vw, 100px);
+  font-size: clamp(52px, 9vw, 92px);
   font-weight: 900;
   line-height: 0.95;
   letter-spacing: -0.04em;
   color: var(--text);
-  margin-bottom: 10px;
-  animation: fadeUp 0.6s 0.05s ease both;
+  margin-bottom: 12px;
 }
 
 .title {
-  font-size: clamp(20px, 3vw, 30px);
-  font-weight: 300;
+  font-size: clamp(15px, 1.8vw, 20px);
+  font-weight: 400;
   color: var(--text-muted);
   margin-bottom: 28px;
-  animation: fadeUp 0.6s 0.12s ease both;
 }
 
-.title strong {
+/* ── Typewriter ghost / live overlay ───────────────── */
+/* Ghost reserves the full space; live text types in on top. */
+.typedLine {
+  display: grid;
+}
+
+.ghost {
+  grid-area: 1 / 1;
+  visibility: hidden;
+  user-select: none;
+  pointer-events: none;
+}
+
+.live {
+  grid-area: 1 / 1;
+}
+
+/* ── Cursor ────────────────────────────────────────── */
+.cursor {
+  display: inline-block;
   color: var(--accent);
-  font-weight: 600;
+  font-weight: 400;
+  margin-left: 1px;
+}
+
+.cursorBlink {
+  display: inline-block;
+  color: var(--accent);
+  font-weight: 400;
+  margin-left: 1px;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
 }
 
 .desc {
@@ -50,7 +87,7 @@
   max-width: 540px;
   line-height: 1.8;
   margin-bottom: 36px;
-  animation: fadeUp 0.6s 0.2s ease both;
+  animation: fadeUp 0.6s 2.6s ease both;
 }
 
 .actions {
@@ -58,7 +95,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 12px;
-  animation: fadeUp 0.6s 0.28s ease both;
+  animation: fadeUp 0.6s 2.9s ease both;
 }
 
 .link {
@@ -129,6 +166,19 @@
 
 .backLink:hover {
   color: #fff;
+}
+
+/* ── Light mode card back ──────────────────────────── */
+[data-theme="light"] .backBio {
+  color: rgba(26, 35, 50, 0.75);
+}
+
+[data-theme="light"] .backLink {
+  color: rgba(26, 35, 50, 0.55);
+}
+
+[data-theme="light"] .backLink:hover {
+  color: rgba(26, 35, 50, 1);
 }
 
 /* ── Responsive ────────────────────────────────────── */

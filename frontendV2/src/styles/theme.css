@@ -44,3 +44,29 @@
   --z-modal-backdrop:  var(--token-z-modal-backdrop);
   --z-modal:           var(--token-z-modal);
 }
+
+/* ── Light mode overrides ────────────────────────────── */
+[data-theme="light"] {
+  --bg:            var(--token-light-50);
+  --bg-surface:    var(--token-light-100);
+  --bg-card:       #ffffff;
+  --bg-card-hover: var(--token-light-100);
+
+  --border:        var(--token-border-light);
+  --border-accent: var(--token-border-accent-light);
+
+  --text:          var(--token-dark-text);
+  --text-muted:    var(--token-muted-text-light);
+  --text-dim:      var(--token-dim-text-light);
+
+  --accent:        var(--token-blue-light-mode);
+  --accent-dark:   var(--token-blue-mid-light-mode);
+  --accent-glow:   var(--token-blue-glow-light);
+
+  --canvas-secondary:        var(--token-blue-mid-light-mode);
+  --canvas-secondary-bright: var(--token-blue-light-mode);
+
+  --project-card-impact-color:  var(--token-blue-mid-light-mode);
+  --project-card-impact-bg:     rgba(45, 116, 166, 0.08);
+  --project-card-impact-border: rgba(45, 116, 166, 0.2);
+}

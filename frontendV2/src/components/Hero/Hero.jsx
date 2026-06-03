@@ -1,6 +1,61 @@
+import { useState, useEffect } from 'react'
 import { Mail, Github, ArrowDown } from 'lucide-react'
 import TiltFlipCard from '../TiltFlipCard/TiltFlipCard'
 import styles from './Hero.module.css'
+
+// Returns how many characters are currently visible.
+// All characters are always rendered (no layout shift); only visibility changes.
+function useTypewriter(length, speed, startDelay) {
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setCount(length)
+      return
+    }
+    setCount(0)
+    let intervalId
+    const timeoutId = setTimeout(() => {
+      intervalId = setInterval(() => {
+        setCount(n => {
+          const next = n + 1
+          if (next >= length) clearInterval(intervalId)
+          return next
+        })
+      }, speed)
+    }, startDelay)
+    return () => { clearTimeout(timeoutId); clearInterval(intervalId) }
+  }, [length, speed, startDelay])
+
+  return [count, count >= length]
+}
+
+// Renders text with a ghost + live overlay so layout never shifts.
+// Ghost (invisible) reserves the full space; live text types in on top.
+function TypedLine({ text, visibleCount, showCursor, cursorBlink, className }) {
+  const done = visibleCount >= text.length
+  return (
+    <span className={`${styles.typedLine} ${className ?? ''}`}>
+      <span className={styles.ghost} aria-hidden="true">{text}</span>
+      <span className={styles.live} aria-live="polite">
+        {text.slice(0, visibleCount)}
+        {showCursor && !done && (
+          <span className={styles.cursor} aria-hidden="true">|</span>
+        )}
+        {cursorBlink && done && (
+          <span className={styles.cursorBlink} aria-hidden="true">|</span>
+        )}
+      </span>
+    </span>
+  )
+}
+
+const GREETING = "Hello, I'm"
+const NAME     = "Brian Dang"
+const TITLE    = "A Software Engineer in Colorado"
+//  greeting: 10 chars × 65ms = 650ms,  delay 200ms  → done ~850ms
+//  name:     10 chars × 90ms = 900ms,  delay 950ms  → done ~1850ms
+//  title:    31 chars × 45ms = 1395ms, delay 1950ms → done ~3345ms
 
 const cardFront = (
   <p className={styles.cardHint}>Tap to know more about me</p>
@@ -31,14 +86,38 @@ const cardBack = (
 )
 
 export default function Hero() {
+  const [greetingCount, greetingDone] = useTypewriter(GREETING.length, 65,  200)
+  const [nameCount,     nameDone]     = useTypewriter(NAME.length,     90,  950)
+  const [titleCount,    titleDone]    = useTypewriter(TITLE.length,    45, 1950)
+
   return (
     <section id="home" className={styles.hero}>
       <div className={styles.section}>
         <div className={styles.text}>
-          <h1 className={styles.name}>Brian Dang</h1>
+
+          <p className={styles.greeting}>
+            <TypedLine
+              text={GREETING}
+              visibleCount={greetingCount}
+              showCursor
+            />
+          </p>
+
+          <h1 className={styles.name}>
+            <TypedLine
+              text={NAME}
+              visibleCount={nameCount}
+              showCursor={greetingDone}
+            />
+          </h1>
 
           <p className={styles.title}>
-            <strong>Software Engineer</strong>
+            <TypedLine
+              text={TITLE}
+              visibleCount={titleCount}
+              showCursor={nameDone}
+              cursorBlink
+            />
           </p>
 
           <p className={styles.desc}>
@@ -69,6 +148,7 @@ export default function Hero() {
               <Github /> GitHub
             </a>
           </div>
+
         </div>
 
         <div className={styles.cardWrap}>

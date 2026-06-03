@@ -223,11 +223,12 @@ export default function TiltFlipCard({
     };
   }, [backImg]);
 
-  const supportsMouseHover = useCallback(() => {
-    if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
-      return true;
-    }
-    return window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  // Computed once on mount — avoids re-running matchMedia on every pointer event.
+  // Uses "pointer: fine" only, not "hover: hover", so trackpads on hybrid devices
+  // still get the tilt effect.
+  const canMouseHover = useMemo(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") return true;
+    return window.matchMedia("(pointer: fine)").matches;
   }, []);
 
   const cssVars = useMemo(
@@ -352,7 +353,9 @@ export default function TiltFlipCard({
     }
   }, []);
 
-  useEffect(() => {
+  // useLayoutEffect runs synchronously after mount so animateLerpRef is never null
+  // when the first hover fires, preventing silent RAF bail-outs on early interaction.
+  useLayoutEffect(() => {
     animateLerpRef.current = animateLerp;
   }, [animateLerp]);
 
@@ -613,11 +616,13 @@ export default function TiltFlipCard({
 
   const handlePointerEnter = useCallback(
     (event) => {
-      if (isExpanded || isGlobalPointerSuppressed() || event.pointerType !== "mouse") return;
-      if (!supportsMouseHover()) return;
+      if (isExpanded || event.pointerType !== "mouse") return;
+      // No suppression check for genuine mouse events — suppression is only
+      // for mobile synthetic ghost events, not real mouse hover.
+      if (!canMouseHover) return;
       scheduleTiltUpdate(event.clientX, event.clientY);
     },
-    [isExpanded, supportsMouseHover, scheduleTiltUpdate]
+    [isExpanded, canMouseHover, scheduleTiltUpdate]
   );
 
   const handlePointerDown = useCallback(
@@ -643,19 +648,21 @@ export default function TiltFlipCard({
 
   const handlePointerMove = useCallback(
     (event) => {
-      if (isExpanded || isGlobalPointerSuppressed()) return;
-
-      const pointerState = pointerStateRef.current;
+      if (isExpanded) return;
 
       if (event.pointerType === "mouse") {
-        if (!supportsMouseHover()) return;
+        // Skip suppression — mouse moves are never synthetic ghost events.
+        if (!canMouseHover) return;
         scheduleTiltUpdate(event.clientX, event.clientY);
         return;
       }
 
-      if (!pointerState.isDown || pointerState.activePointerId !== event.pointerId) {
-        return;
-      }
+      // Touch / pen: respect the global suppression window.
+      if (isGlobalPointerSuppressed()) return;
+
+      const pointerState = pointerStateRef.current;
+
+      if (!pointerState.isDown || pointerState.activePointerId !== event.pointerId) return;
 
       const distance = getDistance(
         pointerState.startX,
@@ -677,7 +684,7 @@ export default function TiltFlipCard({
 
       scheduleTiltUpdate(event.clientX, event.clientY);
     },
-    [isExpanded, supportsMouseHover, scheduleTiltUpdate, endInteraction]
+    [isExpanded, canMouseHover, scheduleTiltUpdate, endInteraction]
   );
 
   const handlePointerUp = useCallback(
@@ -697,7 +704,7 @@ export default function TiltFlipCard({
       event.currentTarget.releasePointerCapture?.(event.pointerId);
 
       if (event.pointerType === "mouse") {
-        if (!supportsMouseHover()) {
+        if (!canMouseHover) {
           endInteraction();
           return;
         }
@@ -720,23 +727,19 @@ export default function TiltFlipCard({
 
       endInteraction();
     },
-    [isExpanded, openInspectView, endInteraction, supportsMouseHover]
+    [isExpanded, openInspectView, endInteraction, canMouseHover]
   );
 
   const handlePointerLeave = useCallback(
     (event) => {
-      if (isExpanded || isGlobalPointerSuppressed()) return;
-
-      if (event.pointerType === "mouse") {
-        if (!supportsMouseHover()) return;
-        // Lerp back to rest state
-        const tgt = lerpStateRef.current.target;
-        tgt.rx = 0; tgt.ry = 0; tgt.glareX = 50; tgt.glareY = 50;
-        tgt.glareO = 0; tgt.shadowX = 0; tgt.shadowY = 0; tgt.shadowBlur = 20; tgt.hover = 0;
-        startLerpAnimation();
-      }
+      if (isExpanded || event.pointerType !== "mouse") return;
+      if (!canMouseHover) return;
+      const tgt = lerpStateRef.current.target;
+      tgt.rx = 0; tgt.ry = 0; tgt.glareX = 50; tgt.glareY = 50;
+      tgt.glareO = 0; tgt.shadowX = 0; tgt.shadowY = 0; tgt.shadowBlur = 20; tgt.hover = 0;
+      startLerpAnimation();
     },
-    [isExpanded, supportsMouseHover, startLerpAnimation]
+    [isExpanded, canMouseHover, startLerpAnimation]
   );
 
   const handlePointerCancel = useCallback(

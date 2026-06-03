@@ -16,6 +16,10 @@
   padding: 13px 28px;
 }
 
+[data-theme="light"] .scrolled {
+  background: rgba(244, 247, 251, 0.9);
+}
+
 .inner {
   max-width: var(--max-w);
   margin: 0 auto;
@@ -52,6 +56,27 @@
 
 .links a:hover {
   color: var(--text);
+}
+
+.themeToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+
+.themeToggle:hover {
+  color: var(--text);
+  border-color: var(--border-accent);
+  background: rgba(122, 178, 216, 0.07);
 }
 
 @media (max-width: 640px) {
