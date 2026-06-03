@@ -30,8 +30,10 @@ export default function App() {
       <Background theme={theme} />
       <Orbs />
       <Navbar theme={theme} onToggleTheme={toggleTheme} />
-      <Hero />
-      <Project />
+      <div className="page-layout">
+        <Hero />
+        <Project />
+      </div>
     </>
   )
 }

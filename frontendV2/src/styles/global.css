@@ -7,3 +7,14 @@
    animations.css — keyframes
    utilities.css  — shared patterns
 */
+.page-layout {
+  min-height: 100vh;
+  width: min(100%, var(--max-w));
+  margin: 0 auto;
+  padding-inline: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 64px;
+}
