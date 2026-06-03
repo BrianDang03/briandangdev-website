@@ -1,6 +1,6 @@
 /* ── Hero section ──────────────────────────────────── */
 .hero {
-  padding: 125px 0 24px;  /* clears the fixed navbar */
+  padding: 160px 0 24px;  /* clears the fixed navbar */
 }
 
 .section {
@@ -145,6 +145,10 @@
   border-color: var(--border-accent);
   background: var(--bg-card-hover);
   transform: translateY(-1px);
+}
+
+[data-theme="dark"] .contactBtn {
+  border-color: rgba(255, 255, 255, 0.35);
 }
 
 [data-theme="light"] .contactBtn {
