@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import Background from './components/Background'
-import Navbar from './components/Navbar'
-import Hero from './components/Hero'
+import Navbar from './components/Navbar/Navbar'
+import Hero from './components/Hero/Hero'
 import Project from './components/Project/Project'
 
 export default function App() {

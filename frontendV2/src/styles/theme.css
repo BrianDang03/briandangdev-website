@@ -38,4 +38,9 @@
   --radius-tag:  var(--token-radius-tag);
   --max-w:       var(--token-max-w);
   --ease:        var(--token-ease);
+
+  /* ── Z-index stack ───────────────────────────────── */
+  --z-modal-returning: var(--token-z-modal-returning);
+  --z-modal-backdrop:  var(--token-z-modal-backdrop);
+  --z-modal:           var(--token-z-modal);
 }

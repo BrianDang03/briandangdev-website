@@ -60,6 +60,14 @@ function makeParticle(w, h, palette) {
   }
 }
 
+// Scale background intensity down on smaller screens so text stays readable.
+// 1.0 at ≥1200px, fades linearly to 0.2 at ≤480px.
+function getIntensity(width) {
+  if (width >= 1200) return 1.0
+  if (width <= 480)  return 0.2
+  return 0.2 + ((width - 480) / (1200 - 480)) * 0.8
+}
+
 export default function Background() {
   const canvasRef = useRef(null)
   const mouse = useRef({ x: -9999, y: -9999 })
@@ -70,6 +78,7 @@ export default function Background() {
     let animId
     let particles = []
     let t = 0
+    let intensity = 1
 
     // Resolve all colors from CSS variables once on mount
     const palette = PALETTE_VARS.map(resolveVar)
@@ -78,6 +87,7 @@ export default function Background() {
     function resize() {
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
+      intensity = getIntensity(canvas.width)
     }
 
     function init() {
@@ -95,18 +105,18 @@ export default function Background() {
         const cy = canvas.height * w.yFrac
         const phase = t * w.speed
         const fade = 0.5 + 0.5 * Math.sin(t * w.fadeSpeed + w.fadeOffset)
-        const alpha = w.baseAlpha * fade
+        const alpha = w.baseAlpha * fade * intensity
         const { r, g, b } = w.color
 
         ctx.save()
-        ctx.shadowColor = `rgba(${r},${g},${b},${alpha * 4})`
-        ctx.shadowBlur = 32
+        ctx.shadowColor = `rgba(${r},${g},${b},${alpha * 4 * intensity})`
+        ctx.shadowBlur = 32 * intensity
         ctx.beginPath()
         for (let x = 0; x <= canvas.width; x += 3) {
           const y = cy + Math.sin(x * w.freq + phase) * w.amp
           x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)
         }
-        ctx.strokeStyle = `rgba(${r},${g},${b},${alpha})`
+        ctx.strokeStyle = `rgba(${r},${g},${b},${alpha * intensity})`
         ctx.lineWidth = 1.6
         ctx.stroke()
         ctx.restore()
@@ -122,7 +132,7 @@ export default function Background() {
           const dy = a.y - b.y
           const dist = Math.sqrt(dx * dx + dy * dy)
           if (dist >= CONNECT_DIST) continue
-          const opacity = (1 - dist / CONNECT_DIST) * 0.4
+          const opacity = (1 - dist / CONNECT_DIST) * 0.4 * intensity
           const c = a.color
           ctx.beginPath()
           ctx.moveTo(a.x, a.y)
@@ -167,14 +177,14 @@ export default function Background() {
 
     function drawParticle(p) {
       const pulse = Math.sin(t * p.pulseSpeed + p.pulse)
-      const alpha = p.glow ? p.alpha * (0.65 + 0.35 * pulse) : p.alpha
+      const alpha = (p.glow ? p.alpha * (0.65 + 0.35 * pulse) : p.alpha) * intensity
       const size = p.glow ? p.size * (1 + 0.25 * pulse) : p.size
       const { r, g, b } = p.color
 
       ctx.save()
       if (p.glow) {
-        ctx.shadowColor = `rgba(${r},${g},${b},1)`
-        ctx.shadowBlur = 24
+        ctx.shadowColor = `rgba(${r},${g},${b},${intensity})`
+        ctx.shadowBlur = 24 * intensity
       }
       ctx.beginPath()
       ctx.arc(p.x, p.y, size, 0, Math.PI * 2)

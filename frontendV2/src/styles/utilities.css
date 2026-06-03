@@ -1,3 +1,8 @@
+/* ── Scroll lock (applied to <html> by TiltFlipCard) ── */
+html.scroll-locked {
+  overflow: hidden;
+}
+
 /* ── Scroll reveal ─────────────────────────────────── */
 .reveal               { opacity: 0; }
 .reveal.visible       { animation: fadeUp 0.55s var(--ease) both; }

@@ -39,4 +39,9 @@
 
   /* Timing */
   --token-ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Z-index stack */
+  --token-z-modal-returning: 5;
+  --token-z-modal-backdrop:  20;
+  --token-z-modal:           30;
 }
