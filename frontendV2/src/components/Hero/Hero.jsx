@@ -30,6 +30,56 @@ function useTypewriter(length, speed, startDelay) {
   return [count, count >= length]
 }
 
+function useCycleTypewriter(words, typeSpeed, deleteSpeed, holdDelay, startDelay, active = true) {
+  const [wordIndex, setWordIndex] = useState(0)
+  const [count, setCount] = useState(0)
+  const [phase, setPhase] = useState('idle')
+
+  useEffect(() => {
+    if (!active) return
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setCount(words[0].length)
+      setPhase('holding')
+      return
+    }
+
+    const word = words[wordIndex]
+    let timeoutId
+
+    if (phase === 'idle') {
+      timeoutId = setTimeout(() => {
+        setPhase('typing')
+      }, startDelay)
+    } else if (phase === 'typing') {
+      if (count < word.length) {
+        timeoutId = setTimeout(() => setCount(count + 1), typeSpeed)
+      } else {
+        timeoutId = setTimeout(() => setPhase('holding'), holdDelay)
+      }
+    } else if (phase === 'holding') {
+      timeoutId = setTimeout(() => setPhase('deleting'), holdDelay)
+    } else if (phase === 'deleting') {
+      if (count > 0) {
+        timeoutId = setTimeout(() => setCount(count - 1), deleteSpeed)
+      } else {
+        timeoutId = setTimeout(() => {
+          setWordIndex((wordIndex + 1) % words.length)
+          setPhase('pause')
+        }, 200)
+      }
+    } else if (phase === 'pause') {
+      timeoutId = setTimeout(() => {
+        setPhase('typing')
+      }, 250)
+    }
+
+    return () => clearTimeout(timeoutId)
+  }, [active, words, wordIndex, count, phase, typeSpeed, deleteSpeed, holdDelay, startDelay])
+
+  return [wordIndex, count, phase]
+}
+
 // Renders text with a ghost + live overlay so layout never shifts.
 // Ghost (invisible) reserves the full space; live text types in on top.
 function TypedLine({ text, visibleCount, showCursor, cursorBlink, className }) {
@@ -52,10 +102,14 @@ function TypedLine({ text, visibleCount, showCursor, cursorBlink, className }) {
 
 const GREETING = "Hello, I'm"
 const NAME     = "Brian Dang"
-const TITLE    = "A Software Engineer in Colorado"
+const TITLES   = [
+  'Software Engineer',
+  'Systems Engineer',
+  'Gameplay Engineer',
+]
 //  greeting: 10 chars × 65ms = 650ms,  delay 200ms  → done ~850ms
 //  name:     10 chars × 90ms = 900ms,  delay 950ms  → done ~1850ms
-//  title:    31 chars × 45ms = 1395ms, delay 1950ms → done ~3345ms
+//  title loops through each phrase with typing and deletion
 
 const cardFront = (
   <p className={styles.cardHint}>Tap to know more about me</p>
@@ -88,7 +142,8 @@ const cardBack = (
 export default function Hero() {
   const [greetingCount, greetingDone] = useTypewriter(GREETING.length, 65,  200)
   const [nameCount,     nameDone]     = useTypewriter(NAME.length,     90,  950)
-  const [titleCount,    titleDone]    = useTypewriter(TITLE.length,    45, 1950)
+  const [titleIndex, titleCount, phase] = useCycleTypewriter(TITLES, 45, 35, 1400, 200, nameDone)
+  const titleDone                        = titleCount >= TITLES[titleIndex].length
 
   return (
     <section id="home" className={styles.hero}>
@@ -99,7 +154,7 @@ export default function Hero() {
             <TypedLine
               text={GREETING}
               visibleCount={greetingCount}
-              showCursor
+              showCursor={greetingCount > 0}
             />
           </p>
 
@@ -113,10 +168,10 @@ export default function Hero() {
 
           <p className={styles.title}>
             <TypedLine
-              text={TITLE}
+              text={TITLES[titleIndex]}
               visibleCount={titleCount}
-              showCursor={nameDone}
-              cursorBlink
+              showCursor={nameDone || phase !== 'idle'}
+              cursorBlink={titleDone}
             />
           </p>
 
