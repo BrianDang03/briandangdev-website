@@ -61,6 +61,6 @@
 
   /* Z-index stack */
   --token-z-modal-returning: 5;
-  --token-z-modal-backdrop:  20;
-  --token-z-modal:           30;
+  --token-z-modal-backdrop:  500;
+  --token-z-modal:           1000;
 }

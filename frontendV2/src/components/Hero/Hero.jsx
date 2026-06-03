@@ -132,7 +132,7 @@ const cardBack = (
         rel="noopener noreferrer"
         className={styles.backLink}
       >
-        <Github size={14} />
+        <span className={styles.iconCircle}><Github size={14} /></span>
         GitHub
       </a>
     </div>
@@ -142,7 +142,7 @@ const cardBack = (
 export default function Hero() {
   const [greetingCount, greetingDone] = useTypewriter(GREETING.length, 65,  200)
   const [nameCount,     nameDone]     = useTypewriter(NAME.length,     90,  950)
-  const [titleIndex, titleCount, phase] = useCycleTypewriter(TITLES, 45, 35, 1400, 200, nameDone)
+  const [titleIndex, titleCount, phase] = useCycleTypewriter(TITLES, 45, 35, 4000, 200, nameDone)
   const titleDone                        = titleCount >= TITLES[titleIndex].length
 
   return (
@@ -187,9 +187,19 @@ export default function Hero() {
               rel="noopener noreferrer"
               className={styles.contactBtn}
             >
-              <Github size={15} />
+              <span className={styles.iconCircle}><Github size={15} /></span>
               GitHub
             </a>
+          </div>
+
+          <div className={styles.about}>
+            <h2 className="sec-title">A little about me</h2>
+            <p className="sec-desc">
+              I'm a software engineer who enjoys connecting systems, products, and people.
+              I build reliable tools, polished web experiences, and embedded workflows with
+              a practical mindset that keeps maintainability and real-world impact front
+              and center.
+            </p>
           </div>
 
         </div>

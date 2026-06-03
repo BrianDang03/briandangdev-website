@@ -5,7 +5,7 @@ import styles from './Navbar.module.css'
 const links = [
   { label: 'Home',     href: '#home'     },
   { label: 'Projects', href: '#projects' },
-  { label: 'About',    href: '#about'    },
+  { label: 'About',    href: '#home',    action: 'open-profile-card' },
 ]
 
 export default function Navbar({ theme, onToggleTheme }) {
@@ -21,12 +21,21 @@ export default function Navbar({ theme, onToggleTheme }) {
     <nav className={`${styles.navbar}${scrolled ? ` ${styles.scrolled}` : ''}`}>
       <div className={styles.inner}>
         <a href="#home" className={styles.logo}>
-          brian<span>dang</span>
+          Brian <span>Dang</span>
         </a>
         <ul className={styles.links}>
           {links.map(l => (
             <li key={l.label}>
-              <a href={l.href}>{l.label}</a>
+              <a
+                href={l.href}
+                onClick={l.action ? (e) => {
+                  e.preventDefault()
+                  document.querySelector(l.href)?.scrollIntoView({ behavior: 'smooth' })
+                  window.dispatchEvent(new CustomEvent(l.action))
+                } : undefined}
+              >
+                {l.label}
+              </a>
             </li>
           ))}
         </ul>

@@ -8,27 +8,7 @@
   gap: 14px;
   position: relative;
   overflow: hidden;
-  transition: border-color 0.22s, transform 0.22s, box-shadow 0.22s;
-}
-
-.card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, transparent 55%);
-  opacity: 0;
-  transition: opacity 0.3s;
-  pointer-events: none;
-}
-
-.card:hover {
-  border-color: var(--border-accent);
-  transform: translateY(-4px);
-  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.45);
-}
-
-.card:hover::after {
-  opacity: 1;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
 }
 
 /* ── Top row ───────────────────────────────────────── */
@@ -89,10 +69,18 @@
   margin-top: 3px;
 }
 
+[data-theme="dark"] .company {
+  color: #ffffff;
+}
+
 .desc {
   font-size: 14px;
   color: var(--text-muted);
   line-height: 1.75;
+}
+
+[data-theme="dark"] .desc {
+  color: #ffffff;
 }
 
 /* ── Impact strip ──────────────────────────────────── */
@@ -130,4 +118,8 @@
   border: 1px solid var(--border);
   padding: 3px 10px;
   border-radius: 6px;
+}
+
+[data-theme="dark"] .tag {
+  color: #ffffff;
 }

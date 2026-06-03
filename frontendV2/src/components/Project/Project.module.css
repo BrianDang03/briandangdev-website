@@ -1,5 +1,5 @@
 .section {
-  padding-top: 56px;
+  padding: 24px 0 42px;
 }
 
 .header {
@@ -20,6 +20,10 @@
 }
 
 @media (max-width: 640px) {
+  .section {
+    padding: 24px 20px 42px;
+  }
+
   .grid {
     grid-template-columns: 1fr;
   }

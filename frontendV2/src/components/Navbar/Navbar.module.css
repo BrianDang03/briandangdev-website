@@ -37,7 +37,7 @@
 }
 
 .logo span {
-  color: var(--accent);
+  color: var(--text);
 }
 
 .links {
@@ -56,6 +56,14 @@
 
 .links a:hover {
   color: var(--text);
+}
+
+[data-theme="dark"] .links a {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .links a:hover {
+  color: #ffffff;
 }
 
 .themeToggle {

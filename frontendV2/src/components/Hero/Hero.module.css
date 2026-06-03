@@ -1,13 +1,11 @@
 /* ── Hero section ──────────────────────────────────── */
 .hero {
-  padding-top: 100px;  /* clears the fixed navbar */
-  padding-bottom: 80px;
+  padding: 125px 0 24px;  /* clears the fixed navbar */
 }
 
 .section {
   display: flex;
   flex-direction: row;
-  align-items: center;
   gap: 56px;
   width: 100%;
 }
@@ -18,6 +16,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
+  align-self: flex-start;
 }
 
 .greeting {
@@ -41,6 +40,11 @@
   font-weight: 400;
   color: var(--text-muted);
   margin-bottom: 0;
+}
+
+[data-theme="dark"] .greeting,
+[data-theme="dark"] .title {
+  color: #ffffff;
 }
 
 /* ── Typewriter ghost / live overlay ───────────────── */
@@ -90,6 +94,37 @@
   animation: fadeUp 0.5s 2.6s ease both;
 }
 
+.iconCircle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(122, 178, 216, 0.15);
+}
+
+.about {
+  margin-top: 40px;
+  max-width: 680px;
+}
+
+.about :global(.sec-title) {
+  margin-bottom: 12px;
+  color: var(--text);
+}
+
+.about :global(.sec-desc) {
+  color: var(--text-muted);
+  font-size: 16px;
+  line-height: 1.9;
+  font-weight: 500;
+}
+
+[data-theme="dark"] .about :global(.sec-desc) {
+  color: #ffffff;
+}
+
 .contactBtn {
   display: inline-flex;
   align-items: center;
@@ -100,7 +135,7 @@
   font-weight: 600;
   color: var(--text);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-card);
   transition: color 0.18s, border-color 0.18s, background 0.18s, transform 0.18s;
   white-space: nowrap;
 }
@@ -108,13 +143,13 @@
 .contactBtn:hover {
   color: var(--accent);
   border-color: var(--border-accent);
-  background: rgba(122, 178, 216, 0.08);
+  background: var(--bg-card-hover);
   transform: translateY(-1px);
 }
 
 [data-theme="light"] .contactBtn {
   border-color: rgba(0, 0, 0, 0.15);
-  background: rgba(0, 0, 0, 0.03);
+  background: #ffffff;
 }
 
 /* ── Card column ───────────────────────────────────── */
@@ -123,6 +158,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  align-self: stretch;
 }
 
 /* ── Card front content ────────────────────────────── */
@@ -184,6 +220,7 @@
 @media (max-width: 900px) {
   .section {
     flex-direction: column;
+    align-items: center;
     gap: 56px;
   }
 
@@ -193,8 +230,17 @@
 }
 
 @media (max-width: 600px) {
+  .hero {
+    padding: 125px 20px 24px;
+  }
+
   .actions {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .about {
+    width: 100%;
+    text-align: center;
   }
 }

@@ -13,9 +13,15 @@ html.scroll-locked {
 
 /* ── Section base ──────────────────────────────────── */
 section {
-  padding: 64px 24px;
+  padding: 64px 0;
   max-width: var(--max-w);
   margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  section {
+    padding: 48px 20px;
+  }
 }
 
 .section-divider {
@@ -49,6 +55,9 @@ section {
   letter-spacing: -0.025em;
   color: var(--text);
   margin-bottom: 12px;
+  display: inline-block;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--accent);
 }
 
 .sec-desc {

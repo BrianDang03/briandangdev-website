@@ -614,6 +614,12 @@ export default function TiltFlipCard({
     };
   }, []);
 
+  useEffect(() => {
+    const handleOpen = () => { if (!isExpanded) openInspectView() }
+    window.addEventListener('open-profile-card', handleOpen)
+    return () => window.removeEventListener('open-profile-card', handleOpen)
+  }, [isExpanded, openInspectView]);
+
   const handlePointerEnter = useCallback(
     (event) => {
       if (isExpanded || event.pointerType !== "mouse") return;

@@ -36,7 +36,6 @@ export default function Project() {
   return (
     <section id="projects" className={styles.section}>
       <div className={styles.header}>
-        <div className="sec-tag">Projects</div>
         <h2 className="sec-title">Things I've Built</h2>
       </div>
       <div className={styles.grid}>
