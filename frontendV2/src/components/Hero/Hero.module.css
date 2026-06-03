@@ -1,14 +1,14 @@
 /* ── Hero section ──────────────────────────────────── */
 .hero {
   padding-top: 100px;  /* clears the fixed navbar */
-  padding-bottom: 48px;
+  padding-bottom: 80px;
 }
 
 .section {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 80px;
+  gap: 56px;
   width: 100%;
 }
 
@@ -40,7 +40,7 @@
   font-size: clamp(15px, 1.8vw, 20px);
   font-weight: 400;
   color: var(--text-muted);
-  margin-bottom: 28px;
+  margin-bottom: 0;
 }
 
 /* ── Typewriter ghost / live overlay ───────────────── */
@@ -81,41 +81,40 @@
   50%       { opacity: 0; }
 }
 
-.desc {
-  font-size: 17px;
-  color: var(--text-muted);
-  max-width: 540px;
-  line-height: 1.8;
-  margin-bottom: 36px;
-  animation: fadeUp 0.6s 2.6s ease both;
-}
-
 .actions {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 12px;
-  animation: fadeUp 0.6s 2.9s ease both;
+  gap: 10px;
+  margin-top: 32px;
+  animation: fadeUp 0.5s 2.6s ease both;
 }
 
-.link {
+.contactBtn {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 10px;
   font-size: 14px;
-  font-weight: 500;
-  color: var(--text-muted);
-  transition: color 0.15s;
-}
-
-.link:hover {
+  font-weight: 600;
   color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  transition: color 0.18s, border-color 0.18s, background 0.18s, transform 0.18s;
+  white-space: nowrap;
 }
 
-.link svg {
-  width: 15px;
-  height: 15px;
-  opacity: 0.7;
+.contactBtn:hover {
+  color: var(--accent);
+  border-color: var(--border-accent);
+  background: rgba(122, 178, 216, 0.08);
+  transform: translateY(-1px);
+}
+
+[data-theme="light"] .contactBtn {
+  border-color: rgba(0, 0, 0, 0.15);
+  background: rgba(0, 0, 0, 0.03);
 }
 
 /* ── Card column ───────────────────────────────────── */

@@ -39,6 +39,11 @@
   --max-w:       var(--token-max-w);
   --ease:        var(--token-ease);
 
+  /* ── Background orbs (dark mode — white hue) ────── */
+  --orb-primary:   rgba(255, 255, 255, 0.055);
+  --orb-secondary: rgba(210, 228, 255, 0.045);
+  --orb-accent:    rgba(255, 255, 255, 0.025);
+
   /* ── Z-index stack ───────────────────────────────── */
   --z-modal-returning: var(--token-z-modal-returning);
   --z-modal-backdrop:  var(--token-z-modal-backdrop);
@@ -69,4 +74,9 @@
   --project-card-impact-color:  var(--token-blue-mid-light-mode);
   --project-card-impact-bg:     rgba(45, 116, 166, 0.08);
   --project-card-impact-border: rgba(45, 116, 166, 0.2);
+
+  /* ── Background orbs (light mode — blue hue) ─────── */
+  --orb-primary:   rgba(61, 135, 184, 0.28);
+  --orb-secondary: rgba(45, 116, 166, 0.22);
+  --orb-accent:    rgba(80, 155, 210, 0.14);
 }

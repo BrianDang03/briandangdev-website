@@ -34,10 +34,11 @@ const projects = [
 
 export default function Project() {
   return (
-    <section id="projects">
-      <div className="sec-tag">Projects</div>
-      <h2 className="sec-title">Things I've Built</h2>
-      <p className="sec-desc">A selection of projects across different domains.</p>
+    <section id="projects" className={styles.section}>
+      <div className={styles.header}>
+        <div className="sec-tag">Projects</div>
+        <h2 className="sec-title">Things I've Built</h2>
+      </div>
       <div className={styles.grid}>
         {projects.map(p => (
           <ProjectCard key={p.title} {...p} />

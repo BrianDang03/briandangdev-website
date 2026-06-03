@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Mail, Github, ArrowDown } from 'lucide-react'
+import { Mail, Github } from 'lucide-react'
 import TiltFlipCard from '../TiltFlipCard/TiltFlipCard'
 import styles from './Hero.module.css'
 
@@ -120,32 +120,20 @@ export default function Hero() {
             />
           </p>
 
-          <p className={styles.desc}>
-            I enjoy building software that connects ideas to real systems, from production
-            tools and automation scripts to embedded device workflows and game projects.
-            I like learning how things work under the hood and turning that knowledge
-            into tools that are practical, reliable, and useful to the people who depend
-            on them.
-          </p>
-
           <div className={styles.actions}>
-            <a href="#projects" className="btn btn-primary btn-lg">
-              View Projects <ArrowDown size={15} />
-            </a>
-
-            <a href="#about" className="btn btn-ghost btn-lg">About Me</a>
-
-            <a href="mailto:briandang730@gmail.com" className={styles.link}>
-              <Mail /> briandang730@gmail.com
+            <a href="mailto:briandang730@gmail.com" className={styles.contactBtn}>
+              <Mail size={15} />
+              briandang730@gmail.com
             </a>
 
             <a
               href="https://github.com/briandang03"
               target="_blank"
               rel="noopener noreferrer"
-              className={styles.link}
+              className={styles.contactBtn}
             >
-              <Github /> GitHub
+              <Github size={15} />
+              GitHub
             </a>
           </div>
 
@@ -156,8 +144,8 @@ export default function Hero() {
             frontImg="/profile.jpg"
             front={cardFront}
             back={cardBack}
-            width={300}
-            height={420}
+            width={340}
+            height={460}
             prioritizeFrontImage
             entranceFrom="right"
             entranceOrder={1}
