@@ -1,0 +1,66 @@
+/* ─────────────────────────────────────────────────────
+   TOKENS — raw values only.
+   Nothing outside this file should use --token-* vars.
+   Components reference semantic names from theme.css.
+───────────────────────────────────────────────────── */
+:root {
+  /* Blues */
+  --token-blue-light: #7ab2d8;
+  --token-blue-mid: #5a94c0;
+  --token-blue-steel: #8ab4cc;
+  --token-blue-platinum: #c8dce8;
+  --token-blue-ice: #a0c8e4;
+
+  /* Blues — alpha variants */
+  --token-blue-glow: rgba(122, 178, 216, 0.2);
+  --token-blue-glow-lg: rgba(122, 178, 216, 0.4);
+  --token-blue-border: rgba(122, 178, 216, 0.28);
+  --token-blue-ice-bg: rgba(160, 200, 228, 0.08);
+  --token-blue-ice-border: rgba(160, 200, 228, 0.2);
+
+  /* Darks */
+  --token-dark-950: #07080f;
+  --token-dark-900: #090c14;
+  --token-dark-800: #0d1018;
+  --token-dark-700: #121520;
+
+  /* Slates (text) */
+  --token-slate-200: #d0dce8;
+  --token-slate-500: #6878a0;
+  --token-slate-700: #2a3048;
+
+  /* Neutrals */
+  --token-white-5: rgba(255, 255, 255, 0.05);
+
+  /* Sizing */
+  --token-radius-card: 13px;
+  --token-radius-tag: 8px;
+  --token-max-w: 1080px;
+
+  /* Light mode backgrounds */
+  --token-light-50:  #f4f7fb;
+  --token-light-100: #edf2f7;
+  --token-light-200: #e2eaf3;
+
+  /* Light mode text */
+  --token-dark-text:       #1a2332;
+  --token-muted-text-light: #56687e;
+  --token-dim-text-light:   #b0beca;
+
+  /* Light mode borders */
+  --token-border-light:        rgba(0, 0, 0, 0.09);
+  --token-border-accent-light: rgba(58, 122, 170, 0.4);
+
+  /* Light mode accent (slightly darker for contrast on white) */
+  --token-blue-light-mode:      #3d87b8;
+  --token-blue-mid-light-mode:  #2d74a6;
+  --token-blue-glow-light:      rgba(61, 135, 184, 0.15);
+
+  /* Timing */
+  --token-ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Z-index stack */
+  --token-z-modal-returning: 5;
+  --token-z-modal-backdrop:  500;
+  --token-z-modal:           1000;
+}

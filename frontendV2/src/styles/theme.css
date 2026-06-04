@@ -1,0 +1,82 @@
+/* ─────────────────────────────────────────────────────
+   THEME — maps raw tokens to semantic roles.
+   This is what all components and utilities reference.
+   To retheme: change values in tokens.css, not here.
+───────────────────────────────────────────────────── */
+:root {
+  /* ── Backgrounds ─────────────────────────────────── */
+  --bg:            var(--token-dark-950);
+  --bg-surface:    var(--token-dark-900);
+  --bg-card:       var(--token-dark-800);
+  --bg-card-hover: var(--token-dark-700);
+
+  /* ── Borders ─────────────────────────────────────── */
+  --border:        var(--token-white-5);
+  --border-accent: var(--token-blue-border);
+
+  /* ── Text ────────────────────────────────────────── */
+  --text:          var(--token-slate-200);
+  --text-muted:    var(--token-slate-500);
+  --text-dim:      var(--token-slate-700);
+
+  /* ── Primary accent ──────────────────────────────── */
+  --accent:        var(--token-blue-light);
+  --accent-dark:   var(--token-blue-mid);
+  --accent-glow:   var(--token-blue-glow);
+
+  /* ── Canvas (Background.jsx) ─────────────────────── */
+  --canvas-secondary:        var(--token-blue-steel);
+  --canvas-secondary-bright: var(--token-blue-platinum);
+
+  /* ── ProjectCard — impact strip ──────────────────── */
+  --project-card-impact-color:  var(--token-blue-ice);
+  --project-card-impact-bg:     var(--token-blue-ice-bg);
+  --project-card-impact-border: var(--token-blue-ice-border);
+
+  /* ── Sizing ──────────────────────────────────────── */
+  --radius-card: var(--token-radius-card);
+  --radius-tag:  var(--token-radius-tag);
+  --max-w:       var(--token-max-w);
+  --ease:        var(--token-ease);
+
+  /* ── Background orbs (dark mode — white hue) ────── */
+  --orb-primary:   rgba(255, 255, 255, 0.055);
+  --orb-secondary: rgba(210, 228, 255, 0.045);
+  --orb-accent:    rgba(255, 255, 255, 0.025);
+
+  /* ── Z-index stack ───────────────────────────────── */
+  --z-modal-returning: var(--token-z-modal-returning);
+  --z-modal-backdrop:  var(--token-z-modal-backdrop);
+  --z-modal:           var(--token-z-modal);
+}
+
+/* ── Light mode overrides ────────────────────────────── */
+[data-theme="light"] {
+  --bg:            var(--token-light-50);
+  --bg-surface:    var(--token-light-100);
+  --bg-card:       #ffffff;
+  --bg-card-hover: var(--token-light-100);
+
+  --border:        var(--token-border-light);
+  --border-accent: var(--token-border-accent-light);
+
+  --text:          var(--token-dark-text);
+  --text-muted:    var(--token-muted-text-light);
+  --text-dim:      var(--token-dim-text-light);
+
+  --accent:        var(--token-blue-light-mode);
+  --accent-dark:   var(--token-blue-mid-light-mode);
+  --accent-glow:   var(--token-blue-glow-light);
+
+  --canvas-secondary:        var(--token-blue-mid-light-mode);
+  --canvas-secondary-bright: var(--token-blue-light-mode);
+
+  --project-card-impact-color:  var(--token-blue-mid-light-mode);
+  --project-card-impact-bg:     rgba(45, 116, 166, 0.08);
+  --project-card-impact-border: rgba(45, 116, 166, 0.2);
+
+  /* ── Background orbs (light mode — blue hue) ─────── */
+  --orb-primary:   rgba(61, 135, 184, 0.28);
+  --orb-secondary: rgba(45, 116, 166, 0.22);
+  --orb-accent:    rgba(80, 155, 210, 0.14);
+}

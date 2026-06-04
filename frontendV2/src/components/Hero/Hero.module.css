@@ -1,0 +1,351 @@
+/* ── Hero section ──────────────────────────────────── */
+.hero {
+  padding: 100px 0 16px;
+}
+
+.section {
+  display: flex;
+  flex-direction: row;
+  gap: 56px;
+  width: 100%;
+}
+
+/* ── Text column ───────────────────────────────────── */
+.text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-self: flex-start;
+}
+
+.greeting {
+  font-size: clamp(16px, 2vw, 22px);
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.name {
+  font-size: clamp(52px, 9vw, 92px);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.title {
+  font-size: clamp(15px, 1.8vw, 20px);
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-bottom: 0;
+}
+
+[data-theme="dark"] .greeting,
+[data-theme="dark"] .title {
+  color: #ffffff;
+}
+
+/* ── Typewriter ghost / live overlay ───────────────── */
+/* Ghost reserves the full space; live text types in on top. */
+.typedLine {
+  display: grid;
+}
+
+.ghost {
+  grid-area: 1 / 1;
+  visibility: hidden;
+  user-select: none;
+  pointer-events: none;
+}
+
+.live {
+  grid-area: 1 / 1;
+}
+
+/* ── Cursor ────────────────────────────────────────── */
+.cursor {
+  display: inline-block;
+  color: var(--accent);
+  font-weight: 400;
+  margin-left: 1px;
+}
+
+.cursorBlink {
+  display: inline-block;
+  color: var(--accent);
+  font-weight: 400;
+  margin-left: 1px;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 32px;
+  animation: fadeUp 0.5s 2.6s ease both;
+}
+
+.iconCircle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(122, 178, 216, 0.15);
+}
+
+.about {
+  margin-top: 40px;
+  max-width: 680px;
+}
+
+.about :global(.sec-title) {
+  margin-bottom: 12px;
+  color: var(--text);
+}
+
+.about :global(.sec-desc) {
+  color: var(--text-muted);
+  font-size: 16px;
+  line-height: 1.9;
+  font-weight: 500;
+}
+
+[data-theme="dark"] .about :global(.sec-desc) {
+  color: #ffffff;
+}
+
+.contactBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: var(--bg-card);
+  transition: color 0.18s, border-color 0.18s, background 0.18s, transform 0.18s;
+  white-space: nowrap;
+}
+
+.contactBtn:hover {
+  color: var(--accent);
+  border-color: var(--border-accent);
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+}
+
+[data-theme="dark"] .contactBtn {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+[data-theme="light"] .contactBtn {
+  border-color: rgba(0, 0, 0, 0.15);
+  background: #ffffff;
+}
+
+/* ── Card column ───────────────────────────────────── */
+.cardWrap {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+}
+
+/* ── Card front content ────────────────────────────── */
+.cardHint {
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+/* ── Card back content ─────────────────────────────── */
+.backContent {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.backBio {
+  font-size: 14px;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.backSection {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+.backEduList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.backEduItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.backEduDegree {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.backEduSchool {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.backBullet {
+  display: block;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  padding-left: 12px;
+  position: relative;
+}
+
+.backBullet::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+}
+
+[data-theme="light"] .backBullet {
+  color: rgba(26, 35, 50, 0.6);
+}
+
+.backSkills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.backSkillTag {
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 3px 8px;
+  border-radius: 5px;
+}
+
+.backLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  transition: color 0.15s;
+}
+
+.backLink:hover {
+  color: #fff;
+}
+
+/* ── Light mode card back ──────────────────────────── */
+[data-theme="light"] .backBio {
+  color: rgba(26, 35, 50, 0.75);
+}
+
+[data-theme="light"] .backEduDegree {
+  color: rgba(26, 35, 50, 0.9);
+}
+
+[data-theme="light"] .backEduSchool {
+  color: rgba(26, 35, 50, 0.5);
+}
+
+[data-theme="light"] .backSkillTag {
+  color: rgba(26, 35, 50, 0.75);
+  background: rgba(26, 35, 50, 0.06);
+  border-color: rgba(26, 35, 50, 0.12);
+}
+
+[data-theme="light"] .backLink {
+  color: rgba(26, 35, 50, 0.55);
+}
+
+[data-theme="light"] .backLink:hover {
+  color: rgba(26, 35, 50, 1);
+}
+
+/* ── Responsive ────────────────────────────────────── */
+@media (max-width: 900px) {
+  .section {
+    flex-direction: column;
+    align-items: center;
+    gap: 56px;
+  }
+
+  .text {
+    align-items: center;
+    text-align: center;
+  }
+
+  .actions {
+    justify-content: center;
+  }
+
+  .about {
+    text-align: center;
+  }
+
+  .cardWrap {
+    order: -1;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero {
+    padding: 125px 20px 24px;
+  }
+
+  .text {
+    align-items: center;
+    text-align: center;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .about {
+    width: 100%;
+    text-align: center;
+  }
+}
