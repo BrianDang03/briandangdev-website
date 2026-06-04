@@ -872,21 +872,21 @@ export default function TiltFlipCard({
 
               {!isExpanded && <div className={styles.glare} />}
 
+              {isExpanded && (
+                <button
+                  className={styles.closeBtn}
+                  onClick={handleCloseButtonClick}
+                  aria-label="Close expanded card"
+                  type="button"
+                >
+                  <span aria-hidden="true">×</span>
+                </button>
+              )}
+
               <div
                 className={`${styles.cardOverlay}${isExpanded ? ` ${styles.backOverlay}` : ""}`}
                 onDragStart={(e) => e.preventDefault()}
               >
-                {isExpanded && (
-                  <button
-                    className={styles.closeBtn}
-                    onClick={handleCloseButtonClick}
-                    aria-label="Close expanded card"
-                    type="button"
-                  >
-                    <span aria-hidden="true">×</span>
-                  </button>
-                )}
-
                 <div
                   className={`${styles.content}${isExpanded ? ` ${styles.scrollContent}` : ""}`}
                   onDragStart={(e) => e.preventDefault()}
