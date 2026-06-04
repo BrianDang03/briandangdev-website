@@ -118,12 +118,24 @@ const cardFront = (
 const cardBack = (
   <div className={styles.backContent}>
     <p className={styles.backBio}>
-      The goal is to get into an environment where the work carries real weight
-      and the people around you do not settle for good enough. I want to spend
-      several years building at that level, absorbing what it actually means to
-      ship things that matter. Then bring all of it into game development.
-      Building the kinds of experiences that made me feel what I felt growing up.
-      That is where this is all heading.
+      Gaming and engineering have always felt like the same thing to me. Both
+      reward going deeper than the surface. The games I love are the ones that
+      open up the more time you put into actually understanding them. That is
+      how I approach building software too.
+    </p>
+    <p className={styles.backBio}>
+      When I am working on something I care about how everything fits together,
+      not just whether it runs. I stay with hard problems. When something holds
+      up under real pressure, that is the feeling I am after. And if a player
+      or a user finds something unintended and runs with it, the right call is
+      usually to build toward them, not take it away.
+    </p>
+    <p className={styles.backBio}>
+      Eventually I want to build games. The engineering side of it. Systems
+      built with intention but with room to breathe. Before that I want to work
+      somewhere that holds me to a real standard. The kind of place where the
+      craft matters and you either meet that bar or you do not. That is what
+      I am working toward.
     </p>
 
     <div className={styles.backSection}>Education</div>
@@ -233,12 +245,10 @@ export default function Hero() {
           <div className={styles.about}>
             <h2 className="sec-title">A little about me</h2>
             <p className="sec-desc">
-              I grew up chasing the feeling of finally cracking something open after it had
-              been grinding at me for hours. Gaming gave me that. Turns out engineering does
-              too. I started in pharmacy, knew immediately it was wrong, switched to computer
-              science on a whim, and found everything medicine never gave me. The building,
-              the problem solving, watching something finally click and ship. That is what
-              keeps me going.
+              I have been playing games my whole life. Not just playing them but trying to
+              understand how they work and why they feel the way they do. That same pull
+              is what got me into engineering. Finding what is broken in a system and
+              staying with it until it holds. Different problems, same feeling.
             </p>
           </div>
 
