@@ -118,74 +118,21 @@ const cardFront = (
 const cardBack = (
   <div className={styles.backContent}>
     <p className={styles.backBio}>
-      Gaming and engineering have always felt like the same thing to me. Both
-      reward going deeper than the surface. The games I love are the ones that
-      open up the more time you put into actually understanding them. That is
-      how I approach building software too.
+      Engineering is about meeting the right standard, not just making it run.
+      I move forward when the work is done the right way. If something is not clear,
+      I find the answer. That is how I approach my workflows.
     </p>
     <p className={styles.backBio}>
-      When I am working on something I care about how everything fits together,
-      not just whether it runs. I stay with hard problems. When something holds
-      up under real pressure, that is the feeling I am after. And if a player
-      or a user finds something unintended and runs with it, the right call is
-      usually to build toward them, not take it away.
+      I push myself to that standard. High precision, requirements met the
+      right way, and work done correctly. That is how I grow as an engineer
+      and that is the direction I am taking myself.
     </p>
     <p className={styles.backBio}>
-      Eventually I want to build games. The engineering side of it. Systems
-      built with intention but with room to breathe. Before that I want to work
-      somewhere that holds me to a real standard. The kind of place where the
-      craft matters and you either meet that bar or you do not. That is what
-      I am working toward.
+      Eventually I want to work on the engineering side of game development.
+      The systems, the mechanics, building things that hold up at the highest
+      level of craft. That is years out. What I am doing now is what earns it.
     </p>
 
-    <div className={styles.backSection}>Education</div>
-    <div className={styles.backEduList}>
-      <div className={styles.backEduItem}>
-        <span className={styles.backEduDegree}>M.S. Computer Science</span>
-        <span className={styles.backEduSchool}>Colorado School of Mines · 2026 to 2028</span>
-      </div>
-      <div className={styles.backEduItem}>
-        <span className={styles.backEduDegree}>B.A. Computer Science</span>
-        <span className={styles.backEduSchool}>University of Colorado Denver · 2022 to 2026</span>
-      </div>
-    </div>
-
-    <div className={styles.backSection}>What I Build</div>
-    <div className={styles.backEduList}>
-      {[
-        'Production tools that replace broken manual workflows',
-        'Full stack web applications shipped end to end',
-        'Automation that compresses hours of work into minutes',
-        'Gameplay systems focused on feel and responsiveness',
-        'Open source contributions to systems and numerics libraries',
-      ].map(item => (
-        <span key={item} className={styles.backBullet}>{item}</span>
-      ))}
-    </div>
-
-    <div className={styles.backSection}>Skills</div>
-    <div className={styles.backSkills}>
-      {['C/C++', 'C#', 'Python', 'JavaScript', 'React', 'Node.js',
-        'MongoDB', 'Unity', 'Unreal Engine', 'Docker', 'Git'].map(s => (
-        <span key={s} className={styles.backSkillTag}>{s}</span>
-      ))}
-    </div>
-
-    <div className={styles.backLinks}>
-      <a href="mailto:briandang730@gmail.com" className={styles.backLink}>
-        <Mail size={14} />
-        briandang730@gmail.com
-      </a>
-      <a
-        href="https://github.com/briandang03"
-        target="_blank"
-        rel="noopener noreferrer"
-        className={styles.backLink}
-      >
-        <span className={styles.iconCircle}><Github size={14} /></span>
-        github.com/briandang03
-      </a>
-    </div>
   </div>
 )
 
@@ -238,17 +185,15 @@ export default function Hero() {
               className={styles.contactBtn}
             >
               <span className={styles.iconCircle}><Github size={15} /></span>
-              GitHub
+              github.com/briandang03
             </a>
           </div>
 
           <div className={styles.about}>
             <h2 className="sec-title">A little about me</h2>
             <p className="sec-desc">
-              I have been playing games my whole life. Not just playing them but trying to
-              understand how they work and why they feel the way they do. That same pull
-              is what got me into engineering. Finding what is broken in a system and
-              staying with it until it holds. Different problems, same feeling.
+              I am pursuing my M.S. at Colorado School of Mines. I solve problems, devliver under pressure, and uphold standards. Outside of
+              engineering I build games, train calisthenics, and catch EDM shows.
             </p>
           </div>
 
