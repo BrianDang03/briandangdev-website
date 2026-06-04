@@ -118,9 +118,47 @@ const cardFront = (
 const cardBack = (
   <div className={styles.backContent}>
     <p className={styles.backBio}>
-      I build software that connects ideas to real systems — from production
-      tools and automation scripts to embedded device workflows and game projects.
+      The goal is to get into an environment where the work carries real weight
+      and the people around you do not settle for good enough. I want to spend
+      several years building at that level, absorbing what it actually means to
+      ship things that matter. Then bring all of it into game development.
+      Building the kinds of experiences that made me feel what I felt growing up.
+      That is where this is all heading.
     </p>
+
+    <div className={styles.backSection}>Education</div>
+    <div className={styles.backEduList}>
+      <div className={styles.backEduItem}>
+        <span className={styles.backEduDegree}>M.S. Computer Science</span>
+        <span className={styles.backEduSchool}>Colorado School of Mines · 2026 to 2028</span>
+      </div>
+      <div className={styles.backEduItem}>
+        <span className={styles.backEduDegree}>B.A. Computer Science</span>
+        <span className={styles.backEduSchool}>University of Colorado Denver · 2022 to 2026</span>
+      </div>
+    </div>
+
+    <div className={styles.backSection}>What I Build</div>
+    <div className={styles.backEduList}>
+      {[
+        'Production tools that replace broken manual workflows',
+        'Full stack web applications shipped end to end',
+        'Automation that compresses hours of work into minutes',
+        'Gameplay systems focused on feel and responsiveness',
+        'Open source contributions to systems and numerics libraries',
+      ].map(item => (
+        <span key={item} className={styles.backBullet}>{item}</span>
+      ))}
+    </div>
+
+    <div className={styles.backSection}>Skills</div>
+    <div className={styles.backSkills}>
+      {['C/C++', 'C#', 'Python', 'JavaScript', 'React', 'Node.js',
+        'MongoDB', 'Unity', 'Unreal Engine', 'Docker', 'Git'].map(s => (
+        <span key={s} className={styles.backSkillTag}>{s}</span>
+      ))}
+    </div>
+
     <div className={styles.backLinks}>
       <a href="mailto:briandang730@gmail.com" className={styles.backLink}>
         <Mail size={14} />
@@ -133,7 +171,7 @@ const cardBack = (
         className={styles.backLink}
       >
         <span className={styles.iconCircle}><Github size={14} /></span>
-        GitHub
+        github.com/briandang03
       </a>
     </div>
   </div>
@@ -195,10 +233,12 @@ export default function Hero() {
           <div className={styles.about}>
             <h2 className="sec-title">A little about me</h2>
             <p className="sec-desc">
-              I'm a software engineer who enjoys connecting systems, products, and people.
-              I build reliable tools, polished web experiences, and embedded workflows with
-              a practical mindset that keeps maintainability and real-world impact front
-              and center.
+              I grew up chasing the feeling of finally cracking something open after it had
+              been grinding at me for hours. Gaming gave me that. Turns out engineering does
+              too. I started in pharmacy, knew immediately it was wrong, switched to computer
+              science on a whim, and found everything medicine never gave me. The building,
+              the problem solving, watching something finally click and ship. That is what
+              keeps me going.
             </p>
           </div>
 

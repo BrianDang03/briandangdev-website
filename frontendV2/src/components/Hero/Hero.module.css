@@ -187,10 +187,79 @@
   color: rgba(255, 255, 255, 0.75);
 }
 
+.backSection {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+.backEduList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.backEduItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.backEduDegree {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.backEduSchool {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.backBullet {
+  display: block;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  padding-left: 12px;
+  position: relative;
+}
+
+.backBullet::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+}
+
+[data-theme="light"] .backBullet {
+  color: rgba(26, 35, 50, 0.6);
+}
+
+.backSkills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.backSkillTag {
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 3px 8px;
+  border-radius: 5px;
+}
+
 .backLinks {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  margin-top: 16px;
 }
 
 .backLink {
@@ -210,6 +279,20 @@
 /* ── Light mode card back ──────────────────────────── */
 [data-theme="light"] .backBio {
   color: rgba(26, 35, 50, 0.75);
+}
+
+[data-theme="light"] .backEduDegree {
+  color: rgba(26, 35, 50, 0.9);
+}
+
+[data-theme="light"] .backEduSchool {
+  color: rgba(26, 35, 50, 0.5);
+}
+
+[data-theme="light"] .backSkillTag {
+  color: rgba(26, 35, 50, 0.75);
+  background: rgba(26, 35, 50, 0.06);
+  border-color: rgba(26, 35, 50, 0.12);
 }
 
 [data-theme="light"] .backLink {
