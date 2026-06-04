@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react'
 
-const COUNT = 110
-const CONNECT_DIST = 160
-const MOUSE_RADIUS = 130
+const COUNT_DESKTOP = 110
+const COUNT_MOBILE  = 25
+const CONNECT_DIST  = 160
+const MOUSE_RADIUS  = 130
 
 // Reference CSS variable names — no hardcoded colors
 const PALETTE_VARS = [
@@ -79,10 +80,15 @@ export default function Background({ theme }) {
     let particles = []
     let t = 0
     let intensity = 1
+    let frameCount = 0
+
+    const isMobile = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768
+    const COUNT = isMobile ? COUNT_MOBILE : COUNT_DESKTOP
+    const activWaves = isMobile ? WAVE_CONFIGS.slice(0, 2) : WAVE_CONFIGS
 
     // Re-resolve colors from CSS variables — re-runs when theme changes
     const palette = PALETTE_VARS.map(resolveVar)
-    const waveDefs = WAVE_CONFIGS.map(w => ({ ...w, color: resolveVar(w.colorVar) }))
+    const waveDefs = activWaves.map(w => ({ ...w, color: resolveVar(w.colorVar) }))
 
     function resize() {
       canvas.width = window.innerWidth
@@ -107,12 +113,15 @@ export default function Background({ theme }) {
         const fade = 0.5 + 0.5 * Math.sin(t * w.fadeSpeed + w.fadeOffset)
         const alpha = w.baseAlpha * fade * intensity
         const { r, g, b } = w.color
+        const step = isMobile ? 6 : 3
 
         ctx.save()
-        ctx.shadowColor = `rgba(${r},${g},${b},${alpha * 4 * intensity})`
-        ctx.shadowBlur = 32 * intensity
+        if (!isMobile) {
+          ctx.shadowColor = `rgba(${r},${g},${b},${alpha * 4 * intensity})`
+          ctx.shadowBlur = 32 * intensity
+        }
         ctx.beginPath()
-        for (let x = 0; x <= canvas.width; x += 3) {
+        for (let x = 0; x <= canvas.width; x += step) {
           const y = cy + Math.sin(x * w.freq + phase) * w.amp
           x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)
         }
@@ -182,7 +191,7 @@ export default function Background({ theme }) {
       const { r, g, b } = p.color
 
       ctx.save()
-      if (p.glow) {
+      if (p.glow && !isMobile) {
         ctx.shadowColor = `rgba(${r},${g},${b},${intensity})`
         ctx.shadowBlur = 24 * intensity
       }
@@ -194,6 +203,12 @@ export default function Background({ theme }) {
     }
 
     function render() {
+      frameCount++
+      // throttle to ~30fps on mobile
+      if (isMobile && frameCount % 2 !== 0) {
+        animId = requestAnimationFrame(render)
+        return
+      }
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       t++
       drawWaves()
@@ -214,8 +229,10 @@ export default function Background({ theme }) {
     function onMouseLeave() { mouse.current.x = -9999; mouse.current.y = -9999 }
 
     window.addEventListener('resize', onResize)
-    window.addEventListener('mousemove', onMouseMove)
-    window.addEventListener('mouseleave', onMouseLeave)
+    if (!isMobile) {
+      window.addEventListener('mousemove', onMouseMove)
+      window.addEventListener('mouseleave', onMouseLeave)
+    }
 
     return () => {
       cancelAnimationFrame(animId)

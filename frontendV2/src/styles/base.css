@@ -32,6 +32,14 @@ body {
 }
 
 
+/* ── Mobile perf: disable expensive blur effects ── */
+@media (pointer: coarse) {
+  .orb {
+    filter: none !important;
+    opacity: 0.5;
+  }
+}
+
 /* ── Scrollbar ───────────────────────────────────── */
 ::-webkit-scrollbar       { width: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
