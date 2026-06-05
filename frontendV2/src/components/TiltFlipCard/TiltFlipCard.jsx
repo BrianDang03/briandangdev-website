@@ -6,6 +6,7 @@ import {
   useRef,
   useState
 } from "react";
+import { X } from "lucide-react";
 import styles from "./TiltFlipCard.module.css";
 
 const MOVE_THRESHOLD_PX = 10;
@@ -879,7 +880,7 @@ export default function TiltFlipCard({
                   aria-label="Close expanded card"
                   type="button"
                 >
-                  <span aria-hidden="true">×</span>
+                  <X size={17} aria-hidden="true" />
                 </button>
               )}
 
