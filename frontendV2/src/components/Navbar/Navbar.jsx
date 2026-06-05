@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Sun, Moon } from 'lucide-react'
+import { Sun, Moon, Menu, X } from 'lucide-react'
 import styles from './Navbar.module.css'
 
 const links = [
@@ -10,6 +10,7 @@ const links = [
 
 export default function Navbar({ theme, onToggleTheme }) {
   const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -17,35 +18,69 @@ export default function Navbar({ theme, onToggleTheme }) {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  useEffect(() => {
+    if (!menuOpen) return
+    const close = () => setMenuOpen(false)
+    window.addEventListener('scroll', close, { passive: true, once: true })
+    return () => window.removeEventListener('scroll', close)
+  }, [menuOpen])
+
+  const handleClick = (e, link) => {
+    e.preventDefault()
+    setMenuOpen(false)
+    document.querySelector(link.href)?.scrollIntoView({ behavior: 'smooth' })
+    if (link.action) window.dispatchEvent(new CustomEvent(link.action))
+  }
+
+  const navClass = [
+    styles.navbar,
+    scrolled ? styles.scrolled : '',
+    menuOpen ? styles.menuActive : '',
+  ].filter(Boolean).join(' ')
+
   return (
-    <nav className={`${styles.navbar}${scrolled ? ` ${styles.scrolled}` : ''}`}>
+    <nav className={navClass}>
       <div className={styles.inner}>
-        <a href="#home" className={styles.logo}>
+        <a href="#home" className={styles.logo} onClick={(e) => handleClick(e, { href: '#home' })}>
           Brian <span>Dang</span>
         </a>
         <ul className={styles.links}>
           {links.map(l => (
             <li key={l.label}>
-              <a
-                href={l.href}
-                onClick={l.action ? (e) => {
-                  e.preventDefault()
-                  document.querySelector(l.href)?.scrollIntoView({ behavior: 'smooth' })
-                  window.dispatchEvent(new CustomEvent(l.action))
-                } : undefined}
-              >
+              <a href={l.href} onClick={(e) => handleClick(e, l)}>
                 {l.label}
               </a>
             </li>
           ))}
         </ul>
-        <button
-          className={styles.themeToggle}
-          onClick={onToggleTheme}
-          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-        >
-          {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
-        </button>
+        <div className={styles.right}>
+          <button
+            className={styles.themeToggle}
+            onClick={onToggleTheme}
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
+            {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
+          </button>
+          <button
+            className={styles.hamburger}
+            onClick={() => setMenuOpen(o => !o)}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          >
+            {menuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+      </div>
+
+      <div className={`${styles.mobileMenu}${menuOpen ? ` ${styles.mobileMenuOpen}` : ''}`}>
+        <ul className={styles.mobileLinks}>
+          {links.map(l => (
+            <li key={l.label}>
+              <a href={l.href} onClick={(e) => handleClick(e, l)}>
+                {l.label}
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
     </nav>
   )

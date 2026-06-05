@@ -136,11 +136,27 @@ const cardBack = (
   </div>
 )
 
+function useIsMobile(breakpoint = 600) {
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== 'undefined' && window.innerWidth <= breakpoint
+  )
+  useEffect(() => {
+    const update = () => setIsMobile(window.innerWidth <= breakpoint)
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [breakpoint])
+  return isMobile
+}
+
 export default function Hero() {
   const [greetingCount, greetingDone] = useTypewriter(GREETING.length, 65,  200)
   const [nameCount,     nameDone]     = useTypewriter(NAME.length,     90,  950)
   const [titleIndex, titleCount, phase] = useCycleTypewriter(TITLES, 45, 35, 4000, 200, nameDone)
   const titleDone                        = titleCount >= TITLES[titleIndex].length
+  const isMobile                         = useIsMobile(600)
+
+  const cardWidth  = isMobile ? 260 : 340
+  const cardHeight = isMobile ? 350 : 460
 
   return (
     <section id="home" className={styles.hero}>
@@ -192,7 +208,7 @@ export default function Hero() {
           <div className={styles.about}>
             <h2 className="sec-title">A little about me</h2>
             <p className="sec-desc">
-              I am pursuing my M.S. at Colorado School of Mines. I solve problems, devliver under pressure, and uphold standards. Outside of
+              I am pursuing my M.S. at Colorado School of Mines. I solve problems, deliver under pressure, and uphold standards. Outside of
               engineering I build games, train calisthenics, and catch EDM shows.
             </p>
           </div>
@@ -204,8 +220,8 @@ export default function Hero() {
             frontImg="/profile.jpg"
             front={cardFront}
             back={cardBack}
-            width={340}
-            height={460}
+            width={cardWidth}
+            height={cardHeight}
             prioritizeFrontImage
             entranceFrom="right"
             entranceOrder={1}

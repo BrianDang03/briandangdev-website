@@ -78,6 +78,12 @@
   color: #ffffff;
 }
 
+.right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .themeToggle {
   display: flex;
   align-items: center;
@@ -112,8 +118,102 @@
   background: rgba(122, 178, 216, 0.07);
 }
 
+.hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .hamburger {
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+
+[data-theme="light"] .hamburger {
+  border-color: rgba(0, 0, 0, 0.2);
+  background: #ffffff;
+  color: #1a2332;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hamburger:hover {
+  color: var(--text);
+  border-color: var(--border-accent);
+  background: rgba(122, 178, 216, 0.07);
+}
+
+.mobileMenu {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.28s ease, opacity 0.2s ease;
+}
+
+.mobileMenuOpen {
+  max-height: 220px;
+  opacity: 1;
+}
+
+.mobileLinks {
+  list-style: none;
+  padding: 8px 0 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.mobileLinks a {
+  display: block;
+  padding: 13px 4px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  transition: color 0.15s;
+}
+
+.mobileLinks li:last-child a {
+  border-bottom: none;
+}
+
+.mobileLinks a:hover {
+  color: var(--text);
+}
+
+[data-theme="dark"] .mobileLinks a {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+[data-theme="dark"] .mobileLinks a:hover {
+  color: #ffffff;
+}
+
+.menuActive {
+  background: rgba(8, 8, 15, 0.95);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+
+[data-theme="light"] .menuActive {
+  background: rgba(244, 247, 251, 0.98);
+}
+
 @media (max-width: 640px) {
   .links {
     display: none;
+  }
+
+  .hamburger {
+    display: flex;
   }
 }
