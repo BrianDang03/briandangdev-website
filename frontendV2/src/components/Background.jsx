@@ -7,8 +7,8 @@ const MOUSE_RADIUS  = 130
 
 // Reference CSS variable names — no hardcoded colors
 const PALETTE_VARS = [
-  '--accent',
-  '--accent-dark',
+  '--canvas-accent',
+  '--canvas-accent-dark',
   '--canvas-secondary',
   '--canvas-secondary-bright',
   '--text',
@@ -16,11 +16,11 @@ const PALETTE_VARS = [
 ]
 
 const WAVE_CONFIGS = [
-  { yFrac: 0.18, amp: 38, freq: 0.0042, speed: 0.007,  colorVar: '--accent',                   baseAlpha: 0.28, fadeSpeed: 0.011, fadeOffset: 0.0 },
-  { yFrac: 0.32, amp: 28, freq: 0.0031, speed: 0.005,  colorVar: '--accent-dark',              baseAlpha: 0.22, fadeSpeed: 0.009, fadeOffset: 1.2 },
+  { yFrac: 0.18, amp: 38, freq: 0.0042, speed: 0.007,  colorVar: '--canvas-accent',            baseAlpha: 0.28, fadeSpeed: 0.011, fadeOffset: 0.0 },
+  { yFrac: 0.32, amp: 28, freq: 0.0031, speed: 0.005,  colorVar: '--canvas-accent-dark',        baseAlpha: 0.22, fadeSpeed: 0.009, fadeOffset: 1.2 },
   { yFrac: 0.50, amp: 52, freq: 0.0025, speed: 0.004,  colorVar: '--canvas-secondary-bright',  baseAlpha: 0.26, fadeSpeed: 0.013, fadeOffset: 2.5 },
   { yFrac: 0.65, amp: 34, freq: 0.0038, speed: 0.006,  colorVar: '--canvas-secondary',         baseAlpha: 0.22, fadeSpeed: 0.008, fadeOffset: 0.8 },
-  { yFrac: 0.80, amp: 44, freq: 0.0028, speed: 0.0045, colorVar: '--accent',                   baseAlpha: 0.24, fadeSpeed: 0.012, fadeOffset: 3.8 },
+  { yFrac: 0.80, amp: 44, freq: 0.0028, speed: 0.0045, colorVar: '--canvas-accent',            baseAlpha: 0.24, fadeSpeed: 0.012, fadeOffset: 3.8 },
   { yFrac: 0.92, amp: 22, freq: 0.0055, speed: 0.009,  colorVar: '--text',                     baseAlpha: 0.18, fadeSpeed: 0.010, fadeOffset: 1.9 },
 ]
 

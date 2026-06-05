@@ -25,6 +25,8 @@
   --accent-glow:   var(--token-blue-glow);
 
   /* ── Canvas (Background.jsx) ─────────────────────── */
+  --canvas-accent:           var(--token-blue-light);
+  --canvas-accent-dark:      var(--token-blue-mid);
   --canvas-secondary:        var(--token-blue-steel);
   --canvas-secondary-bright: var(--token-blue-platinum);
 
@@ -68,15 +70,17 @@
   --accent-dark:   var(--token-blue-mid-light-mode);
   --accent-glow:   var(--token-blue-glow-light);
 
-  --canvas-secondary:        var(--token-blue-mid-light-mode);
-  --canvas-secondary-bright: var(--token-blue-light-mode);
+  --canvas-accent:           #96b0c0;
+  --canvas-accent-dark:      #85a0b2;
+  --canvas-secondary:        #b8cad4;
+  --canvas-secondary-bright: #ccd9e2;
 
   --project-card-impact-color:  var(--token-blue-mid-light-mode);
   --project-card-impact-bg:     rgba(45, 116, 166, 0.08);
   --project-card-impact-border: rgba(45, 116, 166, 0.2);
 
-  /* ── Background orbs (light mode — blue hue) ─────── */
-  --orb-primary:   rgba(61, 135, 184, 0.28);
-  --orb-secondary: rgba(45, 116, 166, 0.22);
-  --orb-accent:    rgba(80, 155, 210, 0.14);
+  /* ── Background orbs (light mode — barely-there) ─────── */
+  --orb-primary:   rgba(61, 135, 184, 0.06);
+  --orb-secondary: rgba(45, 116, 166, 0.04);
+  --orb-accent:    rgba(80, 155, 210, 0.03);
 }

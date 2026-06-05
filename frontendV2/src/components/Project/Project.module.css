@@ -1,5 +1,6 @@
 .section {
   padding: 24px 0 56px;
+  scroll-margin-top: 72px;
 }
 
 .header {
