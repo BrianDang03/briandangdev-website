@@ -579,7 +579,7 @@ export default function TiltFlipCard({
   }, [runScheduledTiltUpdate]);
 
   useLayoutEffect(() => {
-    if (!isExpanded) return;
+    if (!isExpanded || isReturning) return;
 
     const handleResize = () => {
       computeExpandedTransform();
@@ -591,7 +591,7 @@ export default function TiltFlipCard({
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [isExpanded, computeExpandedTransform]);
+  }, [isExpanded, isReturning, computeExpandedTransform]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
