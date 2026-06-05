@@ -18,7 +18,7 @@ const LERP_FACTOR_TILT = 0.24; // Tilt rotation responsiveness: higher = faster 
 const LERP_FACTOR = 0.24; // Glare/shadow responsiveness
 const LERP_FACTOR_POPOUT = 0.10; // Popout responsiveness — 0.10 exits RAF in ~620ms vs ~1050ms at 0.06
 // Match close teardown to opening flip duration for symmetric timing.
-const CLOSE_RETURN_MS = 1100;
+const CLOSE_RETURN_MS = 675;
 
 const POINTER_INITIAL_STATE = {
   isDown: false,
